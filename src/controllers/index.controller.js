@@ -1,27 +1,6 @@
 const { User } = require('../database/models/index')
 const sequelize = require('sequelize');
 
-const index = async (req,res) => {
-    let usuario = await User.findAll()
-    return res.render('../src/views/usuario/index', {usuario});
-};
-
-const show = async (req,res) => {
-    const id = req.params.id
-    let elemento = await User.findOne({ where: { id: id } });
-    return res.render('../src/views/usuario/show', {elemento});
-};
-
-const edit = async (req,res) => {
-    const id = req.params.id
-    let elemento = await User.findOne({ where: { id: id } });
-    return res.render('../src/views/usuario/edit', {elemento});
-};
-
-const create = async (req,res) => {
-    return res.render('../src/views/usuario/create');
-};
-
 //API
 
 const store = async (req,res) => {
@@ -71,10 +50,6 @@ const policy = async (req, res, next) => {
   };
 
 module.exports = {
-    index,
-    create,
-    show,
-    edit,
     store,
     destroy,
     update,
