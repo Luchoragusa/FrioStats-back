@@ -1,15 +1,7 @@
 const Router = require('express');
 const router = Router();
 
-const {index, create, edit, show, store, destroy, update} = require('../controllers/index.controller.js');
-
-router.get("/", index);
-
-router.get("/create", create);
-
-router.get("/show/:id", show);
-
-router.get("/edit/:id", edit);
+const {store, destroy, update} = require('../controllers/index.controller.js');
 
 //API
 
