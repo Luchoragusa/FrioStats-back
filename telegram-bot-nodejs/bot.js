@@ -1,5 +1,4 @@
 const Telegraf = require('telegraf');
-
 const bot = new Telegraf('5785597594:AAEq4J8tr5w86sP0lB5Lo7RmjUonneokLmg')
 
 bot.use((ctx, next) => {

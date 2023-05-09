@@ -1,5 +1,5 @@
 {
-  "name": "clase",
+  "name": "FrioStats",
   "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Luchoragusa - JuaniPucheta - JuaniCampora",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.0",
