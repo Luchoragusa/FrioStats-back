@@ -8,9 +8,8 @@ const app = express();
 //Requerir router
 const router = require('./routes/index.routes');
 
-// Set EJS (view engine)
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "./views"));
+const {sendMessage} = require('./utilities/bot');
+sendMessage(1612650323, '**hello world**');
 
 //Settings
 app.use(cors());
@@ -27,5 +26,5 @@ app.use((req, res, next) => {
     descripcion: 'Pagina no encontrada'
   })
 })
-  
+
 module.exports = app;
