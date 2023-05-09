@@ -11,7 +11,7 @@ bot.use((ctx, next) => {
 bot.start((ctx) => {
   ctx.reply(`Hola ${ctx.from.first_name} ${ctx.from.last_name}`);
   // console.log(ctx) -> // Aca veo todos los comandos que tengo para acceder a la info del chat
-
+  
   console.log(`
               ================ Info del mensaje ================
               Mensaje enviado por ${ctx.from.first_name} ${ctx.from.last_name}
@@ -78,3 +78,5 @@ bot.hashtag('coding', (ctx) => {
 
 
 bot.launch()
+
+exports.bot = bot;
