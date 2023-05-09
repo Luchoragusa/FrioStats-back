@@ -1,0 +1,54 @@
+<%- include('./../layouts/header.ejs', {title:elemento.nombre}) -%>
+
+      <section class="jumbotron">
+        <div class="container">
+            <div class="col-md-12 py-4">
+              <div class="row justify-content-between">
+                <label for="nombre" class="form-label">Nombre</label>
+                <button class="btn btn-danger btn-sm" name="boton" id="boton">Eliminar</button>
+              </div>
+              <input type="text" class="form-control" value="<%= elemento.nombre %>" readonly>
+              <input type="hidden" name="id" id="id" value="<%= elemento.id %>">
+            </div>
+            <div class="row justify-content-between">
+              <a href="javascript:history.back()" class="btn btn-secondary" name="boton" id="boton">Atras</a>
+              <a href="/edit/<%= elemento.id %>" class="btn btn-primary">Editar</a>
+            </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const $boton = document.getElementById('boton');
+
+      boton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        let id = document.getElementById('id').value;
+
+        const data = await destroy(id);
+        console.log(data);
+        if (data.status == 200) {
+          alert(data.eliminado[0].nombre + ' eliminado correctamente')
+          window.location.href = '/';
+        } else {
+          alert(data.error[0].msg)
+        }
+      })
+
+      const destroy = async (id) => {
+        try {
+          const request = await fetch('http://localhost:3000/'+id,{
+            method:"DELETE",
+            headers : {
+              "Content-Type": "application/json",
+            }
+          })
+          const datos = await request.json()
+          return datos;
+        } catch (error) {
+          return error;
+        }
+      }
+    </script>
+<%- include('./../layouts/footer.ejs') -%>

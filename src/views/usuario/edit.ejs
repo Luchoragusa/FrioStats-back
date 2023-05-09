@@ -1,0 +1,64 @@
+<%- include('./../layouts/header.ejs', {title:'Editar usuario'}) -%>
+
+    <main role="main">
+
+      <section class="jumbotron">
+        <div class="container">
+          <form class="row g-3 needs-validation" method="POST" action="/api/store" novalidate>
+            <div class="col-md-12 py-4">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" name="nombre" id="nombre" value="<%= elemento.nombre %>" required>
+              <input type="hidden" class="form-control" name="id" id="id" value="<%= elemento.id %>" required>
+            </div>
+            <div class="col-12">
+              <div class="row justify-content-between">
+                <a href="javascript:history.back()" class="btn btn-secondary" name="boton" id="boton">Atras</a>
+                <button class="btn btn-primary" type="submit" id="boton">Enviar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script>
+      const $boton = document.getElementById('boton');
+
+      boton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        let nombre = document.getElementById('nombre').value;
+        let id = document.getElementById('id').value;
+
+        const data = await update(id,nombre);
+        console.log(data);
+        if (data.status == 201) {
+          alert(data.actualizado.nombre + ' agregado correctamente')
+          window.location.href = '/';
+        } else {
+          alert(data.error[0].msg)
+        }
+      })
+
+      const update = async (id,nombre) => {
+        try {
+          const request = await fetch('http://localhost:3000/'+id,{
+            method:"PATCH",
+            body: JSON.stringify({
+              nombre
+            }),
+            headers : {
+              "Content-Type": "application/json",
+            }
+          })
+          const datos = await request.json()
+          return datos;
+        } catch (error) {
+          return error;
+        }
+      }
+    </script>
+<%- include('./../layouts/footer.ejs') -%>
