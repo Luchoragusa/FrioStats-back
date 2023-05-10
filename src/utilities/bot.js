@@ -1,11 +1,5 @@
 const Telegraf = require('telegraf');
-const bot = new Telegraf('5785597594:AAEq4J8tr5w86sP0lB5Lo7RmjUonneokLmg');
-
-
-// const sendMessage = bot.telegram.sendMessage(1612650323, '**hello world**', {
-//   parse_mode: 'Markdown', // esto  es para que el mensaje se vea en negrita
-//   disable_notification: true // esto es para que no se notifique al usuario
-// });
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const sendMessage = async (id, message) => {
   try {
@@ -17,6 +11,8 @@ const sendMessage = async (id, message) => {
     console.log(error);
   }
 };
+
+// bot.launch() // 
 
 module.exports = {
   sendMessage,

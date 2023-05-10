@@ -5,11 +5,14 @@ const path = require("path");
 const {json} = require('body-parser');
 const app = express();
 
-//Requerir router
+// Requerir rutas
 const router = require('./routes/index.routes');
 
+// Requerir bot
 const {sendMessage} = require('./utilities/bot');
-sendMessage(1612650323, '**hello world**');
+
+//Uso del bot
+sendMessage(1612650323, 'Ola');
 
 //Settings
 app.use(cors());
