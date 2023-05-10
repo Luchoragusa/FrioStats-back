@@ -232,7 +232,7 @@ const parametros = [
     idMaquinaSucursal: 4,
     createdAt: new Date(),
     updatedAt: new Date()
-  },
+  }
 ]
 
 const mediciones = [
@@ -287,7 +287,7 @@ const mediciones = [
     consumo: 200,
     createdAt: new Date(),
     updatedAt: new Date()
-  },
+  }
 ]
 
 const importanciaParametros = [
@@ -366,7 +366,7 @@ const notificaciones = [
     id: 4,
     idTipo: 1,
     idMedicion: 4,
-    visto: ture,
+    visto: true,
     createdAt: new Date(),
     updatedAt: new Date()
   }
