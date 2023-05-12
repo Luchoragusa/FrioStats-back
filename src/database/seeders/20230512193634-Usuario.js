@@ -1,0 +1,38 @@
+'use strict'
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    // Seed de la tabla Usuario
+    await queryInterface.bulkInsert('Usuario', [{
+      nombre: 'admin',
+      apellido: 'admin',
+      password: 'admin123',
+      email: 'admin@gmail.com',
+      telegramId: '123456789',
+      recibeNoti: true,
+      idRol: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      nombre: 'user',
+      apellido: 'user',
+      password: 'user123',
+      email: 'user@gmail.com',
+      telegramId: '987654321',
+      recibeNoti: false,
+      idRol: 2,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }], {})
+  },
+
+  async down (queryInterface, Sequelize) {
+    /**
+     * Add commands to revert seed here.
+     *
+     * Example:
+     * await queryInterface.bulkDelete('People', null, {});
+     */
+  }
+}
