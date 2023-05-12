@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Parametro.init({
     maxTempTrabajoYBulbo: {
-      type: DataTypes.FLOAT(3, 2),
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: { msg: 'Maxima temperatura de trabajo y bulbo requerida' },
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     minTempTrabajoYBulbo: {
-      type: DataTypes.FLOAT(3, 2),
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: { msg: 'Minima temperatura de trabajo y bulbo requerida' },
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     minPuntoRocio: {
-      type: DataTypes.FLOAT(3, 2),
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: { msg: 'Minimo punto de rocio requerido' },
@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     maxPuntoRocio: {
-      type: DataTypes.FLOAT(3, 2),
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: { msg: 'Maximo punto de rocio requerido' },
