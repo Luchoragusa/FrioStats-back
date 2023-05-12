@@ -74,7 +74,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Parametro'
+    modelName: 'Parametro',
+    freezeTableName: true
   })
   return Parametro
 }

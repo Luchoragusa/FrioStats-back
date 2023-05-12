@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'ImportanciaParametro'
+    modelName: 'ImportanciaParametro',
+    freezeTableName: true
   })
   return ImportanciaParametro
 }

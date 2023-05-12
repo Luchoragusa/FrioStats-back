@@ -1,5 +1,6 @@
 'use strict'
 const { Model } = require('sequelize')
+const bcrypt = require('bcrypt')
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate (models) {
@@ -71,7 +72,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Usuario'
+    modelName: 'Usuario',
+    tableName: 'Usuario'
   })
+
+  Usuario.addHook('beforeCreate', (usuario) => {
+    usuario.password = bcrypt.hashSync(usuario.password, 10)
+  })
+
   return Usuario
 }

@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Notificacion'
+    modelName: 'Notificacion',
+    freezeTableName: true
   })
   return Notificacion
 }

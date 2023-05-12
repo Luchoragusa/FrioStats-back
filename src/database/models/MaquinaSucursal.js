@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
   MaquinaSucursal.init({
   }, {
     sequelize,
-    modelName: 'MaquinaSucursal'
+    modelName: 'MaquinaSucursal',
+    freezeTableName: true
   })
   return MaquinaSucursal
 }

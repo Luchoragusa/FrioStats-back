@@ -8,7 +8,8 @@ module.exports = (sequelize, DataTypes) => {
   UsuarioSucursal.init({
   }, {
     sequelize,
-    modelName: 'UsuarioSucursal'
+    modelName: 'UsuarioSucursal',
+    freezeTableName: true
   })
   return UsuarioSucursal
 }
