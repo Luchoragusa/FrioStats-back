@@ -14,6 +14,7 @@
   "author": "Luchoragusa - JuaniPucheta - JuaniCampora",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -21,7 +22,8 @@
     "express": "^4.18.1",
     "mongoose": "^6.5.0",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.21.3",
+    "pg": "^8.10.0",
+    "sequelize": "^6.31.1",
     "telegraf": "^3.37.0"
   },
   "devDependencies": {
