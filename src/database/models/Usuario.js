@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate (models) {
       // Relacion con Rol - Esta tabla tiene una FK de Rol
-      Usuario.belongsTo(models.Rol, { foreignKey: 'idRol' })
+      Usuario.belongsTo(models.Rol, { foreignKey: 'idRol', defaultValue: 2 })
 
       // Relacion con Sucursal - La tabla intermedia UsuarioSucursal tiene FK de esta tabla
       Usuario.belongsToMany(models.Sucursal, { through: 'UsuarioSucursal', foreignKey: 'idUsuario' })

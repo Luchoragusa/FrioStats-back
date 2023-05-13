@@ -24,7 +24,9 @@
     "mysql2": "^2.3.3",
     "pg": "^8.10.0",
     "sequelize": "^6.31.1",
-    "telegraf": "^3.37.0"
+    "telegraf": "^3.37.0",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "eslint": "^8.40.0",
