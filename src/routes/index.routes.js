@@ -1,14 +1,9 @@
 const Router = require('express')
 const router = Router()
 
-const { store, destroy, update } = require('../controllers/index.controller.js')
-
 // API
 
-router.post('/store', store)
-
-router.patch('/:id', update)
-
-router.delete('/:id', destroy)
+const usuarioRouter = require('./api/usuario.routes')
+router.use('/usuario', usuarioRouter)
 
 module.exports = router
