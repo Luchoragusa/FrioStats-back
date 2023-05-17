@@ -1,290 +1,255 @@
-import { random } from 'faker';
-import moment from 'moment';
-import mysql from 'mysql';
+import { random } from 'faker'
+import moment from 'moment'
+import { Parametro } from '../database/models/Parametro'
+import { ImportanciaParametros } from '../database/models/ImportanciaParametros'
+import { Medicion } from '../database/models/Medicion'
+import { Notificacion } from '../database/models/Notificacion'
 
-const generarTemperatura = () => {
-  return random.number({ min: -30, max: 10, precision: 0.1 });  // precision: para indicar la cantidad de decimales que se generan
+const generarNumeroRandom = (min, max, precision = 0.1) => {
+  return random.number({ min, max, precision })
 }
 
 const generarEstadoPuerta = () => {
-  return random.boolean();
-}
-
-const generarRpmCooler = () => {
-  return random.number({ min: 1000, max: 5000 });
-}
-
-const generarPuntoRocio = () => {
-  return random.number({ min: -40, max: 0, precision: 0.1 });
-}
-
-const generarConsumo = () => {
-  return random.number({ min: 0, max: 100, precision: 0.01 });
+  return random.boolean()
 }
 
 // Función principal
-const obtenerMediciones = (idMaquina, idSucursal, idModelo) => {
-
+const obtenerMediciones = (idMaquina) => {
   // Obtener los parámetros de la máquina y su importancia
-  const parametros = obtenerParametros(idMaquina);
-  const importanciaParametros = obtenerImportanciaParametros(idMaquina);
+  const parametros = obtenerParametros(idMaquina)
+  const importanciaParametros = obtenerImportanciaParametros(idMaquina)
 
   // Generar las mediciones simuladas
-  const mediciones = [];
-  const fechaHoraMed = moment().format('YYYY-MM-DD HH:mm:ss');
-  const sensorTempTrabajoYBulbo = generarTemperatura();
-  const sensorPuerta = generarEstadoPuerta();
-  const sensorCooler = generarRpmCooler();
-  const sensorPuntoRocio = generarPuntoRocio();
-  const sensorLuz = random.boolean();
-  const consumo = generarConsumo();
+  const mediciones = []
+  const fechaHoraMed = moment().format('YYYY-MM-DD HH:mm:ss')
+  const sensorTempTrabajoYBulbo = generarNumeroRandom(-30, 10, 0.1)
+  const sensorPuerta = generarEstadoPuerta()
+  const sensorCooler = generarNumeroRandom(1000, 5000)
+  const sensorPuntoRocio = generarNumeroRandom(-40, 0, 0.1)
+  const sensorLuz = random.boolean()
+  const consumo = generarNumeroRandom(0, 100, 0.01)
 
-  // Verificar si las mediciones superan los límites. Generar notificaciones si es necesario
-  const notificaciones = verificarLimites(parametros, importanciaParametros, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, consumo);
-
-  // Guardar las mediciones en la base de datos
-  guardarMedicionesEnDB(idMaquina, fechaHoraMed, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, sensorLuz, consumo, notificaciones);
-
-  // Devolver las mediciones
-  return {
+  mediciones.push({
     fechaHoraMed,
     sensorTempTrabajoYBulbo,
     sensorPuerta,
     sensorCooler,
     sensorPuntoRocio,
     sensorLuz,
-    consumo,
-    notificaciones
-  };
+    consumo
+  })
+
+  // Verificar si las mediciones superan los límites. Generar notificaciones si es necesario
+  const notificaciones = verificarLimites(parametros, importanciaParametros, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, consumo)
+
+  // Guardar las notificaciones en la base de datos
+  notificaciones.forEach(notificacion => {
+    Notificacion.create(notificacion)
+      .then(notificacion => {
+        console.log('Notificación guardada en la base de datos')
+        console.log(notificacion)
+      }
+      )
+  })
+
+  // Guardar las mediciones en la base de datos
+  guardarMedicionesEnDB(idMaquina, fechaHoraMed, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, sensorLuz, consumo, notificaciones)
+
+  // Devolver las mediciones
+  return {
+    mediciones
+  }
 }
 
-// Parámetros de una máquina específica 
-function obtenerParametros(idMaquina) {
-  const query = `SELECT * FROM Parametros WHERE idMaquina = ${idMaquina}`;
-  return new Promise((resolve, reject) => {
-    connection.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        connection.end();
-
-        if (results.length > 0) {
-          const parametros = results[0]; 
-          resolve(parametros);
-        } else {
-          reject(new Error('No se encontraron parámetros para la máquina especificada.'));
-        }
-      }
-    });
-  });
+// Obtener Parámetros
+const obtenerParametros = (idMaquina) => {
+  return Parametro.findOne({
+    where: {
+      idMaquina
+    }
+  })
 }
 
 // Obtener Importancia
-function obtenerImportanciaParametros(idMaquina) {
-  const query = `SELECT * FROM ImportanciaParametros WHERE idMaquina = ${idMaquina}`;
-  return new Promise((resolve, reject) => {
-    connection.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        connection.end();
-
-        if (results.length > 0) {
-          const importanciaParametros = results[0];
-          resolve(importanciaParametros);
-        } else {
-          reject(new Error('No se encontraron parámetros para la máquina especificada.'));
-        }
-      }
-    });
-  }
-  );
+const obtenerImportanciaParametros = (idMaquina) => {
+  return ImportanciaParametros.findOne({
+    where: {
+      idMaquina
+    }
+  })
 }
 
 // Verificar si las mediciones estan por debajo o encima de los límites y generar notificaciones
-function verificarLimites(parametros, importanciaParametros, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, consumo) {
-  const notificaciones = [];
-  const diferenciaTempTrabajoYBulbo = Math.abs(sensorTempTrabajoYBulbo - parametros.tempTrabajoMax);
-  const diferenciaCooler = Math.abs(sensorCooler - parametros.rpmCoolerMax);
-  const diferenciaPuntoRocio = Math.abs(sensorPuntoRocio - parametros.puntoRocioMax);
-  const diferenciaConsumo = Math.abs(consumo - parametros.consumoMax);
+function verificarLimites (parametros, importanciaParametros, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, consumo) {
+  const notificaciones = []
+  const diferenciaTempTrabajoYBulbo = Math.abs(sensorTempTrabajoYBulbo - parametros.tempTrabajoMax)
+  const diferenciaCooler = Math.abs(sensorCooler - parametros.rpmCoolerMax)
+  const diferenciaPuntoRocio = Math.abs(sensorPuntoRocio - parametros.puntoRocioMax)
+  const diferenciaConsumo = Math.abs(consumo - parametros.consumoMax)
 
-  // Verificar si la temperatura de trabajo y bulbo supera los límites
-  if (sensorTempTrabajoYBulbo < parametros.tempTrabajoMin && diferenciaTempTrabajoYBulbo < 5) { // debajo leve
+  // Verificar si la temperatura de trabajo y bulbo supera los límites, si la diferencia es menor a 5, y si la importancia es leve o critica
+  if (sensorTempTrabajoYBulbo < parametros.tempTrabajoMin && diferenciaTempTrabajoYBulbo < 5 && importanciaParametros.tempTrabajoYBulbo === 0) { // debajo leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'La temperatura de trabajo y bulbo está por debajo del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'La temperatura de trabajo y bulbo está por debajo del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorTempTrabajoYBulbo < parametros.tempTrabajoMin && diferenciaTempTrabajoYBulbo >= 5) { // debajo critico
+    notificaciones.push(notificacion)
+  } else if (sensorTempTrabajoYBulbo < parametros.tempTrabajoMin && diferenciaTempTrabajoYBulbo >= 5 && importanciaParametros.tempTrabajoYBulbo === 0) { // debajo critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'La temperatura de trabajo y bulbo está por debajo del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'La temperatura de trabajo y bulbo está por debajo del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorTempTrabajoYBulbo > parametros.tempTrabajoMax && diferenciaTempTrabajoYBulbo < 5) { // superior leve
+    notificaciones.push(notificacion)
+  } else if (sensorTempTrabajoYBulbo > parametros.tempTrabajoMax && diferenciaTempTrabajoYBulbo < 5 && importanciaParametros.tempTrabajoYBulbo === 0) { // superior leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'La temperatura de trabajo y bulbo está por encima del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'La temperatura de trabajo y bulbo está por encima del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorTempTrabajoYBulbo > parametros.tempTrabajoMax && diferenciaTempTrabajoYBulbo >= 5) { // superior critico
+    notificaciones.push(notificacion)
+  } else if (sensorTempTrabajoYBulbo > parametros.tempTrabajoMax && diferenciaTempTrabajoYBulbo >= 5 && importanciaParametros.tempTrabajoYBulbo === 0) { // superior critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'La temperatura de trabajo y bulbo está por encima del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'La temperatura de trabajo y bulbo está por encima del límite mínimo al valor de ' + sensorTempTrabajoYBulbo + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
+    notificaciones.push(notificacion)
   }
 
-  // Verificar si la puerta está abierta
-  if (sensorPuerta) {
+  // Verificar si la puerta está abierta y si la importancia es leve o critica
+  if (sensorPuerta && importanciaParametros.puerta === 0) { // abierta leve
     const notificacion = {
-      idTipo: 1,
-      descripcionNoti: 'La puerta está abierta',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      idTipo: 0,
+      descripcionNoti: 'La puerta está abierta'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
+    notificaciones.push(notificacion)
+  } else if (sensorPuerta && importanciaParametros.puerta === 1) { // abierta critico
+    const notificacion = {
+      idTipo: 1,
+      descripcionNoti: 'La puerta está abierta'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
+    }
+    notificaciones.push(notificacion)
   }
 
-  // Verificar si el cooler supera los límites
-  if (sensorCooler < parametros.rpmCoolerMin && diferenciaCooler < 500) { // debajo leve
+  // Verificar si el cooler supera los límites y si la diferencia es menor a 500 RPM (leve) o mayor a 500 RPM (critico) y si la importancia es leve o critica
+  if (sensorCooler < parametros.rpmCoolerMin && diferenciaCooler < 500 && importanciaParametros.cooler === 0) { // debajo leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El cooler está por debajo del límite mínimo al valor de ' + sensorCooler + ' RPM',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El cooler está por debajo del límite mínimo al valor de ' + sensorCooler + ' RPM'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorCooler < parametros.rpmCoolerMin && diferenciaCooler >= 500) { // debajo critico
+    notificaciones.push(notificacion)
+  } else if (sensorCooler < parametros.rpmCoolerMin && diferenciaCooler >= 500 && importanciaParametros.cooler === 0) { // debajo critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El cooler está por debajo del límite mínimo al valor de ' + sensorCooler + ' RPM',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El cooler está por debajo del límite mínimo al valor de ' + sensorCooler + ' RPM'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorCooler > parametros.rpmCoolerMax && diferenciaCooler < 500) { // superior leve
+    notificaciones.push(notificacion)
+  } else if (sensorCooler > parametros.rpmCoolerMax && diferenciaCooler < 500 && importanciaParametros.cooler === 0) { // superior leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El cooler está por encima del límite mínimo al valor de ' + sensorCooler + ' RPM',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El cooler está por encima del límite mínimo al valor de ' + sensorCooler + ' RPM'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorCooler > parametros.rpmCoolerMax && diferenciaCooler >= 500) { // superior critico
+    notificaciones.push(notificacion)
+  } else if (sensorCooler > parametros.rpmCoolerMax && diferenciaCooler >= 500 && importanciaParametros.cooler === 0) { // superior critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El cooler está por encima del límite mínimo al valor de ' + sensorCooler + ' RPM',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El cooler está por encima del límite mínimo al valor de ' + sensorCooler + ' RPM'
+      // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
+    notificaciones.push(notificacion)
   }
 
-  // Verificar si el punto de rocío supera los límites
-  if (sensorPuntoRocio < parametros.puntoRocioMin && diferenciaPuntoRocio < 5) { // debajo leve
+  // Verificar si el punto de rocío supera los límites y si la diferencia es menor a 5 (leve) o mayor a 5 (critico) y si la importancia es leve o critica
+  if (sensorPuntoRocio < parametros.puntoRocioMin && diferenciaPuntoRocio < 5 && importanciaParametros.puntoRocio === 0) { // debajo leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El punto de rocío está por debajo del límite mínimo al valor de ' + sensorPuntoRocio + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El punto de rocío está por debajo del límite mínimo al valor de ' + sensorPuntoRocio + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorPuntoRocio < parametros.puntoRocioMin && diferenciaPuntoRocio >= 5) { // debajo critico
+    notificaciones.push(notificacion)
+  } else if (sensorPuntoRocio < parametros.puntoRocioMin && diferenciaPuntoRocio >= 5 && importanciaParametros.puntoRocio === 0) { // debajo critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El punto de rocío está por debajo del límite mínimo al valor de ' + sensorPuntoRocio + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El punto de rocío está por debajo del límite mínimo al valor de ' + sensorPuntoRocio + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorPuntoRocio > parametros.puntoRocioMax && diferenciaPuntoRocio < 5) { // superior leve
+    notificaciones.push(notificacion)
+  } else if (sensorPuntoRocio > parametros.puntoRocioMax && diferenciaPuntoRocio < 5 && importanciaParametros.puntoRocio === 0) { // superior leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El punto de rocío está por encima del límite mínimo al valor de ' + sensorPuntoRocio + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El punto de rocío está por encima del límite mínimo al valor de ' + sensorPuntoRocio + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (sensorPuntoRocio > parametros.puntoRocioMax && diferenciaPuntoRocio >= 5) { // superior critico
+    notificaciones.push(notificacion)
+  } else if (sensorPuntoRocio > parametros.puntoRocioMax && diferenciaPuntoRocio >= 5 && importanciaParametros.puntoRocio === 0) { // superior critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El punto de rocío está por encima del límite mínimo al valor de ' + sensorPuntoRocio + '°C',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El punto de rocío está por encima del límite mínimo al valor de ' + sensorPuntoRocio + '°C'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
+    notificaciones.push(notificacion)
   }
 
-  // Verificar si el consumo supera los límites
-  if (consumo < parametros.consumoMin && diferenciaConsumo < 5) { // debajo leve
+  // Verificar si el consumo supera los límites y si la diferencia es menor a 5 (leve) o mayor a 5 (critico) y si la importancia es leve o critica
+  if (consumo < parametros.consumoMin && diferenciaConsumo < 5 && importanciaParametros.consumo === 0) { // debajo leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + consumo + ' kW/h',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + consumo + ' kW/h'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (consumo < parametros.consumoMin && diferenciaConsumo >= 5) { // debajo critico
+    notificaciones.push(notificacion)
+  } else if (consumo < parametros.consumoMin && diferenciaConsumo >= 5 && importanciaParametros.consumo === 0) { // debajo critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + consumo + ' kW/h',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + consumo + ' kW/h'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (consumo > parametros.consumoMax && diferenciaConsumo < 5) { // superior leve
+    notificaciones.push(notificacion)
+  } else if (consumo > parametros.consumoMax && diferenciaConsumo < 5 && importanciaParametros.consumo === 0) { // superior leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El consumo está por encima del límite mínimo al valor de ' + consumo + ' kW/h',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El consumo está por encima del límite mínimo al valor de ' + consumo + ' kW/h'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
-  }
-  else if (consumo > parametros.consumoMax && diferenciaConsumo >= 5) { // superior critico
+    notificaciones.push(notificacion)
+  } else if (consumo > parametros.consumoMax && diferenciaConsumo >= 5 && importanciaParametros.consumo === 0) { // superior critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El consumo está por encima del límite mínimo al valor de ' + consumo + ' kW/h',
-      //TODO-->  idNotificacion se genera automáticamente en BD
-      //TODO-->  idMedicion se genera automáticamente en BD
+      descripcionNoti: 'El consumo está por encima del límite mínimo al valor de ' + consumo + ' kW/h'
+      // idNotificacion e idMedicion se genera automáticamente en BD
+      //!        ver el tema del visto
     }
-    notificaciones.push(notificacion);
+    notificaciones.push(notificacion)
   }
 
-  return notificaciones;
+  return notificaciones
 }
 
-function guardarMedicionesEnDB(idMaquina, fechaHoraMed, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, sensorLuz, consumo, notificaciones) {
+function guardarMedicionesEnDB (idMaquina, fechaHoraMed, sensorTempTrabajoYBulbo, sensorPuerta, sensorCooler, sensorPuntoRocio, sensorLuz, consumo, notificaciones) {
   const medicion = {
     idMaquina,
     fechaHoraMed,
@@ -294,31 +259,13 @@ function guardarMedicionesEnDB(idMaquina, fechaHoraMed, sensorTempTrabajoYBulbo,
     sensorPuntoRocio,
     sensorLuz,
     consumo
-  };
-  
-  const queryInsertMedicion = 'INSERT INTO Medicion SET ?';
-  connection.query(queryInsertMedicion, medicion, (error, results) => {
-    if (error) {
-      console.error('Error al insertar mediciones:', error);
-    } else {
-      console.log('Mediciones insertadas correctamente.');
-      const idMedicion = results.insertId;
-      const queryInsertNotificaciones = 'INSERT INTO Notificaciones (idTipo, visto, idMedicion) VALUES (?, ?, ?)';
-      const valoresNotificaciones = notificaciones.map(notificacion => {
-        return [notificacion.idTipo, false, idMedicion];
-      });
+  }
 
-      connection.query(queryInsertNotificaciones, [valoresNotificaciones], (error, results) => {
-        if (error) {
-          console.error('Error al insertar notificaciones:', error);
-        } else {
-          console.log('Notificaciones insertadas correctamente.');
-        }
-      });
-    }
-  });
+  Medicion.create(medicion)
+    .then(medicion => {
+      console.log('Medición guardada en la base de datos')
+      console.log(medicion)
+    })
 }
 
-// Ejemplo de uso: obtener las mediciones de la máquina 1 en la sucursal 2, modelo 1
-const mediciones = obtenerMediciones(1, 2, 1);
-console.log(mediciones);
+export { obtenerMediciones }
