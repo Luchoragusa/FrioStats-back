@@ -4,9 +4,11 @@ import { Parametro } from '../database/models/Parametro'
 import { ImportanciaParametros } from '../database/models/ImportanciaParametros'
 import { Medicion } from '../database/models/Medicion'
 import { Notificacion } from '../database/models/Notificacion'
+import generarNumerosCoherentes from './generadorNumero'
 
-const generarNumeroRandom = (min, max, precision = 0.1) => {
-  return random.number({ min, max, precision })
+const generarNumeroRandom = (min, max, precision) => {
+  const medida = generarNumerosCoherentes(min, max, precision)
+  return medida
 }
 
 const generarEstadoPuerta = () => {
