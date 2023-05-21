@@ -32,13 +32,21 @@ const generarNumerosCoherentes = (min, max, precision = 0.01) => {
 
 export default generarNumerosCoherentes
 
-// NOTA --> tiene coherencia, pero no genera un numero que supere un limite (maximo o minimo)
+// Parametros max y min iniciales
+const max = -20
+const min = -10
+const precision = 0.01
+const numeroRandom = Math.floor(Math.random() * (10 - 1) + 1) // numero random entre 1 y 10
 
-// Ejemplo de uso
-// const generarNumero = generarNumerosCoherentes(-20, -10, 0.01)
+const generarNumero = generarNumerosCoherentes(max, min, precision)
 
-// Generar 10 números aleatorios coherentes
-// for (let i = 0; i < 30; i++) {
-//   const numero = generarNumero()
-//   console.log(numero.toFixed(2)) // Mostrar el número con 2 decimales
-// }
+const array = []
+for (let i = 0; i < 10; i++) {
+  if (i === numeroRandom) {
+    const alteardo = generarNumerosCoherentes((max * 1.3), (min * 0.7), (precision * 0.5))
+    array.push(alteardo().toFixed(2))
+  }
+  const numero = generarNumero()
+  array.push(numero.toFixed(2)) // Mostrar el número con 2 decimales
+}
+console.log(array)
