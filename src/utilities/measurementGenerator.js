@@ -1,9 +1,6 @@
 import { random } from 'faker'
 import moment from 'moment'
-import { Parametro } from '../database/models/Parametro'
-import { ImportanciaParametros } from '../database/models/ImportanciaParametros'
-import { Medicion } from '../database/models/Medicion'
-import { Notificacion } from '../database/models/Notificacion'
+import { Parametro, ImportanciaParametros, Medicion, Notificacion } from '../database/models/index'
 import generarNumerosCoherentes from './generadorNumero'
 
 const generarNumeroRandom = (min, max, precision) => {

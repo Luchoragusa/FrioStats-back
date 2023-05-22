@@ -30,7 +30,7 @@ const generarNumerosCoherentes = (min, max, precision = 0.01) => {
   }
 }
 
-export default generarNumerosCoherentes
+// export default generarNumerosCoherentes
 
 // Parametros max y min iniciales
 const max = -20
