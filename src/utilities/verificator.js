@@ -135,7 +135,7 @@ const verificarLimites = (medicion, parametro, importanciaParametro) => {
   if (medicion.consumo < parametro.consumoMin && diferenciaConsumo < 5 && importanciaParametro.consumo === 0) { // debajo leve
     const notificacion = {
       idTipo: 0,
-      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + consumo + ' kW/h'
+      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + medicion.consumo + ' kW/h'
       // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }
@@ -143,7 +143,7 @@ const verificarLimites = (medicion, parametro, importanciaParametro) => {
   } else if (medicion.consumo < parametro.consumoMin && diferenciaConsumo >= 5 && importanciaParametro.consumo === 0) { // debajo critico
     const notificacion = {
       idTipo: 1,
-      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + consumo + ' kW/h'
+      descripcionNoti: 'El consumo está por debajo del límite mínimo al valor de ' + medicion.consumo + ' kW/h'
       // idNotificacion e idMedicion se genera automáticamente en BD
       //!        ver el tema del visto
     }

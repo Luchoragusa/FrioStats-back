@@ -1,5 +1,6 @@
 import { random } from 'faker'
-import { Parametro, ImportanciaParametros, Medicion, Notificacion } from '../database/models/index'
+import { Parametro, ImportanciaParametros, Medicion } from '../database/models/index'
+import { verificarLimites } from './verificator'
 
 const generarNumeroRandom = (numeroAnterior) => {
   const precision = 0.01
@@ -16,7 +17,6 @@ const obtenerMediciones = (idMaquina) => {
   const ultimaMedicion = obtenerUltimaMedicion(idMaquina)
 
   // Generar las mediciones simuladas
-  const mediciones = []
   const fechaHora = new Date()
   const sensorTempTrabajoYBulbo = generarNumeroRandom(ultimaMedicion.sensorTempTrabajoYBulbo)
   const sensorPuerta = random.boolean()
@@ -36,15 +36,10 @@ const obtenerMediciones = (idMaquina) => {
   }
 
   // Verificar si las mediciones superan los límites. Generar notificaciones si es necesario
-  const notificaciones = verificarLimites(medicion)
+  verificarLimites(medicion, parametro, importanciaParametro)
 
   // Guardar las mediciones en la base de datos
-  guardarMedicionesEnDB(medicion, notificaciones)
-
-  // Devolver las mediciones
-  return {
-    mediciones
-  }
+  guardarMedicionesEnDB(medicion)
 }
 
 // Obtener Parámetros
