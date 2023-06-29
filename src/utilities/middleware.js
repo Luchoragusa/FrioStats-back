@@ -1,11 +1,7 @@
 
-// import { decode } from 'jwt-simple'
-const decode = require('jwt-simple')
-// import moment from 'moment'
+const jwt = require('jwt-simple')
 const moment = require('moment')
-// import { Usuario, Rol } from '../database/models/index'
 const { Usuario, Rol } = require('../database/models/index')
-// import { getId } from './util'
 const { getId } = require('./util')
 
 const validateToken = [
@@ -22,7 +18,7 @@ const validateToken = [
     let payload = {}
 
     try {
-      payload = decode(userToken, process.env.SECRET_KEY)
+      payload = jwt.decode(userToken, process.env.SECRET_KEY)
     } catch (err) {
       return res.status(401).json({ msg: 'No autorizado 2 ' + err })
     }

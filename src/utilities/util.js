@@ -1,5 +1,4 @@
 const jwt = require('jwt-simple')
-// const { Usuario, Rol } = require('../database/models/index')
 const moment = require('moment')
 
 const getId = (req) => {
