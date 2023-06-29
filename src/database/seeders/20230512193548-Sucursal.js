@@ -7,13 +7,13 @@ module.exports = {
     await queryInterface.bulkInsert('Sucursal', [{
       nombre: 'La Gallega',
       direccion: 'Av. San Martin 123',
-      cuil: '123456789',
+      cuilEmpresa: '123456789',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       nombre: 'La Gallega',
       direccion: 'Mitre y Pellegrini',
-      cuil: '123456789',
+      cuilEmpresa: '123456789',
       createdAt: new Date(),
       updatedAt: new Date()
     }], {})

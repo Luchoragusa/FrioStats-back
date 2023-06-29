@@ -1,12 +1,12 @@
 
 // import { decode } from 'jwt-simple'
-const decode = require('jwt-simple');
+const decode = require('jwt-simple')
 // import moment from 'moment'
-const moment = require('moment');
+const moment = require('moment')
 // import { Usuario, Rol } from '../database/models/index'
-const { Usuario, Rol } = require('../database/models/index');
+const { Usuario, Rol } = require('../database/models/index')
 // import { getId } from './util'
-const { getId } = require('./util');
+const { getId } = require('./util')
 
 const validateToken = [
   async (req, res, next) => {

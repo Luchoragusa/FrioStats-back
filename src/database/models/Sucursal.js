@@ -4,16 +4,23 @@ module.exports = (sequelize, DataTypes) => {
   class Sucursal extends Model {
     static associate (models) {
       // Relacion con Empresa - Esta tabla tiene una FK de Empresa
-      Sucursal.belongsTo(models.Empresa, { foreignKey: 'id' })
+      // Sucursal.belongsTo(models.Empresa, { foreignKey: 'id' })
+      Sucursal.belongsTo(models.Empresa, { foreignKey: 'cuilEmpresa' })
 
       // Relacion con Usuario - La tabla intermedia UsuarioSucursal tiene FK de esta tabla
       Sucursal.belongsToMany(models.Usuario, { through: 'UsuarioSucursal', foreignKey: 'idSucursal' })
 
       // Relacion con MaquinaSucursal - La tabla Sucursal tiene una FK de esta tabla
-      Sucursal.hasMany(models.MaquinaSucursal, { foreignKey: 'idSucursal' })
+      // Sucursal.hasMany(models.MaquinaSucursal, { foreignKey: 'idSucursal' })
     }
   }
   Sucursal.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
     nombre: {
       type: DataTypes.STRING(50),
       allowNull: false,

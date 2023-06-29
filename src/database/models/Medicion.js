@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       Medicion.belongsTo(models.MaquinaSucursal, { foreignKey: 'idMaquina' })
 
       // Relacion con Notificacion - La tabla Notificacion tiene una FK de esta tabla
-      Medicion.hasOne(models.Notificacion, { foreignKey: 'idMedicion' })
+      // Medicion.hasOne(models.Notificacion, { foreignKey: 'idMedicion' })
     }
   }
   Medicion.init({
