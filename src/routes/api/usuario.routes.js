@@ -14,7 +14,13 @@ const { validateToken, policy } = require('../../utilities/middleware')
 
 router.get('/', (req, res) => {
   console.log("Se llamo al EndPoint '/usuario'")
-  res.status(200).json({ message: 'Hola' })
+  user = {
+    id: 1,
+    nombre: 'Juan',
+    apellido: 'Perez',
+    email: 'pepito@gmail.com'
+  }
+  res.status(200).json(user)
 })
 
 //  Especificas

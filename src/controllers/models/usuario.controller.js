@@ -1,4 +1,4 @@
-const { Usuario } = require('../../database/models/index')
+const { Usuario, UsuarioSucursal, Sucursal, Rol } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
 const { createToken } = require('../../utilities/util')
 
@@ -10,7 +10,8 @@ const register = async (req, res) => {
     apellido: req.body.apellido,
     password: req.body.password,
     email: req.body.email,
-    recibeNoti: req.body.recibeNoti
+    recibeNoti: req.body.recibeNoti,
+    idRol: 2
   }
 
   const email = usuarioNew.email
@@ -47,19 +48,26 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body
   try {
-    await Usuario.findOne({ where: { email } })
-      .then((user) => {
+    await Usuario.findOne({
+        where: { email },
+        include: [{ model: Rol, attributes: ['id', 'descripcion'] }],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'telegramId', 'recibeNoti', 'idRol'] }
+      })
+      .then(async (user) => {
         if (user) {
           if (bcrypt.compareSync(password, user.password)) {
+            // Remuevo el password del objeto user
+            user.password = undefined
             const token = createToken(user)
             res.cookie('jwt', token, { httpOnly: true, secure: true })
-            return res.status(200).json({ msg: { token, user } })
+            return res.status(200).json({ token, user })
           } else {
             return res.status(404).json({ message: 'Usuario y/o contraseña incorrecto' })
           }
         }
       })
   } catch (error) {
+    console.log("🚀 ~ file: usuario.controller.js:67 ~ login ~ error:", error)
     res.status(500).json({ message: error.name })
   }
 }
