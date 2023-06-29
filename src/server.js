@@ -1,9 +1,10 @@
+const { revisionMaquinas } = require('./utilities/verificator')
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 // eslint-disable-next-line no-unused-vars
-const path = require('path')
-const { json } = require('body-parser')
+const { path } = require('path')
+const json = require('body-parser')
 const app = express()
 
 // Requerir rutas
@@ -29,6 +30,8 @@ sendMessage(1612650323, 'Ola')
 // schedule.scheduleJob(rule, function () {
 //   console.log('The answer to life, the universe, and everything!' + new Date())
 // })
+
+revisionMaquinas()
 
 // Settings
 app.use(cors())

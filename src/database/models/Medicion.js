@@ -11,13 +11,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Medicion.init({
-    fechaHora: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notNull: { msg: 'Fecha y hora requerida' }
-      }
-    },
     sensorTempTrabajoYBulbo: {
       type: DataTypes.FLOAT,
       allowNull: false,

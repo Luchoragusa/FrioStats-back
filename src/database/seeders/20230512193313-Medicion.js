@@ -6,7 +6,6 @@ module.exports = {
     // Seed de la tabla Medicion
     await queryInterface.bulkInsert('Medicion', [{
       idMaquina: 1,
-      fechaHora: new Date(),
       sensorTempTrabajoYBulbo: 8,
       sensorPuerta: 1,
       sensorCooler: 500,
@@ -17,7 +16,6 @@ module.exports = {
       updatedAt: new Date()
     }, {
       idMaquina: 2,
-      fechaHora: new Date(),
       sensorTempTrabajoYBulbo: 30,
       sensorPuerta: 1,
       sensorCooler: 600,
@@ -28,7 +26,6 @@ module.exports = {
       updatedAt: new Date()
     }, {
       idMaquina: 3,
-      fechaHora: new Date(),
       sensorTempTrabajoYBulbo: 30,
       sensorPuerta: 1,
       sensorCooler: 200,
@@ -39,7 +36,6 @@ module.exports = {
       updatedAt: new Date()
     }, {
       idMaquina: 4,
-      fechaHora: new Date(),
       sensorTempTrabajoYBulbo: 100,
       sensorPuerta: 1,
       sensorCooler: 500,

@@ -26,7 +26,6 @@ router.get('/', (req, res) => {
 //  Especificas
 router.post('/register', register) // Registrar un usuario en la DB
 router.post('/login', login) // crea uno
-router.get('/getInfoHome', validateToken, getInfoHome); // muestra todos
 // router.patch('/:id') // actualiza uno
 
 module.exports = router

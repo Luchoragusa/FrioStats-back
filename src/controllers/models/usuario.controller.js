@@ -1,4 +1,4 @@
-const { Usuario, UsuarioSucursal, Sucursal, Rol } = require('../../database/models/index')
+const { Usuario, Rol } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
 const { createToken } = require('../../utilities/util')
 
@@ -22,7 +22,7 @@ const register = async (req, res) => {
       .then((user) => {
         if (user) {
           this.band = true
-          return res.status(400).json({ message: "El mail ya existe en el sistema" })
+          return res.status(400).json({ message: 'El mail ya existe en el sistema' })
         }
       })
 
@@ -49,10 +49,10 @@ const login = async (req, res) => {
   const { email, password } = req.body
   try {
     await Usuario.findOne({
-        where: { email },
-        include: [{ model: Rol, attributes: ['id', 'descripcion'] }],
-        attributes: ['id', 'nombre', 'apellido', 'email', 'password']
-      })
+      where: { email },
+      include: [{ model: Rol, attributes: ['id', 'descripcion'] }],
+      attributes: ['id', 'nombre', 'apellido', 'email', 'password']
+    })
       .then(async (user) => {
         if (user) {
           if (bcrypt.compareSync(password, user.password)) {
@@ -67,33 +67,7 @@ const login = async (req, res) => {
         }
       })
   } catch (error) {
-    console.log("🚀 ~ file: usuario.controller.js:67 ~ login ~ error:", error)
-    res.status(500).json({ message: error.name })
-  }
-}
-
-const getInfoHome = async (req, res) => {
-  const id = req.userId
-  try {
-    await Usuario.findOne({
-        where: { id },
-        include: [{
-          model: Sucursal,
-          attributes: ['id', 'nombre', 'direccion'],
-          through: {
-            model: UsuarioSucursal,
-            attributes: []
-          }
-        }],
-        attributes: ['id', 'nombre', 'apellido', 'email']
-      })
-      .then((user) => {
-        if (user) {
-          return res.status(200).json({ user })
-        }
-      })
-  } catch (error) {
-    console.log("🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:", error)
+    console.log('🚀 ~ file: usuario.controller.js:67 ~ login ~ error:', error)
     res.status(500).json({ message: error.name })
   }
 }
@@ -107,6 +81,5 @@ const getInfoHome = async (req, res) => {
 
 module.exports = {
   register,
-  login,
-  getInfoHome
+  login
 }
