@@ -8,7 +8,12 @@ const { validateToken, policy } = require('../../utilities/middleware')
 // router.get('/:id', checkToken, getOne(User)); // muestra uno
 // router.delete('/:id', checkToken, policy, deleteOne(User)); // borra uno
 
-router.get('/', validateToken, policy, (req, res) => {
+// router.get('/', validateToken, policy, (req, res) => {
+//   res.status(200).json({ message: 'Hola' })
+// })
+
+router.get('/', (req, res) => {
+  console.log("Se llamo al EndPoint '/usuario'")
   res.status(200).json({ message: 'Hola' })
 })
 

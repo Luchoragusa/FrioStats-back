@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const { createToken } = require('../../utilities/util')
 
 const register = async (req, res) => {
+  let band = false
+
   const usuarioNew = {
     nombre: req.body.nombre,
     apellido: req.body.apellido,
@@ -18,7 +20,8 @@ const register = async (req, res) => {
     await Usuario.findOne({ where: { email } })
       .then((user) => {
         if (user) {
-          return res.status(400).json({ message: 'El email ya existe' })
+          this.band = true
+          return res.status(400).json({ message: "El mail ya existe en el sistema" })
         }
       })
 
@@ -35,7 +38,9 @@ const register = async (req, res) => {
       return res.status(201).json({ message: 'Usuario creado', user })
     })
   } catch (error) {
-    res.status(500).json({ error })
+    if (!this.band) {
+      res.status(500).json({ message: error.name })
+    }
   }
 }
 
@@ -55,7 +60,7 @@ const login = async (req, res) => {
         }
       })
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ message: error.name })
   }
 }
 
