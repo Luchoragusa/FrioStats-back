@@ -31,7 +31,8 @@ const validateToken = [
             if (payload.expiredAt <= moment().unix()) {
               return res.status(401).json({ msg: 'Sesion expirada' })
             } else {
-              return res.status(200).json({ msg: 'Sesion valida' })
+              // Guardar la id del usuario en el request
+              req.userId = payload.userId
             }
           } else {
             return res.status(401).json({ msg: 'El usuario no existe' })

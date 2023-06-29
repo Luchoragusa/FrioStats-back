@@ -1,6 +1,6 @@
 const Router = require('express')
 const router = Router()
-const { register, login } = require('../../controllers/models/usuario.controller')
+const { register, login, getInfoHome } = require('../../controllers/models/usuario.controller')
 const { validateToken, policy } = require('../../utilities/middleware')
 
 // Genericas
@@ -26,6 +26,7 @@ router.get('/', (req, res) => {
 //  Especificas
 router.post('/register', register) // Registrar un usuario en la DB
 router.post('/login', login) // crea uno
+router.get('/getInfoHome', validateToken, getInfoHome); // muestra todos
 // router.patch('/:id') // actualiza uno
 
 module.exports = router

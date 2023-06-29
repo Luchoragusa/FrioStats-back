@@ -11,7 +11,7 @@ const register = async (req, res) => {
     password: req.body.password,
     email: req.body.email,
     recibeNoti: req.body.recibeNoti,
-    idRol: 2
+    idRol: 2 // Rol de usuario
   }
 
   const email = usuarioNew.email
@@ -51,7 +51,7 @@ const login = async (req, res) => {
     await Usuario.findOne({
         where: { email },
         include: [{ model: Rol, attributes: ['id', 'descripcion'] }],
-        attributes: { exclude: ['createdAt', 'updatedAt', 'telegramId', 'recibeNoti', 'idRol'] }
+        attributes: ['id', 'nombre', 'apellido', 'email', 'password']
       })
       .then(async (user) => {
         if (user) {
@@ -72,6 +72,32 @@ const login = async (req, res) => {
   }
 }
 
+const getInfoHome = async (req, res) => {
+  const id = req.userId
+  try {
+    await Usuario.findOne({
+        where: { id },
+        include: [{
+          model: Sucursal,
+          attributes: ['id', 'nombre', 'direccion'],
+          through: {
+            model: UsuarioSucursal,
+            attributes: []
+          }
+        }],
+        attributes: ['id', 'nombre', 'apellido', 'email']
+      })
+      .then((user) => {
+        if (user) {
+          return res.status(200).json({ user })
+        }
+      })
+  } catch (error) {
+    console.log("🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:", error)
+    res.status(500).json({ message: error.name })
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -81,5 +107,6 @@ const login = async (req, res) => {
 
 module.exports = {
   register,
-  login
+  login,
+  getInfoHome
 }
