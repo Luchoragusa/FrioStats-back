@@ -1,8 +1,12 @@
 
-import { decode } from 'jwt-simple'
-import moment from 'moment'
-import { Usuario, Rol } from '../database/models/index'
-import { getId } from './util'
+// import { decode } from 'jwt-simple'
+const decode = require('jwt-simple');
+// import moment from 'moment'
+const moment = require('moment');
+// import { Usuario, Rol } from '../database/models/index'
+const { Usuario, Rol } = require('../database/models/index');
+// import { getId } from './util'
+const { getId } = require('./util');
 
 const validateToken = [
   async (req, res, next) => {
@@ -55,7 +59,7 @@ const policy = [
   }
 ]
 
-export default {
+module.exports = {
   validateToken,
   policy
 }
