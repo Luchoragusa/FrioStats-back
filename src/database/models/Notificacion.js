@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Visto requerido' }
-      }
+      },
+      defaultValue: false
     }
   }, {
     sequelize,

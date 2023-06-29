@@ -1,8 +1,8 @@
 
-const jwt = require('jwt-simple')
-const moment = require('moment')
-const { Usuario, Rol } = require('../database/models/index')
-const { getId } = require('./util')
+import { decode } from 'jwt-simple'
+import moment from 'moment'
+import { Usuario, Rol } from '../database/models/index'
+import { getId } from './util'
 
 const validateToken = [
   async (req, res, next) => {
@@ -18,7 +18,7 @@ const validateToken = [
     let payload = {}
 
     try {
-      payload = jwt.decode(userToken, process.env.SECRET_KEY)
+      payload = decode(userToken, process.env.SECRET_KEY)
     } catch (err) {
       return res.status(401).json({ msg: 'No autorizado 2 ' + err })
     }
@@ -55,7 +55,7 @@ const policy = [
   }
 ]
 
-module.exports = {
+export default {
   validateToken,
   policy
 }
