@@ -1,6 +1,6 @@
 const Router = require('express')
 const router = Router()
-const { register, login, getInfoHome } = require('../../controllers/models/usuario.controller')
+const { register, login } = require('../../controllers/models/usuario.controller')
 const { validateToken, policy } = require('../../utilities/middleware')
 
 // Genericas
@@ -11,17 +11,6 @@ const { validateToken, policy } = require('../../utilities/middleware')
 // router.get('/', validateToken, policy, (req, res) => {
 //   res.status(200).json({ message: 'Hola' })
 // })
-
-router.get('/', (req, res) => {
-  console.log("Se llamo al EndPoint '/usuario'")
-  user = {
-    id: 1,
-    nombre: 'Juan',
-    apellido: 'Perez',
-    email: 'pepito@gmail.com'
-  }
-  res.status(200).json(user)
-})
 
 //  Especificas
 router.post('/register', register) // Registrar un usuario en la DB
