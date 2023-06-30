@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    ciudad : {
+    ciudad: {
       type: DataTypes.STRING(50),
       allowNull: false,
       validate: {
@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Las coordenadas deben ser numeros decimales'
         }
       }
-    },
+    }
   }, {
     sequelize,
     modelName: 'Sucursal',

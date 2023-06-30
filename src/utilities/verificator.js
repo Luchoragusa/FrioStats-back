@@ -34,7 +34,7 @@ const verificarLimites = async (medicion) => {
   const idMaquina = medicion.idMaquina
   const parametro = obtenerParametros(idMaquina)
   const importanciaParametro = obtenerImportanciaParametros(idMaquina)
-  
+
   const notificaciones = []
   const diferenciaTempTrabajoYBulbo = Math.abs(medicion.sensorTempTrabajoYBulbo - parametro.tempTrabajoMax)
   const diferenciaCooler = Math.abs(medicion.sensorCooler - parametro.rpmCoolerMax)
