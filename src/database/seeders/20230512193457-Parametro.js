@@ -52,6 +52,42 @@ module.exports = {
       idMaquina: 4,
       createdAt: new Date(),
       updatedAt: new Date()
+    }, {
+      maxTempTrabajoYBulbo: 10,
+      minTempTrabajoYBulbo: 5,
+      estadoPuerta: 1,
+      maxRpmCooler: 700,
+      minRpmCooler: 300,
+      maxPuntoRocio: 10,
+      minPuntoRocio: 5,
+      maxConsumo: 10,
+      idMaquina: 5,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      maxTempTrabajoYBulbo: 10,
+      minTempTrabajoYBulbo: 5,
+      estadoPuerta: 1,
+      maxRpmCooler: 700,
+      minRpmCooler: 300,
+      maxPuntoRocio: 10,
+      minPuntoRocio: 5,
+      maxConsumo: 10,
+      idMaquina: 6,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      maxTempTrabajoYBulbo: 10,
+      minTempTrabajoYBulbo: 5,
+      estadoPuerta: 1,
+      maxRpmCooler: 700,
+      minRpmCooler: 300,
+      maxPuntoRocio: 10,
+      minPuntoRocio: 5,
+      maxConsumo: 10,
+      idMaquina: 7,
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
     ], {})
   },
