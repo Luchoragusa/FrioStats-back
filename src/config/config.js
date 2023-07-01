@@ -8,7 +8,7 @@ const username = process.env.DB_USER || 'root'
 const database = process.env.DB_NAME || 'clase'
 const password = process.env.DB_PASS
 const dialect = process.env.DB_TYPE
-const logging = false
+const logging = true // Esto es para que muestre los logs de las consultas SQL
 
 // Configs Seeds
 const seederStorage = 'sequelize'

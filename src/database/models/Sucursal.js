@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
   class Sucursal extends Model {
     static associate (models) {
       // Relacion con Empresa - Esta tabla tiene una FK de Empresa
-      // Sucursal.belongsTo(models.Empresa, { foreignKey: 'id' })
       Sucursal.belongsTo(models.Empresa, { foreignKey: 'cuilEmpresa' })
 
       // Relacion con Usuario - La tabla intermedia UsuarioSucursal tiene FK de esta tabla
