@@ -16,7 +16,7 @@ const register = async (req, res) => {
     idRol: 2, // Rol de usuario
     telegramToken: createTelegramToken(),
     telegramId: req.body.telegramId ? req.body.telegramId : null,
-    recibeNoti: req.body.recibeNoti ? 'true' : 'false'
+    recibeNoti: req.body.recibeNoti === 'true'
   }
   const email = usuarioNew.email
 
@@ -82,23 +82,27 @@ const update = async (req, res) => {
   const u = {
     nombre: req.body.nombre,
     apellido: req.body.apellido,
-    recibeNoti: req.body.recibeNoti,
-    telegramId: req.body.telegramId
-  }
-  // Si se recibe
-  if (u.telegramId) {
-    u.telegramToken = createTelegramToken()
+    recibeNoti: req.body.recibeNoti === 'true',
+    telegramId: req.body.telegramId ? req.body.telegramId : null
   }
   try {
+    const userOld = await Usuario.findOne({ where: { id } })
+    // Si el usuario actualizo el telegramId genro un nuevo token y envio el mensaje de verificacion
+    if (u.telegramId !== userOld.telegramId) {
+      u.telegramToken = createTelegramToken()
+    }
     await Usuario.update(u, { where: { id } })
-      .then(async (user) => {
-        const userUpdated = await Usuario.findOne({
+      .then(async () => {
+        await Usuario.findOne({
           where: { id },
-          attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNoti', 'telegramId']
-        }).then(() => {
-          if (userUpdated.telegramId !== user.telegramId && userUpdated.telegramToken) {
+          attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNoti', 'telegramId', 'telegramToken']
+        }).then((userUpdated) => {
+          // Si el usuario actualizo el telegramId envio el mensaje de verificacion
+          if (u.telegramId !== userOld.telegramId) {
             sendTelegramVerification(userUpdated)
           }
+          // Remuevo el Telegram Token del objeto user
+          userUpdated.telegramToken = undefined
           return res.status(200).json({ message: 'Usuario actualizado', userUpdated })
         })
       })
