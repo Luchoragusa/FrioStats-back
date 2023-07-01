@@ -1,3 +1,4 @@
+const chalk = require('chalk')
 const jwt = require('jwt-simple')
 const moment = require('moment')
 const fecha = require('fecha')
@@ -43,9 +44,9 @@ const sendTelegramVerification = (user) => {
 const sendSuccessMessage = (message, object = null) => {
   const fechaFormateada = fecha.format(new Date(), 'DD/MM/YYYY HH:mm')
   if (object) {
-    console.log(`%c[✅ - ${fechaFormateada}] || `, 'color: #0000ff', `${message}`, object)
+    console.log(chalk.green(`[✅ - ${fechaFormateada}] || `), `${message}`, object)
   } else {
-    console.log(`%c[✅ - ${fechaFormateada}] || `, 'color: #0000ff', `${message}`)
+    console.log(chalk.green(`[✅ - ${fechaFormateada}] || `), `${message}`)
   }
 }
 
@@ -58,9 +59,9 @@ const sendSuccessMessage = (message, object = null) => {
 const sendInfoMessage = (message, object = null) => {
   const fechaFormateada = fecha.format(new Date(), 'DD/MM/YYYY HH:mm')
   if (object) {
-    console.log(`%c[❕ - ${fechaFormateada}] || `, 'color: #00ff00', `${message}`, object)
+    console.log(chalk.yellow(`[❕ - ${fechaFormateada}] || `), `${message}`, object)
   } else {
-    console.log(`%c[❕ - ${fechaFormateada}] || `, 'color: #00ff00', `${message}`)
+    console.log(chalk.yellow(`[❕ - ${fechaFormateada}] || `), `${message}`)
   }
 }
 
@@ -72,9 +73,9 @@ const sendInfoMessage = (message, object = null) => {
 const sendErrorMessage = (message, object = null) => {
   const fechaFormateada = fecha.format(new Date(), 'DD/MM/YYYY HH:mm')
   if (object) {
-    console.log(`%c[❌ - ${fechaFormateada}] || `, 'color: #ff0000', `${message}`, object)
+    console.log(chalk.red(`[❌ - ${fechaFormateada}] || `), `${message}`, object)
   } else {
-    console.log(`%c[❌ - ${fechaFormateada}] || `, 'color: #ff0000', `${message}`)
+    console.log(chalk.red(`[❌ - ${fechaFormateada}] || `), `${message}`)
   }
 }
 
