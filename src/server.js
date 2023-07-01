@@ -1,4 +1,4 @@
-const { revisionMaquinas } = require('./utilities/verificator')
+// const { revisionMaquinas } = require('./utilities/verificator')
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
@@ -31,7 +31,7 @@ sendMessage(1612650323, 'Ola')
 //   console.log('The answer to life, the universe, and everything!' + new Date())
 // })
 
-revisionMaquinas()
+// revisionMaquinas()
 
 // Settings
 app.use(cors())
