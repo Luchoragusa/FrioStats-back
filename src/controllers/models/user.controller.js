@@ -1,6 +1,6 @@
 const { Usuario, Rol, UsuarioSucursal, Sucursal } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
-const { createToken, createTelegramToken, sendTelegramVerification } = require('../../utilities/util')
+const { createToken, createTelegramToken, sendTelegramVerification, sendErrorMessage } = require('../../utilities/util')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
@@ -51,13 +51,13 @@ const register = async (req, res) => {
         .then(() => {
           // Si el usuario tiene telegramId, envio el mensaje de verificacion
           if (user.telegramId) {
-            sendTelegramVerification(user.telegramId, user.telegramToken)
+            sendTelegramVerification(user)
           }
           return res.status(201).json({ message: 'Usuario creado', user })
         })
     })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:52 ~ register ~ error:', error)
+    sendErrorMessage('🚀 ~ file: user.controller.js:60 ~ register ~ error:', error)
     if (!this.band) {
       res.status(500).json({ message: error })
     }
@@ -88,7 +88,7 @@ const login = async (req, res) => {
         }
       })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:83 ~ login ~ error:', error)
+    sendErrorMessage('🚀 ~ file: user.controller.js:91 ~ login ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -113,13 +113,13 @@ const update = async (req, res) => {
           attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNoti', 'telegramId']
         }).then(() => {
           if (userUpdated.telegramId !== user.telegramId && userUpdated.telegramToken) {
-            sendTelegramVerification(userUpdated.telegramToken, userUpdated)
+            sendTelegramVerification(userUpdated)
           }
           return res.status(200).json({ message: 'Usuario actualizado', userUpdated })
         })
       })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:110 ~ update ~ error:', error)
+    sendErrorMessage('🚀 ~ file: user.controller.js:122 ~ update ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -174,7 +174,7 @@ const getEmployees = async (req, res) => {
       }
     })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:165 ~ getEmployees ~ error:', error)
+    sendErrorMessage('🚀 ~ file: user.controller.js:177 ~ getEmployees ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -186,7 +186,6 @@ const updateRole = async (req, res) => {
     if (!idRol) {
       return res.status(400).json({ message: 'Se debe enviar una idRol' })
     }
-    console.log('🚀 ~ file: user.controller.js:165 ~ updateRole ~ idRol', req.body.idRol)
     await Usuario.update({ idRol }, { where: { id } })
       .then(async (user) => {
         if (user) {
@@ -196,7 +195,7 @@ const updateRole = async (req, res) => {
         }
       })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:187 ~ updateRole ~ error:', error)
+    sendErrorMessage('🚀 ~ file: user.controller.js:198 ~ updateRole ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -226,6 +225,7 @@ const validateTelegram = async (req, res) => {
             const newToken = createTelegramToken()
             await Usuario.update({ telegramToken: newToken }, { where: { id } })
             // Se envia el nuevo token al usuario
+            user.telegramToken = newToken
             sendTelegramVerification(newToken, user)
             return res.status(404).json({ message: 'Token incorrecto, se genero un token nuevo.' })
           }
@@ -237,7 +237,7 @@ const validateTelegram = async (req, res) => {
       }
     })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:226 ~ validateTelegram ~ error:', error)
+    sendErrorMessage('🚀 ~ file: user.controller.js:240 ~ validateTelegram ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
