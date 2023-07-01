@@ -17,9 +17,8 @@ const getInfoHome = async (req, res) => {
       attributes: ['id', 'nombre', 'apellido', 'email']
     })
       .then((elemts) => {
-        if (elemts) {
-          return res.status(200).json({ elemts })
-        }
+        if (!elemts) return res.status(404).json({ message: 'No se encontraron datos' })
+        return res.status(200).json({ elemts })
       })
   } catch (error) {
     catchError(res, error, '🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:')

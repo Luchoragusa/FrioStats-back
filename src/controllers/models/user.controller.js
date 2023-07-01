@@ -23,19 +23,15 @@ const register = async (req, res) => {
   try {
     // Valido que el mail no exista en la DB
     await Usuario.findOne({ where: { email } })
-      .then((user) => {
-        if (user) {
-          return res.status(400).json({ message: 'El mail ya existe en el sistema' })
-        }
+      .then(() => {
+        return res.status(400).json({ message: 'El mail ya existe en el sistema' })
       })
 
     // Valido que el telegramId no exista en la DB
     if (usuarioNew.telegramId) {
       await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
-        .then((user) => {
-          if (user) {
-            return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' })
-          }
+        .then(() => {
+          return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' })
         })
     }
 
@@ -65,16 +61,13 @@ const login = async (req, res) => {
       attributes: ['id', 'nombre', 'apellido', 'email', 'password']
     })
       .then(async (user) => {
-        if (user) {
-          if (bcrypt.compareSync(password, user.password)) {
-            // Remuevo el password del objeto user
-            user.password = undefined
-            const token = createToken(user)
-            res.cookie('jwt', token, { httpOnly: true, secure: true })
-            return res.status(200).json({ token, user })
-          } else {
-            return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
-          }
+        if (!user) return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
+        if (bcrypt.compareSync(password, user.password)) {
+          // Remuevo el password del objeto user
+          user.password = undefined
+          const token = createToken(user)
+          res.cookie('jwt', token, { httpOnly: true, secure: true })
+          return res.status(200).json({ token, user })
         } else {
           return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
         }
@@ -150,11 +143,8 @@ const getEmployees = async (req, res) => {
             }],
             attributes: ['id', 'nombre', 'apellido', 'email']
           }).then((elemts) => {
-            if (elemts) {
-              return res.status(200).json({ elemts })
-            } else {
-              return res.status(404).json({ message: 'No se encontraron usuarios' })
-            }
+            if (!elemts) return res.status(404).json({ message: 'No se encontraron usuarios' })
+            return res.status(200).json({ elemts })
           })
         } else {
           return res.status(404).json({ message: 'El usuario no tiene una sucursal asociada' })
@@ -176,12 +166,9 @@ const updateRole = async (req, res) => {
       return res.status(400).json({ message: 'Se debe enviar una idRol' })
     }
     await Usuario.update({ idRol }, { where: { id } })
-      .then(async (user) => {
-        if (user) {
-          return res.status(200).json({ message: 'Rol actualizado' })
-        } else {
-          return res.status(404).json({ message: 'Usuario no encontrado' })
-        }
+      .then((user) => {
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+        return res.status(200).json({ message: 'Rol actualizado' })
       })
   } catch (error) {
     catchError(res, error, '🚀 ~ file: user.controller.js:198 ~ updateRole ~ error:')
@@ -196,32 +183,29 @@ const validateTelegram = async (req, res) => {
       where: { id },
       attributes: ['telegramToken', 'telegramId']
     }).then(async (user) => {
-      if (user) {
-        // Valido que el usuario tenga un token de telegram
-        if (user.telegramToken) {
-          // Valido que el telegramToken ingreasdo sea el mismo que el que tiene el usuario en la DB
-          if (user.telegramToken === telegramToken) {
-            // Si el token es correcto, le asigno null al token de telegram
-            await Usuario.update({ telegramToken: null }, { where: { id } })
-              .then(async (user) => {
-                if (user) {
-                  return res.status(200).json({ message: 'Telegram id validado' })
-                }
-              })
-          } else {
-            // Si ingresa un token incorrecto, se le genera uno nuevo
-            const newToken = createTelegramToken()
-            await Usuario.update({ telegramToken: newToken }, { where: { id } })
-            // Se envia el nuevo token al usuario
-            user.telegramToken = newToken
-            sendTelegramVerification(newToken, user)
-            return res.status(404).json({ message: 'Token incorrecto, se genero un token nuevo.' })
-          }
-        } else {
-          return res.status(404).json({ message: 'El usuario ya valido su telegram id' })
-        }
+      // Valido que el usuario exista
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+
+      // Valido que el usuario tenga un token de telegram
+      if (!user.telegramToken) return res.status(404).json({ message: 'El usuario no tiene un token de telegram' })
+
+      // Valido que el telegramToken ingreasdo sea el mismo que el que tiene el usuario en la DB
+      if (user.telegramToken === telegramToken) {
+        // Si el token es correcto, le asigno null al token de telegram
+        await Usuario.update({ telegramToken: null }, { where: { id } })
+          .then(async (user) => {
+            if (user) {
+              return res.status(200).json({ message: 'Telegram id validado' })
+            }
+          })
       } else {
-        return res.status(404).json({ message: 'Usuario no encontrado' })
+        // Si ingresa un token incorrecto, se le genera uno nuevo
+        const newToken = createTelegramToken()
+        await Usuario.update({ telegramToken: newToken }, { where: { id } })
+        // Se envia el nuevo token al usuario
+        user.telegramToken = newToken
+        sendTelegramVerification(newToken, user)
+        return res.status(404).json({ message: 'Token incorrecto, se genero un token nuevo.' })
       }
     })
   } catch (error) {
