@@ -3,14 +3,11 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Sucursal extends Model {
     static associate (models) {
-      // Relacion con Empresa - Esta tabla tiene una FK de Empresa
+      // Relacion con Empresa - La tabla Sucursal tiene una FK de Empresa llamada cuilEmpresa
       Sucursal.belongsTo(models.Empresa, { foreignKey: 'cuilEmpresa' })
 
-      // Relacion con Usuario - La tabla intermedia UsuarioSucursal tiene FK de esta tabla
+      // Relacion con Usuario - La tabla intermedia UsuarioSucursal tiene FK de esta tabla llamada idSucursal
       Sucursal.belongsToMany(models.Usuario, { through: 'UsuarioSucursal', foreignKey: 'idSucursal' })
-
-      // Relacion con MaquinaSucursal - La tabla Sucursal tiene una FK de esta tabla
-      // Sucursal.hasMany(models.MaquinaSucursal, { foreignKey: 'idSucursal' })
     }
   }
   Sucursal.init({

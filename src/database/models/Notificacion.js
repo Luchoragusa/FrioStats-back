@@ -3,10 +3,10 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Notificacion extends Model {
     static associate (models) {
-      // Relacion con Medicion - Esta tabla tiene una FK de Medicion
+      // Relacion con Medicion - La tabla Notificacion tiene una FK de Medicion llamada idMedicion
       Notificacion.belongsTo(models.Medicion, { foreignKey: 'idMedicion' })
 
-      // Relacion con Tipo - Esta tabla tiene una FK de Tipo
+      // Relacion con Tipo - La tabla Notificacion tiene una FK de Tipo llamada idTipo
       Notificacion.belongsTo(models.Tipo, { foreignKey: 'idTipo' })
     }
   }

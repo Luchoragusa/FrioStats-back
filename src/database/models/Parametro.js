@@ -3,7 +3,7 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Parametro extends Model {
     static associate (models) {
-      // Relacion con Parametro - Esta tabla tiene una FK de MaquinaSucursal
+      // Relacion con MaquinaSucursal - La tabla Parametro tiene una FK de MaquinaSucursal llamada idMaquina
       Parametro.belongsTo(models.MaquinaSucursal, { foreignKey: 'idMaquina' })
     }
   }

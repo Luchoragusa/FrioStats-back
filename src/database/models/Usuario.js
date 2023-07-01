@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt')
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate (models) {
-      // Relacion con Rol - Esta tabla tiene una FK de Rol
+      // Relacion con Rol - La tabla Usuario tiene una FK de Rol llamada idRol
       Usuario.belongsTo(models.Rol, { foreignKey: 'idRol', defaultValue: 2 })
 
-      // Relacion con Sucursal - La tabla intermedia UsuarioSucursal tiene FK de esta tabla
+      // Relacion con Sucursal - La tabla intermedia UsuarioSucursal tiene FK de esta tabla llamada idUsuario
       Usuario.belongsToMany(models.Sucursal, { through: 'UsuarioSucursal', foreignKey: 'idUsuario' })
     }
   }

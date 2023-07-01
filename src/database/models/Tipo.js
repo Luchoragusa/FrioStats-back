@@ -3,15 +3,8 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Tipo extends Model {
     static associate (models) {
-      // Relacion con Notificacion - La tabla Notificacion tiene FK de esta tabla
+      // Relacion con Notificacion - La tabla Notificacion tiene FK de esta tabla llamada idTipo
       Tipo.hasMany(models.Notificacion, { foreignKey: 'idTipo' })
-
-      // Relacion con ImportanciaParametro - La tabla ImportanciaParametro tiene FKs de esta tabla
-      Tipo.hasMany(models.ImportanciaParametro, { foreignKey: 'idTipoTempTrabajoYBulbo' })
-      Tipo.hasMany(models.ImportanciaParametro, { foreignKey: 'idTipoEstadoPuerta' })
-      Tipo.hasMany(models.ImportanciaParametro, { foreignKey: 'idTipoCooler' })
-      Tipo.hasMany(models.ImportanciaParametro, { foreignKey: 'idTipoPuntoRocio' })
-      Tipo.hasMany(models.ImportanciaParametro, { foreignKey: 'idConsumo' })
     }
   }
   Tipo.init({

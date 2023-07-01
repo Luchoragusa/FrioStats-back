@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       MaquinaSucursal.belongsTo(models.Modelo, { foreignKey: 'idModelo' })
 
       // Relacion con Parametro - La tabla Parametro tiene FK de esta tabla
-      MaquinaSucursal.hasOne(models.Parametro, { foreignKey: 'idMaquina' })
+      // MaquinaSucursal.hasOne(models.Parametro, { foreignKey: 'idMaquina' })
 
       // Relacion con ImportanciaParametro - La tabla ImportanciaParametro tiene FK de esta tabla
-      MaquinaSucursal.hasOne(models.ImportanciaParametro, { foreignKey: 'idMaquina' })
+      // MaquinaSucursal.hasOne(models.ImportanciaParametro, { foreignKey: 'idMaquina' })
     }
   }
   MaquinaSucursal.init({

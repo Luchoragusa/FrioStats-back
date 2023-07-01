@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class Modelo extends Model {
     static associate (models) {
       // Relacion con MaquinaSucursal - MaquinaSucursal tiene una FK de esta tabla
-      Modelo.hasMany(models.MaquinaSucursal, { foreignKey: 'idModelo' })
+      // Modelo.hasMany(models.MaquinaSucursal, { foreignKey: 'idModelo' })
     }
   }
   Modelo.init({
