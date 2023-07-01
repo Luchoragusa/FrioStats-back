@@ -40,8 +40,9 @@ const register = async (req, res) => {
       return res.status(201).json({ message: 'Usuario creado', user })
     })
   } catch (error) {
+    console.log('🚀 ~ file: user.controller.js:43 ~ register ~ error:', error)
     if (!this.band) {
-      res.status(500).json({ message: error.name })
+      res.status(500).json({ message: error })
     }
   }
 }
@@ -71,7 +72,34 @@ const login = async (req, res) => {
       })
   } catch (error) {
     console.log('🚀 ~ file: user.controller.js:73 ~ login ~ error:', error)
-    res.status(500).json({ message: error.name })
+    res.status(500).json({ message: error })
+  }
+}
+
+const update = async (req, res) => {
+  const id = req.userId
+  const u = {
+    nombre: req.body.nombre,
+    apellido: req.body.apellido,
+    recibeNoti: req.body.recibeNoti,
+    telegramId: req.body.telegramId
+  }
+  try {
+    await Usuario.update(u, { where: { id } })
+      .then(async (user) => {
+        const userUpdated = await Usuario.findOne({
+          where: { id },
+          attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNoti', 'telegramId']
+        })
+        if (user) {
+          return res.status(200).json({ message: 'Usuario actualizado', userUpdated })
+        } else {
+          return res.status(404).json({ message: 'Usuario no encontrado' })
+        }
+      })
+  } catch (error) {
+    console.log('🚀 ~ file: user.controller.js:96 ~ update ~ error:', error)
+    res.status(500).json({ message: error })
   }
 }
 
@@ -84,5 +112,6 @@ const login = async (req, res) => {
 
 module.exports = {
   register,
-  login
+  login,
+  update
 }

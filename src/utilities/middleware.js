@@ -2,7 +2,6 @@
 const jwt = require('jwt-simple')
 const moment = require('moment')
 const { Usuario, Rol } = require('../database/models/index')
-const { getId } = require('./util')
 
 const validateToken = [
   async (req, res, next) => {
@@ -48,7 +47,7 @@ const validateToken = [
 const policy = [
   async (req, res, next) => {
     const role = await Rol.findOne({ where: { descripcion: 'Admin' } })
-    const user = await Usuario.findOne({ where: { id: getId } })
+    const user = await Usuario.findOne({ where: { id: req.userId } })
     if (user.idRol !== role.id) {
       res.status(401).json({ msg: 'No autorizado, tenes que ser admin' })
     }
