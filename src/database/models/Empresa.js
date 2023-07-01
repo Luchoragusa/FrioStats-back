@@ -1,8 +1,8 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict'
+const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Empresa extends Model {
-    static associate(models) {
+    static associate (models) {
       // Relacion con Sucursal - Esta tabla tiene una FK de Sucursal
       // Empresa.hasMany(models.Sucursal)
     }
@@ -15,32 +15,32 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
         validate: {
-          notNull: { msg: "Cuil requerido" },
-          isNumeric: { msg: "El cuil solo debe contener numeros" },
+          notNull: { msg: 'Cuil requerido' },
+          isNumeric: { msg: 'El cuil solo debe contener numeros' },
           len: {
             args: [11, 11],
-            msg: "El cuil debe contener 11 numeros",
-          },
-        },
+            msg: 'El cuil debe contener 11 numeros'
+          }
+        }
       },
       razonSocial: {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
-          notNull: { msg: "Razon social requerida" },
-          isAlpha: { msg: "La razon social solo debe contener letras" },
+          notNull: { msg: 'Razon social requerida' },
+          isAlpha: { msg: 'La razon social solo debe contener letras' },
           len: {
             args: [3, 50],
-            msg: "La razon social debe contener entre 3 a 50 letras",
-          },
-        },
-      },
+            msg: 'La razon social debe contener entre 3 a 50 letras'
+          }
+        }
+      }
     },
     {
       sequelize,
-      modelName: "Empresa",
-      freezeTableName: true,
+      modelName: 'Empresa',
+      freezeTableName: true
     }
-  );
-  return Empresa;
-};
+  )
+  return Empresa
+}

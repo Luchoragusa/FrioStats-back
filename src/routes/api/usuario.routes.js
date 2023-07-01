@@ -1,7 +1,7 @@
 const Router = require('express')
 const router = Router()
 const { register, login } = require('../../controllers/models/usuario.controller')
-const { validateToken, policy } = require('../../utilities/middleware')
+// const { validateToken, policy } = require('../../utilities/middleware')
 
 // Genericas
 // router.get('/', checkToken, getAll(User)); // muestra todos

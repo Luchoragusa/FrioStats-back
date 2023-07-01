@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const { createToken } = require('../../utilities/util')
 
 const register = async (req, res) => {
+  // eslint-disable-next-line no-unused-vars, prefer-const
   let band = false
 
   const usuarioNew = {
