@@ -21,7 +21,7 @@ const getLocals = async (req, res) => {
       res.status(200).json({ sucursales })
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: local.controller.js:7 ~ getLocals ~ error:')
+    catchError(res, error, '🚀 ~ file: local.controller.js:23 ~ getLocals ~ error:')
   }
 }
 

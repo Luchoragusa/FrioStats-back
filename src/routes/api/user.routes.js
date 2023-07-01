@@ -5,11 +5,6 @@ const { createOne } = require('../../controllers/generic.controller')
 const { Usuario } = require('../../database/models/index')
 const { validateToken, policy, checkParams } = require('../../utilities/middleware')
 
-// Genericas
-// router.get('/', checkToken, getAll(User)); // muestra todos
-// router.get('/:id', checkToken, getOne(User)); // muestra uno
-// router.delete('/:id', checkToken, policy, deleteOne(User)); // borra uno
-
 //  Especificas
 router.post('/register', validateToken, policy, register) // Registrar un usuario en la DB
 router.post('/registerSintoken', createOne(Usuario)) // Registrar un usuario en la DB
