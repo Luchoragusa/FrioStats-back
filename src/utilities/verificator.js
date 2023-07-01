@@ -207,7 +207,9 @@ const verificarLimites = async (medicion) => {
  */
 
 async function guardarNotificacionesEnDB (notificaciones) {
+  console.log("🚀 ~ file: verificator.js:210 ~ guardarNotificacionesEnDB ~ notificaciones:", notificaciones)
   try {
+    // console.log(`Notificaciones de la Medicion: ${notificaciones[0].idMedicion} -> Total: ${notificaciones.length}`)
     notificaciones.forEach(element => {
       Notificacion.create(element)
     })
@@ -217,11 +219,11 @@ async function guardarNotificacionesEnDB (notificaciones) {
 }
 
 const revisionMaquinas = async () => {
+  console.log('Generando mediciones...')
   const maquinas = await MaquinaSucursal.findAll()
   for (const maquina of maquinas) {
-    console.log('Maquina:', maquina.id)
     const medicion = await generarMedicion(maquina.id)
-    console.log('Medición generada:', medicion.id)
+    console.log(`Medicion nro [${medicion.id}] -> Maquina: ${maquina.id}`)
     await verificarLimites(medicion)
   }
 }

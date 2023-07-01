@@ -7,7 +7,7 @@ const { Medicion, Parametro } = require('../database/models/index')
  */
 
 const generarNumeroRandom = (numeroAnterior) => {
-  const precision = 0.01
+  const precision = 10
   const diferencia = (Math.random() * precision * 2) - precision
   return numeroAnterior + diferencia
 }
@@ -21,7 +21,6 @@ const generarNumeroRandom = (numeroAnterior) => {
 // Función principal
 const generarMedicion = async (idMaquinaSucursal) => {
   const ultimaMedicion = await obtenerUltimaMedicion(idMaquinaSucursal)
-  console.log('Ultima medición:', ultimaMedicion)
   // Generar las mediciones simuladas
   const fechaHora = new Date()
   const sensorTempTrabajoYBulbo = generarNumeroRandom(ultimaMedicion.sensorTempTrabajoYBulbo)
@@ -60,7 +59,6 @@ const obtenerUltimaMedicion = async (idMaquina) => {
     } else {
       // Si no hay mediciones, devuelvo una medición con valores por defecto
       const parametro = await Parametro.findOne({ where: { idMaquina } })
-      console.log('Parametro:', parametro)
       return {
         idMaquina,
         fechaHora: new Date(),
