@@ -55,7 +55,17 @@ const policy = [
   }
 ]
 
+const checkParams = [
+  async (req, res, next) => {
+    if (!req.params) {
+      return res.status(400).json({ msg: 'No tiene parametros' })
+    }
+    next()
+  }
+]
+
 module.exports = {
   validateToken,
-  policy
+  policy,
+  checkParams
 }

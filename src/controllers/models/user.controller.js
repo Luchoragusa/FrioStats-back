@@ -158,6 +158,28 @@ const getEmployees = async (req, res) => {
   }
 }
 
+const updateRole = async (req, res) => {
+  const id = req.params.id
+  try {
+    const idRol = req.body.idRol
+    if (!idRol) {
+      return res.status(400).json({ message: 'Se debe enviar una idRol' })
+    }
+    console.log('🚀 ~ file: user.controller.js:165 ~ updateRole ~ idRol', req.body.idRol)
+    await Usuario.update({ idRol }, { where: { id } })
+      .then(async (user) => {
+        if (user) {
+          return res.status(200).json({ message: 'Rol actualizado' })
+        } else {
+          return res.status(404).json({ message: 'Usuario no encontrado' })
+        }
+      })
+  } catch (error) {
+    console.log('🚀 ~ file: user.controller.js:178 ~ updateRole ~ error:', error)
+    res.status(500).json({ message: error })
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -169,5 +191,6 @@ module.exports = {
   register,
   login,
   update,
-  getEmployees
+  getEmployees,
+  updateRole
 }
