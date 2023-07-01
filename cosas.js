@@ -15,3 +15,5 @@
 // = Ver el tema de cuando es leve y cuando es Grave, osea si ya se va de los limites lo tengo q informar de acuerdo a como esta en importanciaParametro
 
 // Un usuario siempre tiene que tener al menos 1 sucursal asociada.
+
+// El crear cuenta se hace desde el panel de Admin y toma la empresa del admin que lo crea

@@ -6,6 +6,11 @@ const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
   let band = false
 
+  const idSucursal = req.body.idSucursal
+  if (!idSucursal) {
+    return res.status(400).json({ message: 'Debe ingresar una id de sucursal' })
+  }
+
   const usuarioNew = {
     nombre: req.body.nombre,
     apellido: req.body.apellido,
@@ -14,7 +19,6 @@ const register = async (req, res) => {
     recibeNoti: req.body.recibeNoti,
     idRol: 2 // Rol de usuario
   }
-
   const email = usuarioNew.email
 
   try {
@@ -36,11 +40,16 @@ const register = async (req, res) => {
     } else {
       usuarioNew.recibeNoti = false
     }
-    await Usuario.create(usuarioNew).then((user) => {
-      return res.status(201).json({ message: 'Usuario creado', user })
+    // Creo el usuario
+    await Usuario.create(usuarioNew).then(async (user) => {
+      // Creo el usuarioSucursal
+      await UsuarioSucursal.create({ idUsuario: user.id, idSucursal })
+        .then((userSucursal) => {
+          return res.status(201).json({ message: 'Usuario creado', user })
+        })
     })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:43 ~ register ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:52 ~ register ~ error:', error)
     if (!this.band) {
       res.status(500).json({ message: error })
     }
@@ -71,7 +80,7 @@ const login = async (req, res) => {
         }
       })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:73 ~ login ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:83 ~ login ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -98,7 +107,7 @@ const update = async (req, res) => {
         }
       })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:96 ~ update ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:110 ~ update ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -138,9 +147,9 @@ const getEmployees = async (req, res) => {
               attributes: ['id', 'descripcion']
             }],
             attributes: ['id', 'nombre', 'apellido', 'email']
-          }).then((users) => {
-            if (users) {
-              return res.status(200).json({ users })
+          }).then((elemts) => {
+            if (elemts) {
+              return res.status(200).json({ elemts })
             } else {
               return res.status(404).json({ message: 'No se encontraron usuarios' })
             }
@@ -153,7 +162,7 @@ const getEmployees = async (req, res) => {
       }
     })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:156 ~ getEmployees ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:165 ~ getEmployees ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
@@ -175,7 +184,7 @@ const updateRole = async (req, res) => {
         }
       })
   } catch (error) {
-    console.log('🚀 ~ file: user.controller.js:178 ~ updateRole ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:187 ~ updateRole ~ error:', error)
     res.status(500).json({ message: error })
   }
 }

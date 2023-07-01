@@ -15,9 +15,9 @@ const getInfoHome = async (req, res) => {
       }],
       attributes: ['id', 'nombre', 'apellido', 'email']
     })
-      .then((user) => {
-        if (user) {
-          return res.status(200).json({ user })
+      .then((elemts) => {
+        if (elemts) {
+          return res.status(200).json({ elemts })
         }
       })
   } catch (error) {

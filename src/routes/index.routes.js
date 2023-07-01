@@ -13,4 +13,7 @@ router.use('/home', validateToken, homeRouter)
 const nottificationRouter = require('./api/home.routes')
 router.use('/notifications', validateToken, nottificationRouter)
 
+const roleRouter = require('./api/role.routes')
+router.use('/roles', validateToken, roleRouter)
+
 module.exports = router
