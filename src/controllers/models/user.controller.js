@@ -63,12 +63,14 @@ const login = async (req, res) => {
             res.cookie('jwt', token, { httpOnly: true, secure: true })
             return res.status(200).json({ token, user })
           } else {
-            return res.status(404).json({ message: 'Usuario y/o contraseña incorrecto' })
+            return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
           }
+        } else {
+          return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
         }
       })
   } catch (error) {
-    console.log('🚀 ~ file: usuario.controller.js:67 ~ login ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:73 ~ login ~ error:', error)
     res.status(500).json({ message: error.name })
   }
 }
