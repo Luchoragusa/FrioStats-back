@@ -217,13 +217,13 @@ async function guardarNotificacionesEnDB (notificaciones) {
 }
 
 const revisionMaquinas = async () => {
-  // const maquinas = await MaquinaSucursal.findAll()
-  // for (const maquina of maquinas) {
-  //   console.log('Maquina:', maquina.id)
-  //   const medicion = await generarMedicion(maquina.id)
-  //   console.log('Medición generada:', medicion.id)
-  //   await verificarLimites(medicion)
-  // }
+  const maquinas = await MaquinaSucursal.findAll()
+  for (const maquina of maquinas) {
+    console.log('Maquina:', maquina.id)
+    const medicion = await generarMedicion(maquina.id)
+    console.log('Medición generada:', medicion.id)
+    await verificarLimites(medicion)
+  }
 }
 
 module.exports = {
