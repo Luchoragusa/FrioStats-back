@@ -79,11 +79,21 @@ const sendErrorMessage = (message, object = null) => {
   }
 }
 
+const catchError = (res, error, message) => {
+  if (error.code !== 'ERR_HTTP_HEADERS_SENT') {
+    sendErrorMessage(message, error)
+    console.log(error.name)
+    const errorName = error.code === undefined ? { name: error.name } : { name: error.name, code: error.code }
+    return res.status(500).json({ message: errorName })
+  }
+}
+
 module.exports = {
   createToken,
   createTelegramToken,
   sendTelegramVerification,
   sendInfoMessage,
   sendErrorMessage,
-  sendSuccessMessage
+  sendSuccessMessage,
+  catchError
 }

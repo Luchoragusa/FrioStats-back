@@ -1,16 +1,13 @@
 const { Usuario, Rol, UsuarioSucursal, Sucursal } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
-const { createToken, createTelegramToken, sendTelegramVerification, sendErrorMessage } = require('../../utilities/util')
+const { createToken, createTelegramToken, sendTelegramVerification, catchError } = require('../../utilities/util')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
-  let band = false
-
   const idSucursal = req.body.idSucursal
   if (!idSucursal) {
     return res.status(400).json({ message: 'Debe ingresar una id de sucursal' })
   }
-
   const usuarioNew = {
     nombre: req.body.nombre,
     apellido: req.body.apellido,
@@ -28,7 +25,6 @@ const register = async (req, res) => {
     await Usuario.findOne({ where: { email } })
       .then((user) => {
         if (user) {
-          this.band = true
           return res.status(400).json({ message: 'El mail ya existe en el sistema' })
         }
       })
@@ -38,7 +34,6 @@ const register = async (req, res) => {
       await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
         .then((user) => {
           if (user) {
-            this.band = true
             return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' })
           }
         })
@@ -57,10 +52,7 @@ const register = async (req, res) => {
         })
     })
   } catch (error) {
-    sendErrorMessage('🚀 ~ file: user.controller.js:60 ~ register ~ error:', error)
-    if (!this.band) {
-      res.status(500).json({ message: error })
-    }
+    catchError(res, error, '🚀 ~ file: user.controller.js:60 ~ register ~ error:')
   }
 }
 
@@ -88,8 +80,7 @@ const login = async (req, res) => {
         }
       })
   } catch (error) {
-    sendErrorMessage('🚀 ~ file: user.controller.js:91 ~ login ~ error:', error)
-    res.status(500).json({ message: error })
+    catchError(res, error, '🚀 ~ file: user.controller.js:91 ~ login ~ error:')
   }
 }
 
@@ -119,8 +110,7 @@ const update = async (req, res) => {
         })
       })
   } catch (error) {
-    sendErrorMessage('🚀 ~ file: user.controller.js:122 ~ update ~ error:', error)
-    res.status(500).json({ message: error })
+    catchError(res, error, '🚀 ~ file: user.controller.js:122 ~ update ~ error:')
   }
 }
 
@@ -174,8 +164,7 @@ const getEmployees = async (req, res) => {
       }
     })
   } catch (error) {
-    sendErrorMessage('🚀 ~ file: user.controller.js:177 ~ getEmployees ~ error:', error)
-    res.status(500).json({ message: error })
+    catchError(res, error, '🚀 ~ file: user.controller.js:177 ~ getEmployees ~ error:')
   }
 }
 
@@ -195,8 +184,7 @@ const updateRole = async (req, res) => {
         }
       })
   } catch (error) {
-    sendErrorMessage('🚀 ~ file: user.controller.js:198 ~ updateRole ~ error:', error)
-    res.status(500).json({ message: error })
+    catchError(res, error, '🚀 ~ file: user.controller.js:198 ~ updateRole ~ error:')
   }
 }
 
@@ -237,8 +225,7 @@ const validateTelegram = async (req, res) => {
       }
     })
   } catch (error) {
-    sendErrorMessage('🚀 ~ file: user.controller.js:240 ~ validateTelegram ~ error:', error)
-    res.status(500).json({ message: error })
+    catchError(res, error, '🚀 ~ file: user.controller.js:240 ~ validateTelegram ~ error:')
   }
 }
 

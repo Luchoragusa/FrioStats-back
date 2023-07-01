@@ -1,3 +1,5 @@
+const { catchError } = require('../utilities/util')
+
 exports.getAll = Model =>
   async (req, res, next) => {
     try {
@@ -11,8 +13,7 @@ exports.getAll = Model =>
         return res.status(404).json({ msg: 'No hay datos' })
       }
     } catch (error) {
-      console.log('🚀 ~ file: generic.controller.js:12 ~ error:', error)
-      res.status(500).json({ message: error })
+      catchError(res, error, '🚀 ~ file: generic.controller.js:15 ~ error:')
     }
   }
 
@@ -27,8 +28,7 @@ exports.getOne = Model =>
         return res.status(404).json({ msg: 'No hay datos' })
       }
     } catch (error) {
-      console.log('🚀 ~ file: generic.controller.js:28 ~ error:', error)
-      res.status(500).json({ message: error })
+      catchError(res, error, '🚀 ~ file: generic.controller.js:30 ~ error:')
     }
   }
 
@@ -45,8 +45,7 @@ exports.deleteOne = Model =>
         })
       }
     } catch (error) {
-      console.log('🚀 ~ file: generic.controller.js:46 ~ error:', error)
-      res.status(500).json({ message: error })
+      catchError(res, error, '🚀 ~ file: generic.controller.js:48 ~ error:')
     }
   }
 
@@ -60,8 +59,7 @@ exports.createOne = Model =>
         return res.status(404).json({ msg: 'No se recibieron los datos' })
       }
     } catch (error) {
-      console.log('🚀 ~ file: generic.controller.js:61 ~ error:', error)
-      res.status(500).json({ message: error })
+      catchError(res, error, '🚀 ~ file: generic.controller.js:62 ~ error:')
     }
   }
 
@@ -79,7 +77,6 @@ exports.updateOne = Model =>
         return res.status(404).json({ msg: 'Elemento no encontrado' })
       }
     } catch (error) {
-      console.log('🚀 ~ file: generic.controller.js:80 ~ error:', error)
-      res.status(500).json({ message: error })
+      catchError(res, error, '🚀 ~ file: generic.controller.js:80 ~ error:')
     }
   }
