@@ -1,5 +1,6 @@
 const Router = require('express')
 const router = Router()
+// eslint-disable-next-line no-unused-vars
 const { register, login, getEmployees, update, updateRole, validateTelegram } = require('../../controllers/models/user.controller')
 const { createOne } = require('../../controllers/generic.controller')
 const { Usuario } = require('../../database/models/index')
