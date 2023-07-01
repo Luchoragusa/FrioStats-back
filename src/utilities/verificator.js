@@ -1,6 +1,12 @@
 const { Notificacion, MaquinaSucursal, ImportanciaParametro, Parametro } = require('../database/models/index.js')
 const { generarMedicion } = require('./measurementGenerator.js')
 
+/**
+ *
+ * @param {*} idMaquina Numero entero
+ * @returns Parametro de la maquina
+ */
+
 // Obtener Parámetros
 const obtenerParametros = async (idMaquina) => {
   try {
@@ -15,6 +21,12 @@ const obtenerParametros = async (idMaquina) => {
   }
 }
 
+/**
+ *
+ * @param {*} idMaquina Numero entero
+ * @returns Importancia de los parámetros de la maquina
+ */
+
 // Obtener Importancia
 const obtenerImportanciaParametros = async (idMaquina) => {
   try {
@@ -28,6 +40,11 @@ const obtenerImportanciaParametros = async (idMaquina) => {
     throw error
   }
 }
+
+/**
+ *
+ * @param {*} medicion Medicion de una maquina
+ */
 
 // Verificar si las mediciones estan por debajo o encima de los límites y generar notificaciones
 const verificarLimites = async (medicion) => {
@@ -183,6 +200,11 @@ const verificarLimites = async (medicion) => {
   }
   guardarNotificacionesEnDB(notificaciones)
 }
+
+/**
+ *
+ * @param {*} notificaciones Notificaciones a guardar en la base de datos
+ */
 
 async function guardarNotificacionesEnDB (notificaciones) {
   try {
