@@ -12,6 +12,7 @@ module.exports = {
       telegramId: '123456789',
       recibeNoti: true,
       idRol: 1,
+      telegramToken: '1ABC-E',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -22,6 +23,7 @@ module.exports = {
       telegramId: '987654321',
       recibeNoti: false,
       idRol: 2,
+      telegramToken: '2ABC-E',
       createdAt: new Date(),
       updatedAt: new Date()
     }], {})

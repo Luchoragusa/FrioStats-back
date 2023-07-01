@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true
+    },
+    telegramToken: {
+      type: DataTypes.STRING(6),
+      allowNull: true
     }
   }, {
     sequelize,

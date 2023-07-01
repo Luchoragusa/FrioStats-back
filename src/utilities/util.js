@@ -16,6 +16,16 @@ const createToken = (u) => {
   return jwt.encode(payload, process.env.SECRET_KEY)
 }
 
+const createTelegramToken = () => {
+  const caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+  let token = ''
+  for (let i = 0; i < 6; i++) {
+    token += caracteres.charAt(Math.floor(Math.random() * caracteres.length))
+  }
+  return token
+}
+
 module.exports = {
-  createToken
+  createToken,
+  createTelegramToken
 }

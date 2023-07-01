@@ -1,6 +1,6 @@
 const { Usuario, Rol, UsuarioSucursal, Sucursal } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
-const { createToken } = require('../../utilities/util')
+const { createToken, createTelegramToken } = require('../../utilities/util')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
@@ -16,8 +16,9 @@ const register = async (req, res) => {
     apellido: req.body.apellido,
     password: req.body.password,
     email: req.body.email,
-    recibeNoti: req.body.recibeNoti,
-    idRol: 2 // Rol de usuario
+    idRol: 2, // Rol de usuario
+    telegramToken: createTelegramToken(),
+    telegramId: req.body.telegramId ? req.body.telegramId : null
   }
   const email = usuarioNew.email
 
@@ -31,10 +32,7 @@ const register = async (req, res) => {
         }
       })
 
-    // Valido el telegramId
-    if (req.body.telegramId) {
-      usuarioNew.telegramId = req.body.telegramId
-    }
+    // Asigno el valor de recibeNoti
     if (req.body.recibeNoti === 'true') {
       usuarioNew.recibeNoti = true
     } else {
@@ -44,7 +42,7 @@ const register = async (req, res) => {
     await Usuario.create(usuarioNew).then(async (user) => {
       // Creo el usuarioSucursal
       await UsuarioSucursal.create({ idUsuario: user.id, idSucursal })
-        .then((userSucursal) => {
+        .then(() => {
           return res.status(201).json({ message: 'Usuario creado', user })
         })
     })
