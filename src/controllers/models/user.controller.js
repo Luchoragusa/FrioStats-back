@@ -1,6 +1,6 @@
 const { Usuario, Rol, UsuarioSucursal, Sucursal } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
-const { createToken, createTelegramToken } = require('../../utilities/util')
+const { createToken, createTelegramToken, sendTelegramVerification } = require('../../utilities/util')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
@@ -18,7 +18,8 @@ const register = async (req, res) => {
     email: req.body.email,
     idRol: 2, // Rol de usuario
     telegramToken: createTelegramToken(),
-    telegramId: req.body.telegramId ? req.body.telegramId : null
+    telegramId: req.body.telegramId ? req.body.telegramId : null,
+    recibeNoti: req.body.recibeNoti ? 'true' : 'false'
   }
   const email = usuarioNew.email
 
@@ -32,17 +33,26 @@ const register = async (req, res) => {
         }
       })
 
-    // Asigno el valor de recibeNoti
-    if (req.body.recibeNoti === 'true') {
-      usuarioNew.recibeNoti = true
-    } else {
-      usuarioNew.recibeNoti = false
+    // Valido que el telegramId no exista en la DB
+    if (usuarioNew.telegramId) {
+      await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
+        .then((user) => {
+          if (user) {
+            this.band = true
+            return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' })
+          }
+        })
     }
+
     // Creo el usuario
     await Usuario.create(usuarioNew).then(async (user) => {
       // Creo el usuarioSucursal
       await UsuarioSucursal.create({ idUsuario: user.id, idSucursal })
         .then(() => {
+          // Si el usuario tiene telegramId, envio el mensaje de verificacion
+          if (user.telegramId) {
+            sendTelegramVerification(user.telegramId, user.telegramToken)
+          }
           return res.status(201).json({ message: 'Usuario creado', user })
         })
     })
@@ -91,18 +101,22 @@ const update = async (req, res) => {
     recibeNoti: req.body.recibeNoti,
     telegramId: req.body.telegramId
   }
+  // Si se recibe
+  if (u.telegramId) {
+    u.telegramToken = createTelegramToken()
+  }
   try {
     await Usuario.update(u, { where: { id } })
       .then(async (user) => {
         const userUpdated = await Usuario.findOne({
           where: { id },
           attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNoti', 'telegramId']
-        })
-        if (user) {
+        }).then(() => {
+          if (userUpdated.telegramId !== user.telegramId && userUpdated.telegramToken) {
+            sendTelegramVerification(userUpdated.telegramToken, userUpdated)
+          }
           return res.status(200).json({ message: 'Usuario actualizado', userUpdated })
-        } else {
-          return res.status(404).json({ message: 'Usuario no encontrado' })
-        }
+        })
       })
   } catch (error) {
     console.log('🚀 ~ file: user.controller.js:110 ~ update ~ error:', error)
@@ -187,6 +201,47 @@ const updateRole = async (req, res) => {
   }
 }
 
+const validateTelegram = async (req, res) => {
+  const telegramToken = req.body.telegramToken
+  const id = req.userId
+  try {
+    await Usuario.findOne({
+      where: { id },
+      attributes: ['telegramToken', 'telegramId']
+    }).then(async (user) => {
+      if (user) {
+        // Valido que el usuario tenga un token de telegram
+        if (user.telegramToken) {
+          // Valido que el telegramToken ingreasdo sea el mismo que el que tiene el usuario en la DB
+          if (user.telegramToken === telegramToken) {
+            // Si el token es correcto, le asigno null al token de telegram
+            await Usuario.update({ telegramToken: null }, { where: { id } })
+              .then(async (user) => {
+                if (user) {
+                  return res.status(200).json({ message: 'Telegram id validado' })
+                }
+              })
+          } else {
+            // Si ingresa un token incorrecto, se le genera uno nuevo
+            const newToken = createTelegramToken()
+            await Usuario.update({ telegramToken: newToken }, { where: { id } })
+            // Se envia el nuevo token al usuario
+            sendTelegramVerification(newToken, user)
+            return res.status(404).json({ message: 'Token incorrecto, se genero un token nuevo.' })
+          }
+        } else {
+          return res.status(404).json({ message: 'El usuario ya valido su telegram id' })
+        }
+      } else {
+        return res.status(404).json({ message: 'Usuario no encontrado' })
+      }
+    })
+  } catch (error) {
+    console.log('🚀 ~ file: user.controller.js:226 ~ validateTelegram ~ error:', error)
+    res.status(500).json({ message: error })
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -199,5 +254,6 @@ module.exports = {
   login,
   update,
   getEmployees,
-  updateRole
+  updateRole,
+  validateTelegram
 }

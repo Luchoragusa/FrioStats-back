@@ -25,7 +25,18 @@ const createTelegramToken = () => {
   return token
 }
 
+/**
+ *
+ * @param {*} token
+ * @param {*} user
+ */
+
+const sendTelegramVerification = (token, user) => {
+  console.log('Enviando mensaje por telegram')
+}
+
 module.exports = {
   createToken,
-  createTelegramToken
+  createTelegramToken,
+  sendTelegramVerification
 }
