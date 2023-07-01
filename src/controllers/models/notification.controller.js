@@ -1,4 +1,4 @@
-const { Notificacion } = require('../../database/models/index')
+const { Notificacion, MaquinaSucursal } = require('../../database/models/index')
 const { catchError } = require('../../utilities/util')
 
 /**
@@ -40,6 +40,23 @@ const checkNotifications = async (req, res) => {
   }
 }
 
+const getNotifications = async (req, res) => {
+  try {
+    const idSucursal = req.params.idSucursal
+    // Obtengo todas las maquinas de la sucursal
+    await MaquinaSucursal.findAll({
+      where: { idSucursal },
+      attributes: ['id'] // Solo me quedo con el id de la maquina
+    }).then(maquinasSucursal => {
+      if (!maquinasSucursal) return res.status(404).json({ message: 'No se encontraron maquinas para esa sucursal' })
+      // Obtengo las mediciones de las maquinas de la sucursal
+    })
+  } catch (error) {
+    catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getInfoHome ~ error:')
+  }
+}
+
 module.exports = {
-  checkNotifications
+  checkNotifications,
+  getNotifications
 }
