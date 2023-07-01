@@ -181,6 +181,7 @@ const updateRole = async (req, res) => {
 
 const validateTelegram = async (req, res) => {
   const telegramToken = req.body.telegramToken
+  if (!telegramToken) return res.status(400).json({ message: 'Se debe enviar un telegramToken' })
   const id = req.userId
   try {
     await Usuario.findOne({
@@ -191,7 +192,7 @@ const validateTelegram = async (req, res) => {
       if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
 
       // Valido que el usuario tenga un token de telegram
-      if (!user.telegramToken) return res.status(404).json({ message: 'El usuario no tiene un token de telegram' })
+      if (!user.telegramToken) return res.status(404).json({ message: 'El Telegram id ya fue validado' })
 
       // Valido que el telegramToken ingreasdo sea el mismo que el que tiene el usuario en la DB
       if (user.telegramToken === telegramToken) {
