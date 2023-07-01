@@ -153,7 +153,7 @@ const getEmployees = async (req, res) => {
       }
     })
   } catch (error) {
-    console.log('🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:', error)
+    console.log('🚀 ~ file: user.controller.js:156 ~ getEmployees ~ error:', error)
     res.status(500).json({ message: error })
   }
 }
