@@ -1,7 +1,7 @@
 const Router = require('express')
 const router = Router()
-const { register, login, update } = require('../../controllers/models/user.controller')
-const { validateToken } = require('../../utilities/middleware')
+const { register, login, update, getEmployees } = require('../../controllers/models/user.controller')
+const { validateToken, policy } = require('../../utilities/middleware')
 
 // Genericas
 // router.get('/', checkToken, getAll(User)); // muestra todos
@@ -16,5 +16,6 @@ const { validateToken } = require('../../utilities/middleware')
 router.post('/register', register) // Registrar un usuario en la DB
 router.post('/login', login) // crea uno
 router.patch('/', validateToken, update) // actualiza uno
+router.get('/getEmployees', validateToken, policy, policy, getEmployees) // muestra todos los empleados de la empresa
 
 module.exports = router

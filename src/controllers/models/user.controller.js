@@ -1,4 +1,4 @@
-const { Usuario, Rol } = require('../../database/models/index')
+const { Usuario, Rol, UsuarioSucursal, Sucursal } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
 const { createToken } = require('../../utilities/util')
 
@@ -103,6 +103,61 @@ const update = async (req, res) => {
   }
 }
 
+const getEmployees = async (req, res) => {
+  const id = req.userId
+  try {
+    await Usuario.findOne({
+      where: { id },
+      include: [{
+        model: Sucursal,
+        attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+        through: {
+          model: UsuarioSucursal,
+          attributes: []
+        }
+      }],
+      attributes: ['id', 'nombre', 'apellido', 'email']
+    }).then((user) => {
+      if (user) {
+        // Valido que el usuario tenga al menos 1 una sucursal asociada
+        const sucursal = user.Sucursals.length > 0 ? user.Sucursals[0] : null
+        if (sucursal) {
+          // Obtengo el cuil de la empresa para la cual trabaja el usuario
+          const cuilEmpresa = sucursal.cuilEmpresa
+          // Obtengo los usuarios que trabajan en la misma empresa
+          Usuario.findAll({
+            include: [{
+              model: Sucursal,
+              attributes: ['id', 'nombre', 'direccion', 'ciudad'],
+              through: {
+                model: UsuarioSucursal
+              },
+              where: { cuilEmpresa }
+            }, {
+              model: Rol,
+              attributes: ['id', 'descripcion']
+            }],
+            attributes: ['id', 'nombre', 'apellido', 'email']
+          }).then((users) => {
+            if (users) {
+              return res.status(200).json({ users })
+            } else {
+              return res.status(404).json({ message: 'No se encontraron usuarios' })
+            }
+          })
+        } else {
+          return res.status(404).json({ message: 'El usuario no tiene una sucursal asociada' })
+        }
+      } else {
+        return res.status(404).json({ message: 'Usuario no encontrado' })
+      }
+    })
+  } catch (error) {
+    console.log('🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:', error)
+    res.status(500).json({ message: error })
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -113,5 +168,6 @@ const update = async (req, res) => {
 module.exports = {
   register,
   login,
-  update
+  update,
+  getEmployees
 }
