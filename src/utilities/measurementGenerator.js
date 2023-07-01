@@ -1,10 +1,22 @@
 const { Medicion, Parametro } = require('../database/models/index')
 
+/**
+ *
+ * @param {*} numeroAnterior Numero entero
+ * @returns Numero random entre numeroAnterior - 0.01 y numeroAnterior + 0.01
+ */
+
 const generarNumeroRandom = (numeroAnterior) => {
   const precision = 0.01
   const diferencia = (Math.random() * precision * 2) - precision
   return numeroAnterior + diferencia
 }
+
+/**
+ *
+ * @param {*} idMaquinaSucursal Numero entero
+ * @returns Objeto medicion guardado en la base de datos
+ */
 
 // Función principal
 const generarMedicion = async (idMaquinaSucursal) => {
@@ -33,6 +45,12 @@ const generarMedicion = async (idMaquinaSucursal) => {
   return await guardarMedicionesEnDB(medicion)
 }
 
+/**
+ *
+ * @param {*} idMaquina Numero entero
+ * @returns Objeto medicion
+ */
+
 // Obtener Ultima Medicion
 const obtenerUltimaMedicion = async (idMaquina) => {
   try {
@@ -58,6 +76,12 @@ const obtenerUltimaMedicion = async (idMaquina) => {
     console.error('Error al obtener los parámetros:', error.name)
   }
 }
+
+/**
+ *
+ * @param {*} medicion Objeto medicion
+ * @returns Objeto medicion guardado en la base de datos
+ */
 
 async function guardarMedicionesEnDB (medicion) {
   try {
