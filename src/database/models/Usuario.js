@@ -65,10 +65,20 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    recibeNoti: {
+    recibeNotiTelegram: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: false
+    },
+    recibeNotiMail: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    mailValidado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     },
     telegramToken: {
       type: DataTypes.STRING(6),
