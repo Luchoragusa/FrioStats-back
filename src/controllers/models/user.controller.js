@@ -224,9 +224,9 @@ const getOne = async (req, res) => {
     await Usuario.findOne({
       where: { id },
       attributes: { exclude: ['password', 'telegramToken', 'createdAt', 'updatedAt'] }
-    }).then((user) => {
-      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
-      return res.status(200).json({ user })
+    }).then((elemt) => {
+      if (!elemt) return res.status(404).json({ message: 'Usuario no encontrado' })
+      return res.status(200).json({ elemt })
     })
   } catch (error) {
     catchError(res, error, '🚀 ~ file: user.controller.js:256 ~ getOne ~ error:')
