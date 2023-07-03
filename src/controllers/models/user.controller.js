@@ -192,7 +192,7 @@ const validateTelegram = async (req, res) => {
       if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
 
       // Valido que el usuario tenga un token de telegram
-      if (!user.telegramToken) return res.status(404).json({ message: 'El Telegram id ya fue validado' })
+      if (!user.telegramToken) return res.status(409).json({ message: 'El Telegram id ya fue validado' })
 
       // Valido que el telegramToken ingreasdo sea el mismo que el que tiene el usuario en la DB
       if (user.telegramToken === telegramToken) {
