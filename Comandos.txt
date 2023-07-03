@@ -2,18 +2,18 @@ Crear un archivo seed
 -> sequelize seed:generate --name seedTest
 
 Correr los seed en ORDEN
--> sequelize db:seed --seed 20230512193138-Empresa
--> sequelize db:seed --seed 20230512193340-Modelo
--> sequelize db:seed --seed 20230512193523-Rol
--> sequelize db:seed --seed 20230512193618-Tipo
--> sequelize db:seed --seed 20230512193634-Usuario
--> sequelize db:seed --seed 20230512193548-Sucursal
--> sequelize db:seed --seed 20230512193243-MaquinaSucursal
--> sequelize db:seed --seed 20230512193700-UsuarioSucursal
--> sequelize db:seed --seed 20230512193204-ImportanciaParametro
--> sequelize db:seed --seed 20230512193313-Medicion
--> sequelize db:seed --seed 20230512193426-Notificacion
--> sequelize db:seed --seed 20230512193457-Parametro
+sequelize db:seed --seed 20230512193138-Empresa
+sequelize db:seed --seed 20230512193340-Modelo
+sequelize db:seed --seed 20230512193523-Rol
+sequelize db:seed --seed 20230512193618-Tipo
+sequelize db:seed --seed 20230512193634-Usuario
+sequelize db:seed --seed 20230512193548-Sucursal
+sequelize db:seed --seed 20230512193243-MaquinaSucursal
+sequelize db:seed --seed 20230512193700-UsuarioSucursal
+sequelize db:seed --seed 20230512193204-ImportanciaParametro
+sequelize db:seed --seed 20230512193313-Medicion
+sequelize db:seed --seed 20230512193426-Notificacion
+sequelize db:seed --seed 20230512193457-Parametro
 
 
 
