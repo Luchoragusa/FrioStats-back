@@ -61,7 +61,7 @@ const login = async (req, res) => {
       attributes: ['id', 'nombre', 'apellido', 'email', 'password']
     })
       .then(async (user) => {
-        if (!user) return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
+        if (!user) return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' })
         if (bcrypt.compareSync(password, user.password)) {
           // Remuevo el password del objeto user
           user.password = undefined
@@ -69,7 +69,7 @@ const login = async (req, res) => {
           res.cookie('jwt', token, { httpOnly: true, secure: true })
           return res.status(200).json({ token, user })
         } else {
-          return res.status(404).json({ message: 'Mail y/o contraseña incorrecto' })
+          return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' })
         }
       })
   } catch (error) {
