@@ -1,5 +1,5 @@
 const { Usuario, UsuarioSucursal, Sucursal } = require('../../database/models/index')
-const { catchError } = require('../../utilities/util')
+const Util = require('../../utilities/util')
 
 const getInfoHome = async (req, res) => {
   const id = req.userId
@@ -21,7 +21,7 @@ const getInfoHome = async (req, res) => {
         return res.status(200).json({ elemts })
       })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: usuario.controller.js:96 ~ getInfoHome ~ error:')
   }
 }
 

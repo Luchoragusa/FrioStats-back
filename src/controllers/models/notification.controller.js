@@ -1,5 +1,5 @@
 const { Notificacion, MaquinaSucursal } = require('../../database/models/index')
-const { catchError } = require('../../utilities/util')
+const Util = require('../../utilities/util')
 
 /**
  * Esto es un ejemplo de como debería ser el body de la request
@@ -36,7 +36,7 @@ const checkNotifications = async (req, res) => {
     }
     res.status(200).json({ notificacionesActualizadas })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getInfoHome ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getInfoHome ~ error:')
   }
 }
 
@@ -52,7 +52,7 @@ const getNotifications = async (req, res) => {
       // Obtengo las mediciones de las maquinas de la sucursal
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getInfoHome ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getInfoHome ~ error:')
   }
 }
 

@@ -1,7 +1,7 @@
 const Router = require('express')
 const router = Router()
-const { getInfoHome } = require('../../controllers/models/home.controller')
+const HomeController = require('../../controllers/models/home.controller')
 
-router.get('/', getInfoHome) // muestra todos
+router.get('/', HomeController.getInfoHome) // muestra todos
 
 module.exports = router

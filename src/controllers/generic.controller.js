@@ -1,4 +1,5 @@
 const { catchError } = require('../utilities/util')
+const Email = require('../utilities/mail/sendEmail')
 
 exports.getAll = Model =>
   async (req, res, next) => {
@@ -43,7 +44,9 @@ exports.deleteOne = Model =>
 exports.createOne = Model =>
   async (req, res, next) => {
     try {
+      if (Model === undefined) { return res.status(404).json({ msg: 'Modelo no encontrado' }) }
       const elemnt = await Model.create(req.body)
+      Email.sendConfirmationEmail(elemnt)
       if (!elemnt) { return res.status(404).json({ msg: 'Elemento no encontrado' }) }
       return res.status(200).json({ elemnt })
     } catch (error) {

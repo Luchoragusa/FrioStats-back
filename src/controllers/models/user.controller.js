@@ -1,6 +1,8 @@
 const { Usuario, Rol, UsuarioSucursal, Sucursal } = require('../../database/models/index')
 const bcrypt = require('bcrypt')
-const { createToken, createTelegramToken, sendTelegramVerification, catchError } = require('../../utilities/util')
+const jwt = require('jwt-simple')
+const Util = require('../../utilities/util')
+const Email = require('../../utilities/mail/sendEmail')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
@@ -14,7 +16,7 @@ const register = async (req, res) => {
     password: req.body.password,
     email: req.body.email,
     idRol: 2, // Rol de usuario
-    telegramToken: createTelegramToken(),
+    telegramToken: Util.createTelegramToken(),
     telegramId: req.body.telegramId ? req.body.telegramId : null,
     recibeNoti: req.body.recibeNoti === 'true'
   }
@@ -42,13 +44,15 @@ const register = async (req, res) => {
         .then(() => {
           // Si el usuario tiene telegramId, envio el mensaje de verificacion
           if (user.telegramId) {
-            sendTelegramVerification(user)
+            Util.sendTelegramVerification(user)
           }
+          // Envio el mail de verificacion
+          Email.sendVerificationEmail(user)
           return res.status(201).json({ message: 'Usuario creado', user })
         })
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:60 ~ register ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:60 ~ register ~ error:')
   }
 }
 
@@ -65,7 +69,7 @@ const login = async (req, res) => {
         if (bcrypt.compareSync(password, user.password)) {
           // Remuevo el password del objeto user
           user.password = undefined
-          const token = createToken(user)
+          const token = Util.createToken(user)
           res.cookie('jwt', token, { httpOnly: true, secure: true })
           return res.status(200).json({ token, user })
         } else {
@@ -73,7 +77,7 @@ const login = async (req, res) => {
         }
       })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:91 ~ login ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:91 ~ login ~ error:')
   }
 }
 
@@ -89,7 +93,7 @@ const update = async (req, res) => {
     const userOld = await Usuario.findOne({ where: { id } })
     // Si el usuario actualizo el telegramId genro un nuevo token y envio el mensaje de verificacion
     if (u.telegramId !== userOld.telegramId) {
-      u.telegramToken = createTelegramToken()
+      u.telegramToken = Util.createTelegramToken()
     }
     await Usuario.update(u, { where: { id } })
       .then(async () => {
@@ -99,7 +103,7 @@ const update = async (req, res) => {
         }).then((userUpdated) => {
           // Si el usuario actualizo el telegramId envio el mensaje de verificacion
           if (u.telegramId !== userOld.telegramId) {
-            sendTelegramVerification(userUpdated)
+            Util.sendTelegramVerification(userUpdated)
           }
           // Remuevo el Telegram Token del objeto user
           userUpdated.telegramToken = undefined
@@ -107,7 +111,7 @@ const update = async (req, res) => {
         })
       })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:122 ~ update ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:122 ~ update ~ error:')
   }
 }
 
@@ -158,7 +162,7 @@ const getEmployees = async (req, res) => {
       }
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:177 ~ getEmployees ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:177 ~ getEmployees ~ error:')
   }
 }
 
@@ -175,7 +179,7 @@ const updateRole = async (req, res) => {
         return res.status(200).json({ message: 'Rol actualizado' })
       })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:198 ~ updateRole ~ error:')
+    Util.Util.catchError(res, error, '🚀 ~ file: user.controller.js:198 ~ updateRole ~ error:')
   }
 }
 
@@ -205,16 +209,16 @@ const validateTelegram = async (req, res) => {
           })
       } else {
         // Si ingresa un token incorrecto, se le genera uno nuevo
-        const newToken = createTelegramToken()
+        const newToken = Util.createTelegramToken()
         await Usuario.update({ telegramToken: newToken }, { where: { id } })
         // Se envia el nuevo token al usuario
         user.telegramToken = newToken
-        sendTelegramVerification(newToken, user)
+        Util.sendTelegramVerification(newToken, user)
         return res.status(404).json({ message: 'Token incorrecto, se genero un token nuevo.' })
       }
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:240 ~ validateTelegram ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:240 ~ validateTelegram ~ error:')
   }
 }
 
@@ -229,7 +233,29 @@ const getOne = async (req, res) => {
       return res.status(200).json({ elemt })
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: user.controller.js:256 ~ getOne ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:256 ~ getOne ~ error:')
+  }
+}
+
+const validateEmail = async (req, res) => {
+  try {
+    const token = req.params.token
+    const email = jwt.decode(token, process.env.HASH_KEY)
+    // Valido que el usuario exista
+    await Usuario.findOne({ where: { email } }).then(async (user) => {
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+      if (user.confirmed) return res.status(409).json({ message: 'El email ya fue validado' })
+      // Valido que el token sea correcto
+      await Usuario.update({ mailValidado: true }, { where: { email } })
+        .then((user) => {
+          if (user) {
+            // Aca deberia redirigir a la vista de login
+            return res.status(200).json({ message: 'Email validado' })
+          }
+        })
+    })
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:252 ~ validateEmail ~ error:')
   }
 }
 
@@ -246,6 +272,7 @@ module.exports = {
   update,
   getEmployees,
   updateRole,
+  getOne,
   validateTelegram,
-  getOne
+  validateEmail
 }

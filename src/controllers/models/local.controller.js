@@ -1,5 +1,5 @@
 const { Sucursal, UsuarioSucursal } = require('../../database/models/index')
-const { catchError } = require('../../utilities/util')
+const Util = require('../../utilities/util')
 
 const getLocals = async (req, res) => {
   const idUsuario = req.userId
@@ -21,7 +21,7 @@ const getLocals = async (req, res) => {
       res.status(200).json({ elemts })
     })
   } catch (error) {
-    catchError(res, error, '🚀 ~ file: local.controller.js:23 ~ getLocals ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: local.controller.js:23 ~ getLocals ~ error:')
   }
 }
 

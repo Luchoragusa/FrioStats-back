@@ -1,8 +1,8 @@
 const Router = require('express')
 const router = Router()
-const { getAll } = require('../../controllers/generic.controller')
+const GenericController = require('../../controllers/generic.controller')
 const { Rol } = require('../../database/models/index')
 
-router.get('/getRoles', getAll(Rol)) // muestra todos
+router.get('/getRoles', GenericController.getAll(Rol)) // muestra todos
 
 module.exports = router
