@@ -80,10 +80,10 @@ const login = async (req, res) => {
 const update = async (req, res) => {
   const id = req.userId
   const u = {
-    nombre: req.body.nombre,
-    apellido: req.body.apellido,
-    recibeNoti: req.body.recibeNoti === 'true',
-    telegramId: req.body.telegramId ? req.body.telegramId : null
+    telegramId: req.body.telegramId ? req.body.telegramId : null,
+    recibeNotiTelegram: req.body.recibeNotiTelegram === 'true',
+    recibeNotiMail: req.body.recibeNotiMail === 'true'
+
   }
   try {
     const userOld = await Usuario.findOne({ where: { id } })
@@ -218,6 +218,21 @@ const validateTelegram = async (req, res) => {
   }
 }
 
+const getOne = async (req, res) => {
+  const id = req.userId
+  try {
+    await Usuario.findOne({
+      where: { id },
+      attributes: { exclude: ['password', 'telegramToken', 'createdAt', 'updatedAt'] }
+    }).then((user) => {
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+      return res.status(200).json({ user })
+    })
+  } catch (error) {
+    catchError(res, error, '🚀 ~ file: user.controller.js:256 ~ getOne ~ error:')
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -231,5 +246,6 @@ module.exports = {
   update,
   getEmployees,
   updateRole,
-  validateTelegram
+  validateTelegram,
+  getOne
 }
