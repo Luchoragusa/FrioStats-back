@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000
 
 http.listen(PORT, () => {
   sendInfoMessage(`Running on a port: ${PORT}`)
-  sequelize.sync({ alter: false }).then(() => {
+  sequelize.sync({ alter: true }).then(() => {
     sendSuccessMessage('Conexion a DB exitosa')
   }).catch(error => {
     console.log('Se ha producido un error', error)
