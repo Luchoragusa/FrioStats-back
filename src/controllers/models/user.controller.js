@@ -69,12 +69,12 @@ const login = async (req, res) => {
     await Usuario.findOne({
       where: { email },
       include: [{ model: Rol, attributes: ['id', 'descripcion'] }],
-      attributes: ['id', 'nombre', 'apellido', 'email', 'password', 'mailValidado']
+      attributes: ['id', 'nombre', 'apellido', 'email', 'password', 'emailConfirmado']
     })
       .then(async (user) => {
         if (!user) return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' })
         if (!bcrypt.compareSync(password, user.password)) { return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' }) }
-        if (!user.validateEmail) { return res.status(403).json({ message: 'Es necesario verificar el email' }) }
+        if (!user.emailConfirmado) { return res.status(403).json({ message: 'Es necesario verificar el email' }) }
         // Remuevo el password del objeto user
         user.password = undefined
         const token = Util.createToken(user)
