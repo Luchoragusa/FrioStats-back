@@ -99,7 +99,7 @@ const update = async (req, res) => {
       .then(async () => {
         await Usuario.findOne({
           where: { id },
-          attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNoti', 'telegramId', 'telegramToken']
+          attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNotiTelegram', 'recibeNotiMail', 'telegramId', 'telegramToken']
         }).then((userUpdated) => {
           // Si el usuario actualizo el telegramId envio el mensaje de verificacion
           if (u.telegramId !== userOld.telegramId) {
