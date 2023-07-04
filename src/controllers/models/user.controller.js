@@ -10,17 +10,18 @@ const register = async (req, res) => {
   if (!idSucursal) {
     return res.status(400).json({ message: 'Debe ingresar una id de sucursal' })
   }
-  const usuarioNew = {
-    nombre: req.body.nombre,
-    apellido: req.body.apellido,
-    password: req.body.password,
-    email: req.body.email,
-    idRol: 2, // Rol de usuario
-    telegramToken: Util.createTelegramToken()
-  }
-  const email = usuarioNew.email
 
   try {
+    const usuarioNew = {
+      nombre: req.body.nombre,
+      apellido: req.body.apellido,
+      password: req.body.password,
+      email: req.body.email,
+      idRol: 2, // Rol de usuario
+      telegramToken: Util.createTelegramToken(),
+      idSucursal: req.body.idSucursal
+    }
+    const email = usuarioNew.email
     // Valido que el mail no exista en la DB
     await Usuario.findOne({ where: { email } })
       .then(() => {
@@ -32,6 +33,14 @@ const register = async (req, res) => {
       await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
         .then(() => {
           return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' })
+        })
+    }
+
+    // Valido que la sucursal exista en la DB
+    if (usuarioNew.idSucursal) {
+      await Sucursal.findOne({ where: { id: usuarioNew.idSucursal } })
+        .then(() => {
+          return res.status(400).json({ message: 'La sucursal no existe en el sistema' })
         })
     }
 
