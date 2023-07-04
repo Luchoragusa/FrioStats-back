@@ -13,9 +13,9 @@ router.post('/login', login) // Loguear un usuario
 
 router.patch('/', validateToken, update) // Acutaliza los datos de un usuario
 router.patch('/:id', validateToken, policy, checkParams, updateRole) // Actualiza el rol de un usuario
-router.patch('/confirmEmail/:token', checkParams, validateEmail) // Verifica la direccion de email
 // router.patch('/confirmTelegram', validateToken, validateTelegram) // Verifica el token de telegram
 
+router.get('/confirmEmail/:token', checkParams, validateEmail) // Verifica la direccion de email
 router.get('/getOne', validateToken, getOne) // muestra todos los empleados de la empresa
 router.get('/getEmployees', validateToken, policy, getEmployees) // muestra todos los empleados de la empresa
 

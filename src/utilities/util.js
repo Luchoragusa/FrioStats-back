@@ -33,7 +33,7 @@ const createTelegramToken = () => {
  */
 
 const sendTelegramVerification = (user) => {
-  sendSuccessMessage(`Confirmacion enviada al telegramId [${user.telegramId}] con el token [${user.telegramToken}]`)
+  sendInfoMessage(`Confirmacion enviada al telegramId [${user.telegramId}] con el token [${user.telegramToken}]`)
 }
 /**
  *

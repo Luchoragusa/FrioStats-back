@@ -19,28 +19,29 @@ const register = async (req, res) => {
       email: req.body.email,
       idRol: 2, // Rol de usuario
       telegramToken: Util.createTelegramToken(),
-      idSucursal: req.body.idSucursal
+      idSucursal: req.body.idSucursal,
+      telegramId: req.body.telegramId ? req.body.telegramId : null
     }
     const email = usuarioNew.email
     // Valido que el mail no exista en la DB
     await Usuario.findOne({ where: { email } })
-      .then(() => {
-        return res.status(400).json({ message: 'El mail ya existe en el sistema' })
+      .then((u) => {
+        if (u) { return res.status(400).json({ message: 'El mail ya existe en el sistema' }) }
       })
 
     // Valido que el telegramId no exista en la DB
     if (usuarioNew.telegramId) {
       await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
-        .then(() => {
-          return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' })
+        .then((u) => {
+          if (u) { return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' }) }
         })
     }
 
     // Valido que la sucursal exista en la DB
     if (usuarioNew.idSucursal) {
       await Sucursal.findOne({ where: { id: usuarioNew.idSucursal } })
-        .then(() => {
-          return res.status(400).json({ message: 'La sucursal no existe en el sistema' })
+        .then((s) => {
+          if (!s) { return res.status(400).json({ message: 'La sucursal no existe en el sistema' }) }
         })
     }
 
@@ -54,7 +55,7 @@ const register = async (req, res) => {
             Util.sendTelegramVerification(user)
           }
           // Envio el mail de verificacion
-          Email.sendVerificationEmail(user)
+          Email.sendConfirmationEmail(user)
           return res.status(201).json({ message: 'Usuario creado', user })
         })
     })
@@ -245,17 +246,17 @@ const getOne = async (req, res) => {
 const validateEmail = async (req, res) => {
   try {
     const token = req.params.token
-    const email = jwt.decode(token, process.env.HASH_KEY)
+    const email = jwt.decode(token, process.env.SECRET_KEY)
     // Valido que el usuario exista
     await Usuario.findOne({ where: { email } }).then(async (user) => {
       if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
-      if (user.confirmed) return res.status(409).json({ message: 'El email ya fue validado' })
+      if (user.emailConfirmado) return res.status(409).json({ message: 'El email ya fue validado' })
       // Valido que el token sea correcto
-      await Usuario.update({ mailValidado: true }, { where: { email } })
+      await Usuario.update({ emailConfirmado: true }, { where: { email } })
         .then((user) => {
           if (user) {
             // Aca deberia redirigir a la vista de login
-            return res.status(200).json({ message: 'Email validado' })
+            return res.status(200).json({ message: 'Email validado', message2: 'Esto deberia llevar al login' })
           }
         })
     })

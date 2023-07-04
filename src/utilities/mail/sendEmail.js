@@ -52,6 +52,8 @@ const sendConfirmationEmail = async (user) => {
   const token = jwt.encode(user.email, process.env.SECRET_KEY)
   const url = `${process.env.URL}/users/confirmEmail/${token}`
 
+  console.log(url)
+
   const mailOptions = {
     from: {
       name: 'Frio Stats',
@@ -78,8 +80,7 @@ const sendEmail = async (mailOptions) => {
         if (err) {
           Util.sendErrorMessage(err)
         } else {
-          console.log('Email enviado')
-          Util.sendInfoMessage('Email enviado', info)
+          Util.sendInfoMessage(`Email enviado al correo ${info.accepted}`)
         }
       })
     })
