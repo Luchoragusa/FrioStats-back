@@ -60,9 +60,10 @@ const sendConfirmationEmail = async (user) => {
     to: user.email,
     subject: 'Confirmación de cuenta',
     template: 'confirmationEmail',
-    context: {
+    context: { // Estos datos se pasan al template, se accede con {{}}, son las variables
       url,
-      user: user.nombre
+      user: user.nombre,
+      logo: `${process.env.URL}/files/images/logo.png` // TODO: Falta el logo
     }
   }
 

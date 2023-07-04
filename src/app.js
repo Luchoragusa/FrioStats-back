@@ -3,7 +3,7 @@ const http = require('http').createServer(app)
 const { sequelize } = require('./database/models/index')
 const { sendInfoMessage, sendSuccessMessage } = require('./utilities/util')
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT
 
 http.listen(PORT, () => {
   sendInfoMessage(`Running on a port: ${PORT}`)
