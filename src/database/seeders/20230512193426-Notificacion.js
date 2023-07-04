@@ -8,24 +8,28 @@ module.exports = {
       idTipo: 1,
       idMedicion: 1,
       visto: false,
+      idMaquina: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       idTipo: 1,
       idMedicion: 2,
       visto: true,
+      idMaquina: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       idTipo: 1,
       idMedicion: 3,
       visto: false,
+      idMaquina: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       idTipo: 1,
       idMedicion: 4,
       visto: true,
+      idMaquina: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {})
