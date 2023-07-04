@@ -16,9 +16,7 @@ const register = async (req, res) => {
     password: req.body.password,
     email: req.body.email,
     idRol: 2, // Rol de usuario
-    telegramToken: Util.createTelegramToken(),
-    telegramId: req.body.telegramId ? req.body.telegramId : null,
-    recibeNoti: req.body.recibeNoti === 'true'
+    telegramToken: Util.createTelegramToken()
   }
   const email = usuarioNew.email
 
@@ -62,19 +60,17 @@ const login = async (req, res) => {
     await Usuario.findOne({
       where: { email },
       include: [{ model: Rol, attributes: ['id', 'descripcion'] }],
-      attributes: ['id', 'nombre', 'apellido', 'email', 'password']
+      attributes: ['id', 'nombre', 'apellido', 'email', 'password', 'mailValidado']
     })
       .then(async (user) => {
         if (!user) return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' })
-        if (bcrypt.compareSync(password, user.password)) {
-          // Remuevo el password del objeto user
-          user.password = undefined
-          const token = Util.createToken(user)
-          res.cookie('jwt', token, { httpOnly: true, secure: true })
-          return res.status(200).json({ token, user })
-        } else {
-          return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' })
-        }
+        if (!bcrypt.compareSync(password, user.password)) { return res.status(401).json({ message: 'Mail y/o contraseña incorrecto' }) }
+        if (!user.validateEmail) { return res.status(403).json({ message: 'Es necesario verificar el email' }) }
+        // Remuevo el password del objeto user
+        user.password = undefined
+        const token = Util.createToken(user)
+        res.cookie('jwt', token, { httpOnly: true, secure: true })
+        return res.status(200).json({ token, user })
       })
   } catch (error) {
     Util.catchError(res, error, '🚀 ~ file: user.controller.js:91 ~ login ~ error:')
