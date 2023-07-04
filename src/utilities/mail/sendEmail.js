@@ -52,8 +52,6 @@ const sendConfirmationEmail = async (user) => {
   const token = jwt.encode(user.email, process.env.SECRET_KEY)
   const url = `${process.env.URL}/users/confirmEmail/${token}`
 
-  console.log(url)
-
   const mailOptions = {
     from: {
       name: 'Frio Stats',
@@ -65,7 +63,7 @@ const sendConfirmationEmail = async (user) => {
     context: { // Estos datos se pasan al template, se accede con {{}}, son las variables
       url,
       user: user.nombre,
-      logo: `${process.env.URL}/files/images/logo.png` // TODO: Falta el logo
+      logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png'
     }
   }
 
