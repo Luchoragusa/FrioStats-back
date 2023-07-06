@@ -10,12 +10,6 @@ const app = express()
 // Requerir rutas
 const router = require('./routes/index.routes')
 
-// Requerir bot
-const { sendMessage } = require('./utilities/bot')
-
-// Uso del bot
-sendMessage(1612650323, 'Ola')
-
 // Seteo la rutina
 
 // const schedule = require('node-schedule')

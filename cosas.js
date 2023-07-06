@@ -17,3 +17,9 @@
 // Un usuario siempre tiene que tener al menos 1 sucursal asociada.
 
 // El crear cuenta se hace desde el panel de Admin y toma la empresa del admin que lo crea
+
+
+// === Pasos Telegram ===
+
+// 1. Mandarle un /start al bot para iniciar el chat con el bot
+// 2. El bot debe responder con un mensaje de bienvenida y la id que se debe usar para mandarle mensajes

@@ -1,42 +1,49 @@
 const Telegraf = require('telegraf')
 const bot = new Telegraf(process.env.BOT_TOKEN)
+const sendInfoMessage = require('./util')
 
 const sendMessage = async (id, message) => {
   try {
     await bot.telegram.sendMessage(id, message, {
-      parse_mode: 'Markdown', // esto  es para que el mensaje se vea en negrita
-      disable_notification: true // esto es para que no se notifique al usuario
+      parse_mode: 'Markdown'
     })
   } catch (error) {
     console.log(error)
   }
 }
 
-// bot.launch() //
-
-module.exports = {
-  sendMessage
+const sendToken = async (id, message) => {
+  try {
+    await bot.telegram.sendMessage(id, message, {
+      parse_mode: 'Markdown'
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 // Set the bot API endpoint
 
 bot.start((ctx) => {
-  ctx.reply(`Hola ${ctx.from.first_name} ${ctx.from.last_name}`)
-  // console.log(ctx) -> // Aca veo todos los comandos que tengo para acceder a la info del chat
-
-  console.log(`
-                ================ Info del mensaje ================
-                Mensaje enviado por ${ctx.from.first_name} ${ctx.from.last_name}
-                Su id es ${ctx.from.id}
-                El mensaje que envio fue "${ctx.message.text}"
-                El tipo de mensaje es [${ctx.updateSubTypes[0]}]
-                ===================================================`)
-
-  // shortcuts avoid to write the following
-  // bot.telegram.sendMessage(ctx.chat.id, 'hello world', [extra]);
-  // bot.telegram.sendMessage(ctx.chat.id, `Chat id -> ${ctx.chat.id}`);
-  bot.telegram.sendMessage(ctx.chat.id, '**hello world**', {
-    parse_mode: 'Markdown', // esto  es para que el mensaje se vea en negrita
-    disable_notification: true // esto es para que no se notifique al usuario
-  })
+  const message = `🙋‍♂️ Hola ${ctx.from.first_name} ${ctx.from.last_name}\n 
+A continuacion te indicamos la ID para que cargues en la pagina web\n
+📝 Su id es ${ctx.from.id}\n
+🌐 http://frio-stats.com/\n
+🔍 Para ver como validar el ID, usar el comando /info`
+  ctx.reply(message)
 })
+
+bot.command(['info', 'Info', 'INFO'], (ctx) => {
+  const message = `🔷  Para poder usar el bot, debes ingresar a la pagina web y cargar su ID\n
+🔷  Una vez cargada la ID, el bot le enviara un mensaje con un Token secreto, el cual debera ingresar en la pagina web para poder vincular su cuenta con el bot.\n \n
+🌐 http://frio-stats.com/`
+  ctx.reply(message)
+})
+
+// Launch bot
+bot.launch()
+
+module.exports = {
+  sendMessage,
+  sendToken
+}

@@ -2,6 +2,8 @@ const chalk = require('chalk')
 const jwt = require('jwt-simple')
 const moment = require('moment')
 const fecha = require('fecha')
+const { sendToken } = require('./bot')
+
 /**
  *
  * @param {*} u Objeto usuario
@@ -34,6 +36,17 @@ const createTelegramToken = () => {
 
 const sendTelegramVerification = (user) => {
   sendInfoMessage(`Confirmacion enviada al telegramId [${user.telegramId}] con el token [${user.telegramToken}]`)
+
+  const token = jwt.encode({
+    id: user.id,
+    telegramToken: user.telegramToken
+  }, process.env.SECRET_KEY)
+  const msg = `${process.env.URL}/users/confirmTelegram/${token}`
+
+  const message = `🙋‍♂️Hola ${user.nombre} \n\nPara confirmar tu cuenta de telegram, haz click en el siguiente link\n\n🌐 Haga click [aquí](${msg})`
+
+  // Uso del bot
+  sendToken(user.telegramId, message)
 }
 /**
  *

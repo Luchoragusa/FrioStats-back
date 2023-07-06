@@ -190,9 +190,10 @@ const updateRole = async (req, res) => {
 }
 
 const validateTelegram = async (req, res) => {
-  const telegramToken = req.body.telegramToken
-  if (!telegramToken) return res.status(400).json({ message: 'Se debe enviar un telegramToken' })
-  const id = req.userId
+  const token = req.params.token
+  const payload = jwt.decode(token, process.env.SECRET_KEY)
+  const id = payload.id
+  const telegramToken = payload.telegramToken
   try {
     await Usuario.findOne({
       where: { id },
