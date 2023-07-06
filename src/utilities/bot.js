@@ -1,6 +1,5 @@
 const Telegraf = require('telegraf')
 const bot = new Telegraf(process.env.BOT_TOKEN)
-const sendInfoMessage = require('./util')
 
 const sendMessage = async (id, message) => {
   try {
@@ -25,6 +24,7 @@ const sendToken = async (id, message) => {
 // Set the bot API endpoint
 
 bot.start((ctx) => {
+  console.log(`[Telegram] - ${ctx.from.first_name} ${ctx.from.last_name} - ${ctx.from.id}`)
   const message = `🙋‍♂️ Hola ${ctx.from.first_name} ${ctx.from.last_name}\n 
 A continuacion te indicamos la ID para que cargues en la pagina web\n
 📝 Su id es ${ctx.from.id}\n
