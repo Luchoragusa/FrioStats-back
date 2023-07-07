@@ -79,7 +79,7 @@ module.exports = {
       maxPuntoRocio: 30.0,
       minPuntoRocio: 9.3,
       maxConsumo: 1200,
-      idMaquina: 1,
+      idMaquina: 5,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -95,7 +95,7 @@ module.exports = {
       maxPuntoRocio: 30.0,
       minPuntoRocio: 9.3,
       maxConsumo: 1200,
-      idMaquina: 2,
+      idMaquina: 6,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -110,7 +110,7 @@ module.exports = {
       maxPuntoRocio: 30.0,
       minPuntoRocio: 9.3,
       maxConsumo: 900,
-      idMaquina: 3,
+      idMaquina: 7,
       createdAt: new Date(),
       updatedAt: new Date()
     }

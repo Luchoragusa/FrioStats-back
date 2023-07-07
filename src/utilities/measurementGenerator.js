@@ -1,4 +1,13 @@
 const { Medicion, Parametro } = require('../database/models/index')
+const { sendErrorMessage } = require('./util')
+
+const factores = {
+  sensorTempInterna: 1,
+  sensorTempTrabajoYBulbo: 5,
+  sensorCooler: 15,
+  sensorPuntoRocio: 5,
+  consumo: 10
+}
 
 /**
  *
@@ -6,8 +15,8 @@ const { Medicion, Parametro } = require('../database/models/index')
  * @returns Numero random entre numeroAnterior - 0.01 y numeroAnterior + 0.01
  */
 
-const generarNumeroRandom = (numeroAnterior) => {
-  const precision = 10
+const generarNumeroRandom = (numeroAnterior, nombreSensor) => {
+  const precision = factores[nombreSensor]
   const diferencia = (Math.random() * precision * 2) - precision
   return numeroAnterior + diferencia
 }
@@ -21,17 +30,19 @@ const generarNumeroRandom = (numeroAnterior) => {
 // Función principal
 const generarMedicion = async (idMaquinaSucursal) => {
   const ultimaMedicion = await obtenerUltimaMedicion(idMaquinaSucursal)
+
   // Generar las mediciones simuladas
-  const fechaHora = new Date()
-  const sensorTempTrabajoYBulbo = generarNumeroRandom(ultimaMedicion.sensorTempTrabajoYBulbo)
+  const sensorTempInterna = generarNumeroRandom(ultimaMedicion.sensorTempInterna, 'sensorTempInterna')
+  const sensorTempTrabajoYBulbo = generarNumeroRandom(ultimaMedicion.sensorTempTrabajoYBulbo, 'sensorTempTrabajoYBulbo')
   const sensorPuerta = Math.random() < 0.5
-  const sensorCooler = generarNumeroRandom(ultimaMedicion.sensorCooler)
-  const sensorPuntoRocio = generarNumeroRandom(ultimaMedicion.sensorPuntoRocio)
+  const sensorCooler = Math.round(generarNumeroRandom(ultimaMedicion.sensorCooler, 'sensorCooler')) // Integer
+  const sensorPuntoRocio = generarNumeroRandom(ultimaMedicion.sensorPuntoRocio, 'sensorPuntoRocio')
   const sensorLuz = Math.random() < 0.5
-  const consumo = generarNumeroRandom(ultimaMedicion.consumo)
+  const consumo = Math.round(generarNumeroRandom(ultimaMedicion.consumo, 'consumo')) // Integer
+
   const medicion = {
     idMaquina: idMaquinaSucursal,
-    fechaHora,
+    sensorTempInterna,
     sensorTempTrabajoYBulbo,
     sensorPuerta,
     sensorCooler,
@@ -61,7 +72,7 @@ const obtenerUltimaMedicion = async (idMaquina) => {
       const parametro = await Parametro.findOne({ where: { idMaquina } })
       return {
         idMaquina,
-        fechaHora: new Date(),
+        sensorTempInterna: ((parametro.maxTempInterna + parametro.minTempInterna) / 2),
         sensorTempTrabajoYBulbo: ((parametro.maxTempTrabajoYBulbo + parametro.minTempTrabajoYBulbo) / 2),
         sensorPuerta: false,
         sensorCooler: ((parametro.maxRpmCooler + parametro.minRpmCooler) / 2),
@@ -71,7 +82,7 @@ const obtenerUltimaMedicion = async (idMaquina) => {
       }
     }
   } catch (error) {
-    console.error('Error al obtener los parámetros:', error.name)
+    sendErrorMessage('Error al obtener los parámetros:', error)
   }
 }
 
@@ -84,7 +95,6 @@ const obtenerUltimaMedicion = async (idMaquina) => {
 async function guardarMedicionesEnDB (medicion) {
   try {
     return await Medicion.create(medicion)
-    // return medicion
   } catch (error) {
     console.error('Error al guardar las mediciones:', error)
   }

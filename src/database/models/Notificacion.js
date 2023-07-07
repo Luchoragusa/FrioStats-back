@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         notNull: { msg: 'Visto requerido' }
       },
       defaultValue: false
+    },
+    descripcion: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Descripcion requerida' },
+        len: { args: [3, 255], msg: 'La descripcion debe tener entre 3 y 255 caracteres' }
+      }
     }
   }, {
     sequelize,

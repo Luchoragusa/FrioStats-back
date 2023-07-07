@@ -12,20 +12,28 @@ const router = require('./routes/index.routes')
 
 // Seteo la rutina
 
-// const schedule = require('node-schedule')
-// const rule = new schedule.RecurrenceRule()
+const schedule = require('node-schedule')
+const rule = new schedule.RecurrenceRule()
 
+// Seteo para 10 segundos (para pruebas)
 // const times = []
-// for (let i = 0; i < 60; i = i + 10) { // Creo un array con los tiempos en los que se va a ejecutar la rutina
+// for (let i = 0; i < 60; i = i + 10) {
 //   times.push(i)
 // }
-// rule.second = times // Seteo la rutina para que se ejecute cada 10 segundos
+// rule.second = times
 
-// schedule.scheduleJob(rule, function () {
-//   console.log('The answer to life, the universe, and everything!' + new Date())
-// })
+// Seteo cada 1 hora y modificando el i+=1 se puede modificar el intervalo
+const hours = []
+for (let i = 0; i <= 24; i += 1) {
+  hours.push(i)
+}
+rule.hour = hours
+rule.minute = 13
+rule.second = 0
 
-// revisionMaquinas()
+schedule.scheduleJob(rule, function () {
+  // setTimeout(revisionMaquinas, 2500)
+})
 
 // Settings
 app.use(cors())

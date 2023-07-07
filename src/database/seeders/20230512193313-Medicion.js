@@ -6,45 +6,83 @@ module.exports = {
     // Seed de la tabla Medicion
     await queryInterface.bulkInsert('Medicion', [{
       idMaquina: 1,
-      sensorTempTrabajoYBulbo: 8,
+      sensorTempInterna: 2.3,
+      sensorTempTrabajoYBulbo: 28.4,
       sensorPuerta: 1,
-      sensorCooler: 500,
-      sensorPuntoRocio: 8,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
       sensorLuz: 1,
-      consumo: 10,
+      consumo: 950,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       idMaquina: 2,
-      sensorTempTrabajoYBulbo: 30,
+      sensorTempInterna: 2.3,
+      sensorTempTrabajoYBulbo: 28.4,
       sensorPuerta: 1,
-      sensorCooler: 600,
-      sensorPuntoRocio: 20,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
       sensorLuz: 1,
-      consumo: 20,
+      consumo: 950,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       idMaquina: 3,
-      sensorTempTrabajoYBulbo: 30,
+      sensorTempInterna: -19.32,
+      sensorTempTrabajoYBulbo: 28.4,
       sensorPuerta: 1,
-      sensorCooler: 200,
-      sensorPuntoRocio: 100,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
       sensorLuz: 1,
-      consumo: 10,
+      consumo: 950,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
       idMaquina: 4,
-      sensorTempTrabajoYBulbo: 100,
+      sensorTempInterna: 2.3,
+      sensorTempTrabajoYBulbo: 28.4,
       sensorPuerta: 1,
-      sensorCooler: 500,
-      sensorPuntoRocio: 100,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
       sensorLuz: 1,
-      consumo: 200,
+      consumo: 950,
       createdAt: new Date(),
       updatedAt: new Date()
-    }], {})
+    }, {
+      idMaquina: 5,
+      sensorTempInterna: 2.3,
+      sensorTempTrabajoYBulbo: 28.4,
+      sensorPuerta: 1,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
+      sensorLuz: 1,
+      consumo: 950,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      idMaquina: 6,
+      sensorTempInterna: 2.3,
+      sensorTempTrabajoYBulbo: 28.4,
+      sensorPuerta: 1,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
+      sensorLuz: 1,
+      consumo: 950,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      idMaquina: 7,
+      sensorTempInterna: -19.32,
+      sensorTempTrabajoYBulbo: 28.4,
+      sensorPuerta: 1,
+      sensorCooler: 750,
+      sensorPuntoRocio: 18.4,
+      sensorLuz: 1,
+      consumo: 950,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+    ], {})
   },
 
   async down (queryInterface, Sequelize) {

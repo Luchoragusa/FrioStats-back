@@ -12,8 +12,8 @@ sequelize db:seed --seed 20230512193243-MaquinaSucursal
 sequelize db:seed --seed 20230512193700-UsuarioSucursal
 sequelize db:seed --seed 20230512193204-ImportanciaParametro
 sequelize db:seed --seed 20230512193313-Medicion
-sequelize db:seed --seed 20230512193426-Notificacion
 sequelize db:seed --seed 20230512193457-Parametro
 
+sequelize db:seed --seed 20230512193426-Notificacion
 
 
