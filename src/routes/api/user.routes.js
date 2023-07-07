@@ -5,11 +5,12 @@ const { register, login, getEmployees, update, updateRole, validateTelegram, get
 const GenericController = require('../../controllers/generic.controller')
 const { Usuario } = require('../../database/models/index')
 const { validateToken, policy, checkParams } = require('../../utilities/middleware')
+const { validateRegister, validateLogin } = require('../../utilities/inputValidations')
 
 //  Especificas
-router.post('/register', validateToken, policy, register) // Registrar un usuario en la DB
-router.post('/registerSintoken', GenericController.createOne(Usuario)) // Registrar un usuario en la DB
-router.post('/login', login) // Loguear un usuario
+router.post('/register', validateToken, policy, validateRegister, register) // Registrar un usuario en la DB
+router.post('/registerSintoken', validateRegister, GenericController.createOne(Usuario)) // Registrar un usuario en la DB
+router.post('/login', validateLogin, login) // Loguear un usuario
 
 router.patch('/', validateToken, update) // Acutaliza los datos de un usuario
 router.patch('/:id', validateToken, policy, checkParams, updateRole) // Actualiza el rol de un usuario

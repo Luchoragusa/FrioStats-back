@@ -18,7 +18,6 @@
 
 // El crear cuenta se hace desde el panel de Admin y toma la empresa del admin que lo crea
 
-
 // === Pasos Telegram ===
 
 // 1. Mandarle un /start al bot para iniciar el chat con el bot
