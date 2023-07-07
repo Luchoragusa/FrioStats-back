@@ -8,8 +8,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Medicion.init({
+    sensorTempInterna: {
+      type: DataTypes.FLOAT(6, 3),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Sensor de temperatura interna requerido' },
+        isDecimal: { msg: 'El sensor de temperatura interna debe ser un numero decimal' }
+      }
+    },
     sensorTempTrabajoYBulbo: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.FLOAT(6, 3),
       allowNull: false,
       validate: {
         notNull: { msg: 'Sensor de temperatura de trabajo y bulbo requerido' },
@@ -24,15 +32,15 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     sensorCooler: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: { msg: 'Sensor de cooler requerido' },
-        isDecimal: { msg: 'El sensor de cooler debe ser un numero decimal' }
+        isNumeric: { msg: 'El sensor de cooler debe ser un numero decimal' }
       }
     },
     sensorPuntoRocio: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.FLOAT(6, 3),
       allowNull: false,
       validate: {
         notNull: { msg: 'Sensor de punto de rocio requerido' },
@@ -47,11 +55,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     consumo: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notNull: { msg: 'Consumo requerido' },
-        isDecimal: { msg: 'El consumo debe ser un numero decimal' }
+        isNumeric: { msg: 'El consumo debe ser un numero decimal' }
       }
     }
   }, {

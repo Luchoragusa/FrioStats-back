@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Maxima temperatura interna requerida' },
-        isNumeric: { msg: 'La maxima temperatura interna solo debe contener numeros' }
+        isDecimal: { msg: 'La maxima temperatura interna solo debe contener numeros' }
       }
     },
     minTempInterna: {
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Minima temperatura interna requerida' },
-        isNumeric: { msg: 'La minima temperatura interna solo debe contener numeros' }
+        isDecimal: { msg: 'La minima temperatura interna solo debe contener numeros' }
       }
     },
     maxTempTrabajoYBulbo: {
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Maxima temperatura de trabajo y bulbo requerida' },
-        isNumeric: { msg: 'La maxima temperatura de trabajo y bulbo solo debe contener numeros' }
+        isDecimal: { msg: 'La maxima temperatura de trabajo y bulbo solo debe contener numeros' }
       }
     },
     minTempTrabajoYBulbo: {
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Minima temperatura de trabajo y bulbo requerida' },
-        isNumeric: { msg: 'La minima temperatura de trabajo y bulbo solo debe contener numeros' }
+        isDecimal: { msg: 'La minima temperatura de trabajo y bulbo solo debe contener numeros' }
       }
     },
     estadoPuerta: {
@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Minimo punto de rocio requerido' },
-        isNumeric: { msg: 'El minimo punto de rocio solo debe contener numeros' }
+        isDecimal: { msg: 'El minimo punto de rocio solo debe contener numeros' }
       }
     },
     maxPuntoRocio: {
@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: { msg: 'Maximo punto de rocio requerido' },
-        isNumeric: { msg: 'El maximo punto de rocio solo debe contener numeros' }
+        isDecimal: { msg: 'El maximo punto de rocio solo debe contener numeros' }
       }
     },
     maxConsumo: {
