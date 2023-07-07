@@ -8,8 +8,24 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Parametro.init({
+    maxTempInterna: {
+      type: DataTypes.FLOAT(6, 3),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Maxima temperatura interna requerida' },
+        isNumeric: { msg: 'La maxima temperatura interna solo debe contener numeros' }
+      }
+    },
+    minTempInterna: {
+      type: DataTypes.FLOAT(6, 3),
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Minima temperatura interna requerida' },
+        isNumeric: { msg: 'La minima temperatura interna solo debe contener numeros' }
+      }
+    },
     maxTempTrabajoYBulbo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(6, 3),
       allowNull: false,
       validate: {
         notNull: { msg: 'Maxima temperatura de trabajo y bulbo requerida' },
@@ -17,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     minTempTrabajoYBulbo: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(6, 3),
       allowNull: false,
       validate: {
         notNull: { msg: 'Minima temperatura de trabajo y bulbo requerida' },
@@ -49,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     minPuntoRocio: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(6, 3),
       allowNull: false,
       validate: {
         notNull: { msg: 'Minimo punto de rocio requerido' },
@@ -57,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     maxPuntoRocio: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT(6, 3),
       allowNull: false,
       validate: {
         notNull: { msg: 'Maximo punto de rocio requerido' },

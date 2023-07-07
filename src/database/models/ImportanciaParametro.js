@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       ImportanciaParametro.belongsTo(models.MaquinaSucursal, { foreignKey: 'idMaquina' })
 
       // Relacion con Tipo - Esta tabla tiene FKs de Tipo
+      ImportanciaParametro.belongsTo(models.Tipo, { foreignKey: 'idTipoTempInterna' })
       ImportanciaParametro.belongsTo(models.Tipo, { foreignKey: 'idTipoTempTrabajoYBulbo' })
       ImportanciaParametro.belongsTo(models.Tipo, { foreignKey: 'idTipoEstadoPuerta' })
       ImportanciaParametro.belongsTo(models.Tipo, { foreignKey: 'idTipoCooler' })
