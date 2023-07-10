@@ -6,11 +6,6 @@ const Email = require('../../utilities/mail/sendEmail')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
-  const idSucursal = req.body.idSucursal
-  if (!idSucursal) {
-    return res.status(400).json({ message: 'Debe ingresar una id de sucursal' })
-  }
-
   try {
     const usuarioNew = {
       nombre: req.body.nombre,
@@ -18,9 +13,9 @@ const register = async (req, res) => {
       password: req.body.password,
       email: req.body.email,
       idRol: 2, // Rol de usuario
-      telegramToken: Util.createTelegramToken(),
       idSucursal: req.body.idSucursal,
-      telegramId: req.body.telegramId ? req.body.telegramId : null
+      telegramId: req.body.telegramId ? req.body.telegramId : null,
+      recibeNotiMail: req.body.recibeNotiMail ? req.body.recibeNotiMail : false
     }
     const email = usuarioNew.email
 
@@ -29,7 +24,10 @@ const register = async (req, res) => {
     if (u) { return res.status(400).json({ message: 'El mail ya existe en el sistema' }) }
 
     // Valido que el telegramId no exista en la DB
-    const t = await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
+    let t = null
+    if (usuarioNew.telegramId) {
+      t = await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
+    }
     if (t) { return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' }) }
 
     // Valido que la sucursal exista en la DB
@@ -39,12 +37,8 @@ const register = async (req, res) => {
     // Creo el usuario
     await Usuario.create(usuarioNew).then(async (user) => {
       // Creo el usuarioSucursal
-      await UsuarioSucursal.create({ idUsuario: user.id, idSucursal })
+      await UsuarioSucursal.create({ idUsuario: user.id, idSucursal: usuarioNew.idSucursal })
         .then(() => {
-          // Si el usuario tiene telegramId, envio el mensaje de verificacion
-          if (user.telegramId) {
-            Util.sendTelegramVerification(user)
-          }
           // Envio el mail de verificacion
           Email.sendConfirmationEmail(user)
           return res.status(201).json({ message: 'registrado' })
