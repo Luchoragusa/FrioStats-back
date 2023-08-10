@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   MaquinaSucursal.init({
+    coords: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Coordenadas requeridas' }
+      }
+    }
   }, {
     sequelize,
     modelName: 'MaquinaSucursal',
