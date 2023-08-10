@@ -17,6 +17,6 @@ const roleRouter = require('./api/role.routes')
 router.use('/roles', validateToken, policy, roleRouter)
 
 const localRouter = require('./api/local.routes')
-router.use('/locals', validateToken, policy, localRouter)
+router.use('/locals', validateToken, localRouter)
 
 module.exports = router
