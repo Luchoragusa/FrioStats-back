@@ -19,4 +19,7 @@ router.use('/roles', validateToken, policy, roleRouter)
 const localRouter = require('./api/local.routes')
 router.use('/locals', validateToken, localRouter)
 
+const measurementRouter = require('./api/measurement.routes')
+router.use('/measurements', validateToken, measurementRouter)
+
 module.exports = router
