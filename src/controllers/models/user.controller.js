@@ -19,7 +19,6 @@ const register = async (req, res) => {
       email: req.body.email,
       idRol: 2, // Rol de usuario
       telegramToken: Util.createTelegramToken(),
-      idSucursal: req.body.idSucursal,
       telegramId: req.body.telegramId ? req.body.telegramId : null
     }
     const email = usuarioNew.email
@@ -37,13 +36,13 @@ const register = async (req, res) => {
         })
     }
 
-    // Valido que la sucursal exista en la DB
-    if (usuarioNew.idSucursal) {
-      await Sucursal.findOne({ where: { id: usuarioNew.idSucursal } })
-        .then((s) => {
-          if (!s) { return res.status(400).json({ message: 'La sucursal no existe en el sistema' }) }
-        })
-    }
+    // Busco el cuil de la empresa del usuario logueado y se lo asigno al nuevo usuario
+    await Usuario.findOne({ where: { id: req.userId } })
+      .then((u) => {
+        if (u) {
+          usuarioNew.cuilEmpresa = u.cuilEmpresa
+        }
+      })
 
     // Creo el usuario
     await Usuario.create(usuarioNew).then(async (user) => {

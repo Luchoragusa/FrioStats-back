@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
       // Relacion con Rol - La tabla Usuario tiene una FK de Rol llamada idRol
       Usuario.belongsTo(models.Rol, { foreignKey: 'idRol', defaultValue: 2 })
 
+      // Relacion con Empresa - La tabla Usuario tiene una FK de Rol llamada cuilEmpresa
+      Usuario.belongsTo(models.Empresa, { foreignKey: 'cuilEmpresa' })
+
       // Relacion con Sucursal - La tabla intermedia UsuarioSucursal tiene FK de esta tabla llamada idUsuario
       Usuario.belongsToMany(models.Sucursal, { through: 'UsuarioSucursal', foreignKey: 'idUsuario' })
     }
