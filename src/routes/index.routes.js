@@ -22,4 +22,7 @@ router.use('/locals', validateToken, localRouter)
 const measurementRouter = require('./api/measurement.routes')
 router.use('/measurements', validateToken, measurementRouter)
 
+const parameterRouter = require('./api/parameter.routes')
+router.use('/parameters', validateToken, parameterRouter)
+
 module.exports = router
