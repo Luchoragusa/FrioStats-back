@@ -22,19 +22,14 @@ const register = async (req, res) => {
       telegramId: req.body.telegramId ? req.body.telegramId : null
     }
     const email = usuarioNew.email
+
     // Valido que el mail no exista en la DB
-    await Usuario.findOne({ where: { email } })
-      .then((u) => {
-        if (u) { return res.status(400).json({ message: 'El mail ya existe en el sistema' }) }
-      })
+    const u = await Usuario.findOne({ where: { email } })
+    if (u) { return res.status(400).json({ message: 'El mail ya existe en el sistema' }) }
 
     // Valido que el telegramId no exista en la DB
-    if (usuarioNew.telegramId) {
-      await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
-        .then((u) => {
-          if (u) { return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' }) }
-        })
-    }
+    const t = await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
+    if (t) { return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' }) }
 
     // Busco el cuil de la empresa del usuario logueado y se lo asigno al nuevo usuario
     await Usuario.findOne({ where: { id: req.userId } })
@@ -55,7 +50,7 @@ const register = async (req, res) => {
           }
           // Envio el mail de verificacion
           Email.sendConfirmationEmail(user)
-          return res.status(201).json({ message: 'Usuario creado', user })
+          return res.status(201).json({ message: 'registrado' })
         })
     })
   } catch (error) {
