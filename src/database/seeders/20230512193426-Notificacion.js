@@ -9,6 +9,7 @@ module.exports = {
       idMedicion: 1,
       visto: false,
       idMaquina: 1,
+      descripcion: 'Se ha detectado un error en la maquina 1',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -16,6 +17,7 @@ module.exports = {
       idMedicion: 2,
       visto: true,
       idMaquina: 1,
+      descripcion: 'Se ha detectado un error en la maquina 1',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -23,6 +25,7 @@ module.exports = {
       idMedicion: 3,
       visto: false,
       idMaquina: 1,
+      descripcion: 'Se ha detectado un error en la maquina 1',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -30,6 +33,7 @@ module.exports = {
       idMedicion: 4,
       visto: true,
       idMaquina: 1,
+      descripcion: 'Se ha detectado un error en la maquina 1',
       createdAt: new Date(),
       updatedAt: new Date()
     }], {})

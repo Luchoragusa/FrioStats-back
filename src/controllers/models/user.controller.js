@@ -18,8 +18,6 @@ const register = async (req, res) => {
 
     // Valido que el mail no exista en la DB
     const u = await Usuario.findOne({ where: { email: req.body.email } })
-    console.log("=======================================================")
-    console.log("Usuario encontrado:  ", u)
     if (u) { return res.status(400).json({ message: 'El mail ya existe en el sistema' }) }
 
     // Busco el cuil de la empresa del usuario logueado y se lo asigno al nuevo usuario
