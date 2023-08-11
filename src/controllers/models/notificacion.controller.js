@@ -59,7 +59,8 @@ const getCantNoti = async (req, res) => {
                     notificacionesXSucursal[cont] = {
                       idSucursal: maquina.idSucursal,
                       Notificaciones: maquina.Notificacions,
-                      CantNoti: null
+                      cantLeves: null,
+                      cantGraves: null
                     }
                   }
                 }
@@ -72,7 +73,8 @@ const getCantNoti = async (req, res) => {
         // Recorro las sucursales haciendo un conteo de las notificaciones no vistas
         await Promise.all(promises)
         notificacionesXSucursal.forEach((sucursal, index) => {
-          notificacionesXSucursal[index].CantNoti = sucursal.Notificaciones.length
+          notificacionesXSucursal[index].cantLeves = sucursal.Notificaciones.filter((notificacion) => notificacion.Tipo.descripcion === 'Leve').length
+          notificacionesXSucursal[index].cantGraves = sucursal.Notificaciones.filter((notificacion) => notificacion.Tipo.descripcion === 'Grave').length
         })
         return res.status(200).json(notificacionesXSucursal)
       })
