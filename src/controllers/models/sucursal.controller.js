@@ -1,7 +1,7 @@
 const { Sucursal, UsuarioSucursal } = require('../../database/models/index')
 const Util = require('../../utilities/util')
 
-const getLocals = async (req, res) => {
+const getSucursales = async (req, res) => {
   const idUsuario = req.userId
   try {
     // Este metodo devuelve una sucursal de la cual obtengo el cuil de la empresa
@@ -26,5 +26,5 @@ const getLocals = async (req, res) => {
 }
 
 module.exports = {
-  getLocals
+  getSucursales
 }

@@ -10,17 +10,17 @@ router.use('/users', userRouter)
 const homeRouter = require('./api/home.routes')
 router.use('/home', validateToken, homeRouter)
 
-const nottificationRouter = require('./api/notification.routes')
-router.use('/notifications', validateToken, nottificationRouter)
+const notificacionRouter = require('./api/notificacion.routes')
+router.use('/notificaciones', validateToken, notificacionRouter)
 
-const roleRouter = require('./api/role.routes')
-router.use('/roles', validateToken, policy, roleRouter)
+const rolRouter = require('./api/rol.routes')
+router.use('/roles', validateToken, policy, rolRouter)
 
-const localRouter = require('./api/local.routes')
-router.use('/locals', validateToken, localRouter)
+const sucursalRouter = require('./api/sucursal.routes')
+router.use('/sucursales', validateToken, sucursalRouter)
 
-const measurementRouter = require('./api/measurement.routes')
-router.use('/measurements', validateToken, measurementRouter)
+const medicionRouter = require('./api/medicion.routes')
+router.use('/mediciones', validateToken, medicionRouter)
 
 const parameterRouter = require('./api/parameter.routes')
 router.use('/parameters', validateToken, parameterRouter)
