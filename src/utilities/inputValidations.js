@@ -34,24 +34,6 @@ const validateRegister = [
     .withMessage('El apellido debe contener mas de 3 caracteres y menos de 50')
     .isAlpha()
     .withMessage('El apellido solo debe contener letras'),
-  check('telegramId')
-    .optional()
-    .isNumeric()
-    .withMessage('El id de telegram solo debe contener numeros')
-    .isLength({ min: 5, max: 20 })
-    .withMessage('El id de telegram debe contener entre 5 a 20 numeros'),
-  check('recibeNotiTelegram')
-    .optional()
-    .isBoolean()
-    .withMessage('El campo recibeNotiTelegram debe ser booleano'),
-  check('recibeNotiMail')
-    .optional()
-    .isBoolean()
-    .withMessage('El campo recibeNotiMail debe ser booleano'),
-  check('idSucursal')
-    .exists()
-    .isNumeric()
-    .withMessage('El id de sucursal debe ser numerico'),
 
   (req, res, next) => {
     validateResult(req, res, next)

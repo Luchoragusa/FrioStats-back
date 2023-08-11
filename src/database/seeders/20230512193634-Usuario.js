@@ -13,6 +13,7 @@ module.exports = {
       idRol: 1,
       telegramToken: '1ABC-E',
       emailConfirmado: true,
+      cuilEmpresa: '123456789',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -24,6 +25,7 @@ module.exports = {
       idRol: 2,
       telegramToken: '2ABC-E',
       emailConfirmado: true,
+      cuilEmpresa: '987654321',
       createdAt: new Date(),
       updatedAt: new Date()
     }], {})

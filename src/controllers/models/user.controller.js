@@ -13,21 +13,14 @@ const register = async (req, res) => {
       password: req.body.password,
       email: req.body.email,
       idRol: 2, // Rol de usuario
-      telegramToken: Util.createTelegramToken(),
-      telegramId: req.body.telegramId ? req.body.telegramId : null
+      telegramToken: Util.createTelegramToken()
     }
-    const email = usuarioNew.email
 
     // Valido que el mail no exista en la DB
-    const u = await Usuario.findOne({ where: { email } })
+    const u = await Usuario.findOne({ where: { email: req.body.email } })
+    console.log("=======================================================")
+    console.log("Usuario encontrado:  ", u)
     if (u) { return res.status(400).json({ message: 'El mail ya existe en el sistema' }) }
-
-    // Valido que el telegramId no exista en la DB
-    let t = null
-    if (usuarioNew.telegramId) {
-      t = await Usuario.findOne({ where: { telegramId: usuarioNew.telegramId } })
-    }
-    if (t) { return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' }) }
 
     // Busco el cuil de la empresa del usuario logueado y se lo asigno al nuevo usuario
     await Usuario.findOne({ where: { id: req.userId } })

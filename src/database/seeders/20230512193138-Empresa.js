@@ -9,6 +9,11 @@ module.exports = {
       cuil: '123456789',
       createdAt: new Date(),
       updatedAt: new Date()
+    }, {
+      razonSocial: 'Jumbo',
+      cuil: '987654321',
+      createdAt: new Date(),
+      updatedAt: new Date()
     }], {})
   },
 
