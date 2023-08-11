@@ -17,7 +17,9 @@ const validateRegister = [
     .isLength({ min: 5 })
     .withMessage('El correo debe contener mas de 5 caracteres')
     .isEmail()
-    .withMessage('No contiene un formato de email valido'),
+    .withMessage('No contiene un formato de email valido')
+    .isUniqueEmail()
+    .withMessage('El correo ya esta registrado'),
   check('password')
     .exists()
     .isLength({ min: 6 })
