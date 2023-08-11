@@ -5,6 +5,6 @@ const NotificationController = require('../../controllers/models/notification.co
 
 // router.get('/getNotifications/:idSucursal', NotificationController.getNotifications) // Muestra las notificaciones de una sucursal
 
-router.patch('/checkNotifications', NotificationController.checkNotifications) // Actualiza el estado de las notificaciones
+router.patch('/', NotificationController.checkNotifications) // Actualiza el estado de las notificaciones
 
 module.exports = router

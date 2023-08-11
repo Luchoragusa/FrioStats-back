@@ -13,9 +13,8 @@ const register = async (req, res) => {
       password: req.body.password,
       email: req.body.email,
       idRol: 2, // Rol de usuario
-      idSucursal: req.body.idSucursal,
-      telegramId: req.body.telegramId ? req.body.telegramId : null,
-      recibeNotiMail: req.body.recibeNotiMail ? req.body.recibeNotiMail : false
+      telegramToken: Util.createTelegramToken(),
+      telegramId: req.body.telegramId ? req.body.telegramId : null
     }
     const email = usuarioNew.email
 
@@ -30,9 +29,13 @@ const register = async (req, res) => {
     }
     if (t) { return res.status(400).json({ message: 'El id de telegram ya existe en el sistema' }) }
 
-    // Valido que la sucursal exista en la DB
-    const s = await Sucursal.findOne({ where: { id: usuarioNew.idSucursal } })
-    if (!s) { return res.status(400).json({ message: 'La sucursal no existe en el sistema' }) }
+    // Busco el cuil de la empresa del usuario logueado y se lo asigno al nuevo usuario
+    await Usuario.findOne({ where: { id: req.userId } })
+      .then((u) => {
+        if (u) {
+          usuarioNew.cuilEmpresa = u.cuilEmpresa
+        }
+      })
 
     // Creo el usuario
     await Usuario.create(usuarioNew).then(async (user) => {
@@ -251,6 +254,49 @@ const validateEmail = async (req, res) => {
   }
 }
 
+const updateLocals = async (req, res) => {
+  const id = req.params.id
+  try {
+    // Esto deberia ser un json con todos las id de las sucursales del usuario q me pasa la id por parametro
+    const locals = req.body.locals
+
+    // Valido que el usuario exista
+    await Usuario.findOne({ where: { id } }).then(async (user) => {
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+    })
+
+    // Traigo todas las sucursales del usuario
+    const sucursales = await UsuarioSucursal.findAll({ where: { idUsuario: id } })
+
+    // Recorro todas las sucursales del usuario
+    if (locals.length > 0) {
+      // Recorro locals para agregar las nuevas
+      locals.forEach(async (local) => {
+        // Valido que la sucursal no este asociada al usuario
+        const sucursalExist = sucursales.find((s) => s.idSucursal === local)
+        if (!sucursalExist) {
+          // Si no esta asociada, la asocio
+          await UsuarioSucursal.create({ idUsuario: id, idSucursal: local })
+        }
+      })
+      // Recorro locals para eliminar las que no estan
+      sucursales.forEach(async (sucursal) => {
+        // Valido que la sucursal no este en locals
+        const sucursalExist = locals.find((s) => s === sucursal.idSucursal)
+        if (!sucursalExist) {
+          // Si no esta, la elimino
+          await UsuarioSucursal.destroy({ where: { idUsuario: id, idSucursal: sucursal.idSucursal } })
+        }
+      })
+    } else {
+      return res.status(409).json({ message: 'Debe seleccionar al menos una sucursal' })
+    }
+    return res.status(200).json({ message: 'Sucursales actualizadas' })
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:252 ~ updateLocals ~ error:')
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -266,5 +312,6 @@ module.exports = {
   updateRole,
   getOne,
   validateTelegram,
-  validateEmail
+  validateEmail,
+  updateLocals
 }
