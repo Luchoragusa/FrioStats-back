@@ -76,14 +76,48 @@ const getCantNoti = async (req, res) => {
           notificacionesXSucursal[index].cantLeves = sucursal.Notificaciones.filter((notificacion) => notificacion.Tipo.descripcion === 'Leve').length
           notificacionesXSucursal[index].cantGraves = sucursal.Notificaciones.filter((notificacion) => notificacion.Tipo.descripcion === 'Grave').length
         })
-        return res.status(200).json(notificacionesXSucursal)
+        return res.status(200).json({ elemts: notificacionesXSucursal })
       })
   } catch (error) {
-    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getInfoHome ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getCantNoti ~ error:')
+  }
+}
+
+const getNotificaciones = async (req, res) => {
+  try {
+    const idSucursal = req.params.idSucursal
+    const notificacionesXMaquina = []
+    await MaquinaSucursal.findAll({
+      where: { idSucursal },
+      attributes: ['id', 'idSucursal'],
+      include: [{
+        model: Notificacion,
+        where: { visto: false },
+        attributes: ['id', 'descripcion'],
+        include: [{
+          model: Tipo,
+          attributes: ['id', 'descripcion']
+        }]
+      }]
+    }).then(async (maquinas) => {
+      maquinas.forEach((maquina, index) => {
+        if (maquina.Notificacions.length > 0) {
+          notificacionesXMaquina[index] = {
+            idMaquina: maquina.id,
+            idMaqSuc: index,
+            Notificaciones: maquina.Notificacions
+          }
+        }
+      })
+      return res.status(200).json(notificacionesXMaquina)
+    })
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getNotificaciones ~ error:')
   }
 }
 
 module.exports = {
   checkNotificacion,
-  getCantNoti
+  getCantNoti,
+  getNotificaciones
 }
