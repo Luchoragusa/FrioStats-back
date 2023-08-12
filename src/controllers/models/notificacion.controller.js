@@ -109,7 +109,7 @@ const getNotificaciones = async (req, res) => {
           }
         }
       })
-      return res.status(200).json(notificacionesXMaquina)
+      return res.status(200).json({ elemts: notificacionesXMaquina })
     })
   } catch (error) {
     Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getNotificaciones ~ error:')

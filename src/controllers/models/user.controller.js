@@ -30,13 +30,7 @@ const register = async (req, res) => {
 
     // Creo el usuario
     await Usuario.create(usuarioNew).then(async (user) => {
-      // Creo el usuarioSucursal
-      await UsuarioSucursal.create({ idUsuario: user.id, idSucursal: usuarioNew.idSucursal })
-        .then(() => {
-          // Envio el mail de verificacion
-          Email.sendConfirmationEmail(user)
-          return res.status(201).json({ message: 'registrado' })
-        })
+      return res.status(201).json({ message: 'registrado' })
     })
   } catch (error) {
     Util.catchError(res, error, '🚀 ~ file: user.controller.js:60 ~ register ~ error:')
