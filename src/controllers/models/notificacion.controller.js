@@ -104,7 +104,7 @@ const getNotificaciones = async (req, res) => {
         if (maquina.Notificacions.length > 0) {
           notificacionesXMaquina[index] = {
             idMaquina: maquina.id,
-            idMaqSuc: index,
+            idMaqSuc: (index + 1),
             Notificaciones: maquina.Notificacions
           }
         }
