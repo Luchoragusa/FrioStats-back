@@ -1,7 +1,7 @@
 const Router = require('express')
 const router = Router()
 // eslint-disable-next-line no-unused-vars
-const { register, login, getEmployees, update, updateRole, validateTelegram, getOne, validateEmail, updateLocals } = require('../../controllers/models/user.controller')
+const { register, login, getEmployees, update, updateRole, validateTelegram, getOne, validateEmail, updateLocals, checkEmail } = require('../../controllers/models/user.controller')
 const GenericController = require('../../controllers/generic.controller')
 const { Usuario } = require('../../database/models/index')
 const { validateToken, policy, checkParams } = require('../../utilities/middleware')
@@ -20,5 +20,6 @@ router.get('/confirmTelegram/:token', checkParams, validateTelegram) // Verifica
 router.get('/confirmEmail/:token', checkParams, validateEmail) // Verifica la direccion de email
 router.get('/', validateToken, getOne) // muestra los datos del usuario logueado
 router.get('/getEmployees', validateToken, policy, getEmployees) // muestra todos los empleados de la empresa
+router.get('/checkEmail', validateToken, policy, checkEmail) // muestra todos los empleados de la empresa
 
 module.exports = router

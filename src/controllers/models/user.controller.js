@@ -282,6 +282,18 @@ const updateLocals = async (req, res) => {
   }
 }
 
+const checkEmail = async (req, res) => {
+  const email = req.body.email
+  try {
+    await Usuario.findOne({ where: { email } }).then(async (user) => {
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+      res.status(200).json({ elemt: user, message: 'Email encontrado' })
+    })
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:252 ~ checkEmail ~ error:')
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -298,5 +310,6 @@ module.exports = {
   getOne,
   validateTelegram,
   validateEmail,
-  updateLocals
+  updateLocals,
+  checkEmail
 }
