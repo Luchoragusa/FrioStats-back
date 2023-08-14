@@ -18,7 +18,7 @@ router.patch('/local/:id', validateToken, policy, checkParams, updateLocals) // 
 
 router.get('/confirmTelegram/:token', checkParams, validateTelegram) // Verifica el token de telegram
 router.get('/confirmEmail/:token', checkParams, validateEmail) // Verifica la direccion de email
-router.get('/getOne', validateToken, getOne) // muestra los datos del usuario logueado
+router.get('/', validateToken, getOne) // muestra los datos del usuario logueado
 router.get('/getEmployees', validateToken, policy, getEmployees) // muestra todos los empleados de la empresa
 
 module.exports = router
