@@ -1,10 +1,10 @@
-const { Parametro } = require('../../database/models/index')
+const { ImportanciaParametro } = require('../../database/models/index')
 const Util = require('../../utilities/util')
 
 const getOne = async (req, res) => {
   const idMaquina = req.params.id
   try {
-    await Parametro.findOne({
+    await ImportanciaParametro.findOne({
       where: { idMaquina }
     })
       .then((elemts) => {

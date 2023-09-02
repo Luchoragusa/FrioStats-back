@@ -25,4 +25,7 @@ router.use('/mediciones', validateToken, medicionRouter)
 const parameterRouter = require('./api/parameter.routes')
 router.use('/parameters', validateToken, parameterRouter)
 
+const importanciaParametroRouter = require('./api/importanciaParametro.routes')
+router.use('/importanciaParametro', validateToken, importanciaParametroRouter)
+
 module.exports = router
