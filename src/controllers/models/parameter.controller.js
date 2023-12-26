@@ -19,15 +19,18 @@ const getOne = async (req, res) => {
 const updateOne = async (req, res) => {
   const id = req.params.id
   delete req.body.idMaquina
+  delete req.body.id
+  delete req.body.createdAt
+  delete req.body.updatedAt
   console.log(req.body)
   try {
-    await Parametro.update(req.body, {
+    const doc = await Parametro.update(req.body, {
       where: { id }
     })
-      .then((elemts) => {
-        if (!elemts) return res.status(404).json({ message: 'No se encontraron datos' })
-        return res.status(200).json({ message: 'Parametros actualizados' })
-      })
+    if (doc[0] <= 0) {
+      return res.status(404).json({ message: 'No se encontraron datos o no se modifico ningun campo' })
+    }
+    res.status(200).json({ message: 'Parametros actualizados' })
   } catch (error) {
     Util.catchError(res, error, '🚀 ~ file: importanciaParametro.controller.js:96 ~ updateOne ~ error:')
   }
