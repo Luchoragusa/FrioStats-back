@@ -30,6 +30,7 @@ const register = async (req, res) => {
 
     // Creo el usuario
     await Usuario.create(usuarioNew).then(async (user) => {
+      Email.sendConfirmationEmail(user)
       return res.status(201).json({ message: 'registrado' })
     })
   } catch (error) {
@@ -230,7 +231,8 @@ const validateEmail = async (req, res) => {
         .then((user) => {
           if (user) {
             // Aca deberia redirigir a la vista de login
-            return res.status(200).json({ message: 'Email validado', message2: 'Esto deberia llevar al login' })
+            res.redirect('ljragusa:5000')
+            // return res.status(200).json({ message: 'Email validado', message2: 'Esto deberia llevar al login' })
           }
         })
     })

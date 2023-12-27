@@ -50,7 +50,7 @@ const handlebarOptions = {
 
 const sendConfirmationEmail = async (user) => {
   const token = jwt.encode(user.email, process.env.SECRET_KEY)
-  const url = `${process.env.URL}/users/confirmEmail/${token}`
+  const url = `http://ljragusa.com.ar:5000/confirmEmail/${token}`
 
   const mailOptions = {
     from: {
@@ -66,7 +66,6 @@ const sendConfirmationEmail = async (user) => {
       logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png'
     }
   }
-
   sendEmail(mailOptions)
 }
 

@@ -27,20 +27,8 @@ const getSucursales = async (req, res) => {
 
 const body = {
   id: 1,
-  sucursales: [
-    {
-      idSucursal: 2,
-      asignada: true
-    },
-    {
-      idSucursal: 4,
-      asignada: true
-    },
-    {
-      idSucursal: 6,
-      asignada: false
-    }
-  ]
+  idSucursal: 4,
+  asignada: true
 }
 
 const updateUsuarioSucursal = async (req, res) => {
