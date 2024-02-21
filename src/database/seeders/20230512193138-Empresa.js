@@ -5,12 +5,12 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     // Seed de la tabla Empresa
     await queryInterface.bulkInsert('Empresa', [{
-      razonSocial: 'La Gallega',
+      razonSocial: 'Gallego',
       cuil: '123456789',
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
-      razonSocial: 'Jumbo',
+      razonSocial: 'Pepito',
       cuil: '987654321',
       createdAt: new Date(),
       updatedAt: new Date()

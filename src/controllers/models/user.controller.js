@@ -8,11 +8,12 @@ const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
   try {
     const usuarioNew = {
-      nombre: req.body.nombre,
-      apellido: req.body.apellido,
+      nombre: req.body.nombre ? req.body.nombre : null,
+      apellido: req.body.apellido ? req.body.apellido : null,
       password: req.body.password,
-      email: req.body.email,
+      email: req.body.email ? req.body.email : null,
       idRol: 2, // Rol de usuario
+      cuilEmpresa: req.body.cuilEmpresa ? req.body.cuilEmpresa : null,
       telegramToken: Util.createTelegramToken()
     }
 
