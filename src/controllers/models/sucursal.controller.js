@@ -25,26 +25,40 @@ const getSucursales = async (req, res) => {
   }
 }
 
-const body = {
-  id: 1,
-  idSucursal: 4,
-  asignada: true
-}
+// const body = {
+//   id: 1,
+//   idSucursal: 4,
+//   asignada: true
+// }
 
 const updateUsuarioSucursal = async (req, res) => {
   const idUsuario = req.body.id
   try {
-    // Este metodo devuelve las sucursales del usuario
-    const sucursalesUsuario = await UsuarioSucursal.findOne({
-      where: { idUsuario }
-    })
-
-    // Recorro las sucursales del usuario si es que tiene
-    if (sucursalesUsuario.leght > 0){
+    if (!req.body.idSucursal) return res.status(400).json({ message: 'Falta el id de la sucursal' })
+    if (!req.body.asignada) return res.status(400).json({ message: 'Falta el estado de la asignacion' })
+    if (req.body.asignada !== 'true' && req.body.asignada !== 'false') return res.status(400).json({ message: 'El estado de la asignacion debe ser true o false' })
+    if (req.body.asignada) {
+      await UsuarioSucursal.findOne({
+        where: { idUsuario, idSucursal: req.body.idSucursal }
+      }).then(async sucursal => {
+        if (sucursal) {
+          return res.status(200).json({ message: 'La sucursal ya esta asignada a ese usuario.' })
+        } else {
+          await UsuarioSucursal.create({
+            idUsuario,
+            idSucursal: req.body.idSucursal
+          })
+          return res.status(200).json({ message: 'Sucursal asignada correctamente.' })
+        }
+      })
+    } else {
+      await UsuarioSucursal.destroy({
+        where: { idUsuario, idSucursal: req.body.idSucursal }
+      })
+      return res.status(200).json({ message: 'Sucursal desasignada correctamente' })
     }
-
   } catch (error) {
-    Util.catchError(res, error, '🚀 ~ file: local.controller.js:23 ~ getLocals ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: local.controller.js:50 ~ updateUsuarioSucursal ~ error:')
   }
 }
 

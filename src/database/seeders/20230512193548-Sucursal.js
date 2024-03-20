@@ -5,7 +5,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     // Seed de la tabla Sucursal
     await queryInterface.bulkInsert('Sucursal', [{
-      nombre: 'La Gallega',
+      nombre: 'El gallego 1',
       direccion: 'Av. Pellegrini 1194',
       cuilEmpresa: '123456789',
       telefono: '0341 4801909',
@@ -17,7 +17,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
-      nombre: 'La Gallega',
+      nombre: 'El gallego 1',
       direccion: 'Blvd. Oroño 245',
       cuilEmpresa: '123456789',
       telefono: '0341 4801900',
