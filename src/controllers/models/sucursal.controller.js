@@ -12,7 +12,6 @@ const getSucursales = async (req, res) => {
         attributes: ['cuilEmpresa']
       }]
     }).then(async sucursal => {
-      if (!sucursal) return res.status(404).json({ message: 'No se encontraron sucursales' })
       // Este metodo devuelve todas las sucursales de la empresa
       const elemts = await Sucursal.findAll({
         where: { cuilEmpresa: sucursal.Sucursal.cuilEmpresa },
