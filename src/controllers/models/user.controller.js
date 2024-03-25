@@ -125,7 +125,8 @@ const getEmployees = async (req, res) => {
               through: {
                 model: UsuarioSucursal
               },
-              where: { cuilEmpresa }
+              where: { cuilEmpresa },
+              required: false // Establecer required en false
             }, {
               model: Rol,
               attributes: ['id', 'descripcion']
