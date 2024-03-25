@@ -12,13 +12,13 @@ const getSucursales = async (req, res) => {
         attributes: ['cuilEmpresa']
       }]
     }).then(async sucursal => {
-      if (!sucursal) return res.status(404).json({ message: 'No se encontraron sucursales' })
+      if (!sucursal) return res.status(200).json({ message: 'No se encontraron sucursales' })
       // Este metodo devuelve todas las sucursales de la empresa
       const elemts = await Sucursal.findAll({
         where: { cuilEmpresa: sucursal.Sucursal.cuilEmpresa },
         attributes: { exclude: ['createdAt', 'updatedAt', 'cuilEmpresa'] }
       })
-      if (!elemts) return res.status(404).json({ message: 'No se encontraron sucursales' })
+      if (!elemts) return res.status(200).json({ message: 'No se encontraron sucursales' })
       res.status(200).json({ elemts })
     })
   } catch (error) {
