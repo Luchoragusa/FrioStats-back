@@ -81,11 +81,21 @@ const getSucursalEmail = async (req, res) => {
 // }
 
 const updateUsuarioSucursal = async (req, res) => {
-  const idUsuario = req.body.id
   try {
+    if (!req.body.email) return res.status(400).json({ message: 'Falta el email' })
+    const email = req.body.email
     if (!req.body.idSucursal) return res.status(400).json({ message: 'Falta el id de la sucursal' })
     if (!req.body.asignada) return res.status(400).json({ message: 'Falta el estado de la asignacion' })
     if (req.body.asignada !== 'true' && req.body.asignada !== 'false') return res.status(400).json({ message: 'El estado de la asignacion debe ser true o false' })
+
+    const usuario = await Usuario.findOne({
+      where: { email },
+      attributes: ['id']
+    })
+
+    if (!usuario) return res.status(400).json({ message: 'No se encontro el email en la base de datos.' })
+    const idUsuario = usuario.id
+
     if (req.body.asignada) {
       await UsuarioSucursal.findOne({
         where: { idUsuario, idSucursal: req.body.idSucursal }
