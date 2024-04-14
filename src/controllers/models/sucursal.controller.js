@@ -1,4 +1,4 @@
-const { Sucursal, UsuarioSucursal } = require('../../database/models/index')
+const { Sucursal, UsuarioSucursal, Usuario } = require('../../database/models/index')
 const Util = require('../../utilities/util')
 
 const getSucursales = async (req, res) => {
@@ -23,6 +23,54 @@ const getSucursales = async (req, res) => {
     })
   } catch (error) {
     Util.catchError(res, error, '🚀 ~ file: local.controller.js:23 ~ getLocals ~ error:')
+  }
+}
+
+const getSucursalEmail = async (req, res) => {
+  const email = req.params.email
+  try {
+    // Obtenemos el id del usuario con el email
+    await Usuario.findOne({
+      where: { email },
+      attributes: ['id']
+    }).then(async usuario => {
+      if (!usuario) return res.status(200).json({ message: 'No se encontro el email en la base de datos.' })
+      const idUsuario = usuario.id
+
+      await UsuarioSucursal.findOne({
+        where: { idUsuario },
+        include: [{
+          model: Sucursal,
+          attributes: ['cuilEmpresa']
+        }]
+      }).then(async sucursal => {
+        if (!sucursal) return res.status(200).json({ message: 'El email ingresado no tiene sucursales asociadas.' })
+        // Este metodo devuelve todas las sucursales de la empresa
+        const sucursalesEmpresa = await Sucursal.findAll({
+          where: { cuilEmpresa: sucursal.Sucursal.cuilEmpresa },
+          attributes: { exclude: ['createdAt', 'updatedAt', 'cuilEmpresa'] }
+        })
+        if (!sucursalesEmpresa) return res.status(200).json({ message: 'La empresa no tiene ninguna sucursal asociada.' })
+
+        // Ya tengo las sucursales de la empresa, ahora busco las sucursales asignadas al usuario 
+        const elemts = await UsuarioSucursal.findAll({
+          where: { idUsuario },
+          attributes: ['idSucursal']
+        })
+        if (!elemts) return res.status(200).json({ message: 'No se encontraron sucursales' })
+        
+        // Comparo las sucursales de la empresa con las sucursales asignadas al usuario
+        const sucursalUsuario = sucursalesEmpresa.filter(sucursal => {
+          return elemts.some(elemts => elemts.idSucursal === sucursal.id)
+        })
+
+        // Devuelvo las sucursales asignadas al usuario y las sucursales de la empresa
+        res.status(200).json({ sucursalUsuario, sucursalesEmpresa })
+      })
+    })
+
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: sucursal.controller.js:60 ~ getSucursalEmail ~ error:')
   }
 }
 
@@ -65,5 +113,6 @@ const updateUsuarioSucursal = async (req, res) => {
 
 module.exports = {
   getSucursales,
+  getSucursalEmail,
   updateUsuarioSucursal
 }
