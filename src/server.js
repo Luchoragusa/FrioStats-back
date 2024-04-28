@@ -1,4 +1,4 @@
-// const { revisionMaquinas } = require('./utilities/verificator')
+const { revisionMaquinas } = require('./utilities/verificator')
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
@@ -28,11 +28,11 @@ for (let i = 0; i <= 24; i += 1) {
   hours.push(i)
 }
 rule.hour = hours
-rule.minute = 13
+rule.minute = 10
 rule.second = 0
 
 schedule.scheduleJob(rule, function () {
-  // setTimeout(revisionMaquinas, 2500)
+  setTimeout(revisionMaquinas, 2500)
 })
 
 // Settings

@@ -96,7 +96,7 @@ const updateUsuarioSucursal = async (req, res) => {
     if (!usuario) return res.status(400).json({ message: 'No se encontro el email en la base de datos.' })
     const idUsuario = usuario.id
 
-    if (req.body.asignada) {
+    if (req.body.asignada === 'true') {
       await UsuarioSucursal.findOne({
         where: { idUsuario, idSucursal: req.body.idSucursal }
       }).then(async sucursal => {
