@@ -64,6 +64,16 @@ const getSucursalEmail = async (req, res) => {
           return elemts.some(elemts => elemts.idSucursal === sucursal.id)
         })
 
+        // Hago un listado patdiendo de sucursalesEmpresa, que son todas las sucursales de la empresa sin las asignadas al usuario
+
+        sucursalesEmpresa.forEach((sucursal, index) => {
+          sucursalUsuario.forEach(sucursalUsuario => {
+            if (sucursal.id === sucursalUsuario.id) {
+              sucursalesEmpresa.splice(index, 1)
+            }
+          })
+        })
+
         // Devuelvo las sucursales asignadas al usuario y las sucursales de la empresa
         res.status(200).json({ sucursalUsuario, sucursalesEmpresa })
       })
