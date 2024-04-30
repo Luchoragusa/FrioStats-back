@@ -13,16 +13,30 @@ const getSucursales = async (req, res) => {
       }]
     }).then(async sucursal => {
       if (!sucursal) return res.status(200).json({ message: 'No se encontraron sucursales' })
+
       // Este metodo devuelve todas las sucursales de la empresa
-      const elemts = await Sucursal.findAll({
+      const sucursalesEmpresa = await Sucursal.findAll({
         where: { cuilEmpresa: sucursal.Sucursal.cuilEmpresa },
         attributes: { exclude: ['createdAt', 'updatedAt', 'cuilEmpresa'] }
       })
-      if (!elemts) return res.status(200).json({ message: 'No se encontraron sucursales' })
+      if (!sucursalesEmpresa) return res.status(200).json({ message: 'No se encontraron sucursales' })
+
+      // Ya tengo las sucursales de la empresa, ahora busco las sucursales asignadas al usuario 
+      const sucursalesUsuario = await UsuarioSucursal.findAll({
+        where: { idUsuario },
+        attributes: ['idSucursal']
+      })
+      if (!sucursalesUsuario) return res.status(200).json({ message: 'No se encontraron sucursales' })
+      
+      // Comparo las sucursales de la empresa con las sucursales asignadas al usuario
+      const elemts = sucursalesEmpresa.filter(sucursal => {
+        return sucursalesUsuario.some(sucursalesUsuario => sucursalesUsuario.idSucursal === sucursal.id)
+      })
+
       res.status(200).json({ elemts })
     })
   } catch (error) {
-    Util.catchError(res, error, '🚀 ~ file: local.controller.js:23 ~ getLocals ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: sucursal.controller.js:60 ~ getSucursales ~ error:')
   }
 }
 
