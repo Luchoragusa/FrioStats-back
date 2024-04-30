@@ -14,6 +14,35 @@ const checkNotificacion = async (req, res) => {
   }
 }
 
+const checkAll = async (req, res) => {
+  try {
+    const idSucursal = req.params.idSucursal
+    const notificaciones = await MaquinaSucursal.findAll({
+      where: { idSucursal },
+      attributes: ['id'],
+      include: [{
+        model: Notificacion,
+        where: { visto: false },
+        attributes: ['id', 'descripcion'],
+        include: [{
+          model: Tipo,
+          attributes: ['id', 'descripcion']
+        }]
+      }]
+    })
+
+    notificaciones.forEach(async (maquina) => {
+      maquina.Notificacions.forEach(async (notificacion) => {
+        await Notificacion.update({ visto: true }, { where: { id: notificacion.id } })
+      })
+    })
+
+    return res.status(200).json({ message: 'Notificaciones leidas' })
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: notificacion.controller.js:96 ~ checkNotificacion ~ error:')
+  }
+}
+
 const getCantNoti = async (req, res) => {
   try {
     const id = req.userId
@@ -119,5 +148,6 @@ const getNotificaciones = async (req, res) => {
 module.exports = {
   checkNotificacion,
   getCantNoti,
-  getNotificaciones
+  getNotificaciones,
+  checkAll
 }
