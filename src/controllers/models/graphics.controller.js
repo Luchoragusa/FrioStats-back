@@ -47,7 +47,10 @@ const getInfo = async (req, res) => {
                 const hora = `${fecha.getHours()}:${fecha.getMinutes() < 10 ? '0' : ''}${fecha.getMinutes()}`;
                 const fechaString = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
                 delete medicion.dataValues.createdAt;
-                return [hora, fechaString, medicion];
+                const medicionObj = Object.entries(medicion.dataValues).map(([key, value]) => {
+                    return [key, value, fechaString, hora]
+                });
+                return medicionObj;
             });
 
             res.status(200).json(formattedMediciones)

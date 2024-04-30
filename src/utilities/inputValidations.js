@@ -34,12 +34,12 @@ const validateRegister = [
     .withMessage('El apellido debe contener mas de 3 caracteres y menos de 50')
     .isAlpha()
     .withMessage('El apellido solo debe contener letras'),
-  check('cuilEmpresa')
-    .exists()
-    .isLength({ min: 11, max: 11 })
-    .withMessage('El cuil debe contener 11 caracteres')
-    .isNumeric()
-    .withMessage('El cuil debe contener solo numeros'),
+  // check('cuilEmpresa')
+  //   .exists()
+  //   .isLength({ min: 11, max: 11 })
+  //   .withMessage('El cuil debe contener 11 caracteres')
+  //   .isNumeric()
+  //   .withMessage('El cuil debe contener solo numeros'),
   (req, res, next) => {
     validateResult(req, res, next)
   }
