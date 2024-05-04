@@ -42,18 +42,63 @@ const getInfo = async (req, res) => {
         }).then(mediciones => {
             if (mediciones.length === 0) return res.status(200).json({ message: 'No se encontraron mediciones para esa fecha' })
 
-            const formattedMediciones = mediciones.map(medicion => {
-                const fecha = new Date(medicion.createdAt);
-                const hora = `${fecha.getHours()}:${fecha.getMinutes() < 10 ? '0' : ''}${fecha.getMinutes()}`;
-                const fechaString = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
-                delete medicion.dataValues.createdAt;
-                const medicionObj = Object.entries(medicion.dataValues).map(([key, value]) => {
-                    return [key, value, fechaString, hora]
-                });
-                return medicionObj;
-            });
-
-            res.status(200).json(formattedMediciones)
+                const formattedData = {
+                    valuesSensorTempInterna: [],
+                    labelsSensorTempInterna: [],
+                    valuesSensorTempTrabajoYBulbo: [],
+                    labelsSensorTempTrabajoYBulbo: [],
+                    valuesSensorPuerta: [],
+                    labelsSensorPuerta: [],
+                    valuesSensorRpmCooler: [],
+                    labelsSensorRpmCooler: [],
+                    valuesSensorPuntoRocio: [],
+                    labelsSensorPuntoRocio: [],
+                    valuesSensorLuz: [],
+                    labelsSensorLuz: [],
+                    valuesSensorConsumo: [],
+                    labelsSensorConsumo: []
+                  };
+                  
+                  mediciones.forEach(medicion => {
+                    const fecha = new Date(medicion.createdAt);
+                    const hora = `${fecha.getHours()}:${fecha.getMinutes() < 10 ? '0' : ''}${fecha.getMinutes()}`;
+                    const fechaString = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+                  
+                    Object.entries(medicion.dataValues).forEach(([key, value]) => {
+                      switch (key) {
+                        case 'sensorTempInterna':
+                          formattedData.valuesSensorTempInterna.push(value);
+                          formattedData.labelsSensorTempInterna.push(`${hora} - ${fechaString}`);
+                          break;
+                        case 'sensorTempTrabajoYBulbo':
+                          formattedData.valuesSensorTempTrabajoYBulbo.push(value);
+                          formattedData.labelsSensorTempTrabajoYBulbo.push(`${hora} - ${fechaString}`);
+                          break;
+                        case 'sensorPuerta':
+                          formattedData.valuesSensorPuerta.push(value ? 1 : 0);
+                          formattedData.labelsSensorPuerta.push(`${hora} - ${fechaString}`);
+                          break;
+                        case 'sensorCooler':
+                          formattedData.valuesSensorRpmCooler.push(value);
+                          formattedData.labelsSensorRpmCooler.push(`${hora} - ${fechaString}`);
+                          break;
+                        case 'sensorPuntoRocio':
+                          formattedData.valuesSensorPuntoRocio.push(value);
+                          formattedData.labelsSensorPuntoRocio.push(`${hora} - ${fechaString}`);
+                          break;
+                        case 'sensorLuz':
+                          formattedData.valuesSensorLuz.push(value ? 1 : 0);
+                          formattedData.labelsSensorLuz.push(`${hora} - ${fechaString}`);
+                          break;
+                        case 'consumo':
+                          formattedData.valuesSensorConsumo.push(value);
+                          formattedData.labelsSensorConsumo.push(`${hora} - ${fechaString}`);
+                          break;
+                      }
+                    });
+                  });
+                  
+                  res.status(200).json(formattedData);
         })
         
     } catch (error) {
