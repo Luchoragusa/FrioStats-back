@@ -11,7 +11,6 @@ const app = express()
 const router = require('./routes/index.routes')
 
 // Seteo la rutina
-
 const schedule = require('node-schedule')
 const rule = new schedule.RecurrenceRule()
 
@@ -22,9 +21,9 @@ const rule = new schedule.RecurrenceRule()
 // }
 // rule.second = times
 
-// Seteo cada 1 hora y modificando el i+=1 se puede modificar el intervalo
+// Seteo cada 4 hora y modificando el i+=1 se puede modificar el intervalo
 const hours = []
-for (let i = 0; i <= 24; i += 1) {
+for (let i = 0; i <= 24; i += 4) {
   hours.push(i)
 }
 rule.hour = hours

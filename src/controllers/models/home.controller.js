@@ -8,7 +8,7 @@ const getInfoHome = async (req, res) => {
       where: { id },
       include: [{
         model: Sucursal,
-        attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
         through: {
           model: UsuarioSucursal,
           attributes: []
