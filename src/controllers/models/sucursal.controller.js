@@ -18,13 +18,15 @@ const getSucursalEmail = async (req, res) => {
       })
       if (!sucursalesEmpresa) return res.status(200).json({ message: 'La empresa no tiene ninguna sucursal asociada.' })
 
-      const sucursalesUsuario = await UsuarioSucursal.findAll({
+      var sucursalesUsuario = await UsuarioSucursal.findAll({
         where: { idUsuario },
         include: [{
           model: Sucursal,
-          attributes: ['cuilEmpresa']
+          attributes: { exclude: ['createdAt', 'updatedAt', 'cuilEmpresa'] }
         }]
       })
+
+      sucursalesUsuario = sucursalesUsuario.map(sucursal => sucursal.Sucursal)
 
       // Hago un listado patdiendo de sucursalesEmpresa, que son todas las sucursales de la empresa sin las asignadas al usuario
       const sucursalesNoAsignadas = sucursalesEmpresa.filter(sucursal => !sucursalesUsuario.some(sucursalesUsuario => sucursal.id === sucursalesUsuario.id));
