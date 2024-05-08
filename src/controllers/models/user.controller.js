@@ -109,36 +109,28 @@ const getEmployees = async (req, res) => {
           attributes: []
         }
       }],
-      attributes: ['id', 'nombre', 'apellido', 'email']
     }).then((user) => {
       if (user) {
-        // Valido que el usuario tenga al menos 1 una sucursal asociada
-        const sucursal = user.Sucursals.length > 0 ? user.Sucursals[0] : null
-        if (sucursal) {
-          // Obtengo el cuil de la empresa para la cual trabaja el usuario
-          const cuilEmpresa = sucursal.cuilEmpresa
-          // Obtengo los usuarios que trabajan en la misma empresa
-          Usuario.findAll({
-            include: [{
-              model: Sucursal,
-              attributes: ['id', 'nombre', 'direccion', 'ciudad'],
-              through: {
-                model: UsuarioSucursal
-              },
-              where: { cuilEmpresa },
-              required: false // Establecer required en false
-            }, {
-              model: Rol,
-              attributes: ['id', 'descripcion']
-            }],
-            attributes: ['id', 'nombre', 'apellido', 'email']
-          }).then((elemts) => {
-            if (!elemts) return res.status(404).json({ message: 'No se encontraron usuarios' })
-            return res.status(200).json({ elemts })
-          })
-        } else {
-          return res.status(404).json({ message: 'El usuario no tiene una sucursal asociada' })
-        }
+        const cuilEmpresa = user.cuilEmpresa
+        // Obtengo los usuarios que trabajan en la misma empresa
+        Usuario.findAll({
+          include: [{
+            model: Sucursal,
+            attributes: ['id', 'nombre', 'direccion', 'ciudad'],
+            through: {
+              model: UsuarioSucursal
+            },
+            required: false // Establecer required en false
+          }, {
+            model: Rol,
+            attributes: ['id', 'descripcion']
+          }],
+          where: { cuilEmpresa },
+          attributes: ['id', 'nombre', 'apellido', 'email', 'cuilEmpresa']
+        }).then((elemts) => {
+          if (!elemts) return res.status(404).json({ message: 'No se encontraron usuarios' })
+          return res.status(200).json({ elemts })
+        })
       } else {
         return res.status(404).json({ message: 'Usuario no encontrado' })
       }
