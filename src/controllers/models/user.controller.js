@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jwt-simple')
 const Util = require('../../utilities/util')
 const Email = require('../../utilities/mail/sendEmail')
+const { Op } = require('sequelize')
 
 const register = async (req, res) => {
   // eslint-disable-next-line no-unused-vars, prefer-const
@@ -109,11 +110,11 @@ const getEmployees = async (req, res) => {
           attributes: []
         }
       }],
-    }).then((user) => {
+    }).then(async (user) => {
       if (user) {
         const cuilEmpresa = user.cuilEmpresa
         // Obtengo los usuarios que trabajan en la misma empresa
-        Usuario.findAll({
+        const empleados = await Usuario.findAll({
           include: [{
             model: Sucursal,
             attributes: ['id', 'nombre', 'direccion', 'ciudad'],
@@ -127,10 +128,24 @@ const getEmployees = async (req, res) => {
           }],
           where: { cuilEmpresa },
           attributes: ['id', 'nombre', 'apellido', 'email', 'cuilEmpresa']
-        }).then((elemts) => {
-          if (!elemts) return res.status(404).json({ message: 'No se encontraron usuarios' })
-          return res.status(200).json({ elemts })
         })
+        const empleadosBaja = await Usuario.findAll({
+          include: [{
+            model: Sucursal,
+            attributes: ['id', 'nombre', 'direccion', 'ciudad'],
+            through: {
+              model: UsuarioSucursal
+            },
+            required: false // Establecer required en false
+          }, {
+            model: Rol,
+            attributes: ['id', 'descripcion']
+          }],
+          attributes: ['id', 'nombre', 'apellido', 'email', 'cuilEmpresa'],
+          paranoid: false,
+          where: { deletedAt: { [Op.ne]: null }, cuilEmpresa },
+        })
+          return res.status(200).json({empleados, empleadosBaja} )
       } else {
         return res.status(404).json({ message: 'Usuario no encontrado' })
       }
@@ -290,6 +305,29 @@ const checkEmail = async (req, res) => {
   }
 }
 
+const deleteOne = async (req, res) => {
+  const id = req.params.id
+  try {
+    await Usuario.destroy({ where: { id } }).then((user) => {
+      if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
+      return res.status(200).json({ message: 'Usuario dado de baja' })
+    })
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:252 ~ deleteOne ~ error:')
+  }
+}
+
+const restore = async (req, res) => {
+  const id = req.params.id
+  try {
+    const user = await Usuario.restore({ where: { id } })
+    if (user <= 0) return res.status(404).json({ message: 'Usuario no encontrado' })
+    return res.status(200).json({ message: 'Usuario restaurado'})
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: user.controller.js:252 ~ restore ~ error:')
+  }
+}
+
 // const logOut = async (req, res, next) => {
 //   //Eliminar cookie jwt
 //   res.clearCookie('jwt')
@@ -307,5 +345,7 @@ module.exports = {
   validateTelegram,
   validateEmail,
   updateLocals,
-  checkEmail
+  checkEmail,
+  deleteOne,
+  restore
 }

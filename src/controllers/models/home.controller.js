@@ -1,4 +1,4 @@
-const { Usuario, UsuarioSucursal, Sucursal } = require('../../database/models/index')
+const { Usuario, UsuarioSucursal, Sucursal, Empresa } = require('../../database/models/index')
 const Util = require('../../utilities/util')
 
 const getInfoHome = async (req, res) => {
@@ -13,6 +13,9 @@ const getInfoHome = async (req, res) => {
           model: UsuarioSucursal,
           attributes: []
         }
+      },{
+        model: Empresa,
+        attributes: { exclude: ['createdAt', 'updatedAt', 'cuil']}
       }],
       attributes: ['id', 'nombre', 'apellido', 'email']
     })

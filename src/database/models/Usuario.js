@@ -90,7 +90,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Usuario',
-    freezeTableName: true
+    freezeTableName: true,
+    paranoid: true,
   })
 
   Usuario.addHook('beforeCreate', (usuario) => {
