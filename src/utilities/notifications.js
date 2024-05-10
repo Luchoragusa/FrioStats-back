@@ -1,9 +1,7 @@
 const { Empresa, Sucursal, UsuarioSucursal, Usuario } = require('../database/models/index.js')
 const { Op } = require('sequelize')
-// const { sendTelegramMessage } = require('./telegram.js')
-// const { sendMail } = require('./mail.js')
 const { sendErrorMessage, sendInfoMessage, sendSuccessMessage, sendTelegramNotification } = require('./util')
-
+const { sendNotificationEmail } = require('./mail/sendEmail')
 
 const checkNotifications = async (rmaquinasNoti) => {
     try {
@@ -78,7 +76,7 @@ const checkNotifications = async (rmaquinasNoti) => {
                 }
                 if (empleado.recibeNotiMail) {
                     // Enviar notificacion por mail
-                    sendInfoMessage(`Notificacion por mail al empleado [${empleado.id}]`)
+                    await sendNotificationEmail(empleado)
                 }
             }
         }

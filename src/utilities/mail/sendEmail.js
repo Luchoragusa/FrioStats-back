@@ -4,6 +4,7 @@ const hbs = require('nodemailer-express-handlebars')
 const nodemailer = require('nodemailer')
 const { google } = require('googleapis')
 const Util = require('../util')
+const fecha = require('fecha')
 
 const OAuth2 = google.auth.OAuth2
 
@@ -69,6 +70,29 @@ const sendConfirmationEmail = async (user) => {
   sendEmail(mailOptions)
 }
 
+const sendNotificationEmail = async (user) => {
+  const token = jwt.encode(user.email, process.env.SECRET_KEY)
+  const url = `http://ljragusa.com.ar:5000/index`
+  const fechaFormateada = fecha.format(new Date(), 'HH:mm - DD/MM/YYYY')
+
+  const mailOptions = {
+    from: {
+      name: 'Frio Stats',
+      address: process.env.EMAIL
+    },
+    to: user.email,
+    subject: 'Alerta de maquinaria',
+    template: 'notificationEmail',
+    context: { // Estos datos se pasan al template, se accede con {{}}, son las variables
+      url,
+      fechaFormateada,
+      user: user.nombre,
+      logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png'
+    }
+  }
+  sendEmail(mailOptions)
+}
+
 const sendEmail = async (mailOptions) => {
   try {
     mail_rover((transporter) => {
@@ -87,6 +111,6 @@ const sendEmail = async (mailOptions) => {
 }
 
 module.exports = {
-  sendConfirmationEmail
-  // sendPurchasenEmail
+  sendConfirmationEmail,
+  sendNotificationEmail
 }

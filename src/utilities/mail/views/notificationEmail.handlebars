@@ -133,7 +133,7 @@
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                 <tr>
                 <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">¡Felicitaciones por adquirir <span style="color: #1e90ff;">${game.name}</span>!</h1>
+                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Notificaciones</h1>
                 </td>
                 </tr>
             </table>
@@ -156,6 +156,15 @@
             <![endif]-->
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
     
+               <!-- start copy -->
+                <tr>
+                <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                    <p style="margin: 0;">❗ Se le notifica que se detectaron alertas en las maquinas asocidas a sus maquinarias</p>
+                    <p style="margin: 0;">🗓️ Fecha: {{fechaFormateada}}</p>
+                </td>
+                </tr>
+                <!-- end copy -->
+    
                 <!-- start button -->
                 <tr>
                 <td align="left" bgcolor="#ffffff">
@@ -165,7 +174,7 @@
                         <table border="0" cellpadding="0" cellspacing="0">
                             <tr>
                             <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                <img src="${game.image}" width="300" height="300">
+                                <a href="{{url}}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Ir a la pagina</a>
                             </td>
                             </tr>
                         </table>
@@ -199,7 +208,7 @@
                 <!-- start unsubscribe -->
                 <tr>
                 <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                    <p style="margin: 0;">Machine Store 2022 ©</p>
+                    <p style="margin: 0;">Frio Stats 2024 ©</p>
                 </td>
                 </tr>
                 <!-- end unsubscribe -->
