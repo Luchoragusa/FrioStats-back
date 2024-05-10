@@ -69,22 +69,27 @@ const update = async (req, res) => {
     telegramId: req.body.telegramId ? req.body.telegramId : null,
     recibeNotiTelegram: req.body.recibeNotiTelegram === 'true',
     recibeNotiMail: req.body.recibeNotiMail === 'true'
-
   }
+
+  console.log( req.body)
+
   try {
     const userOld = await Usuario.findOne({ where: { id } })
     // Si el usuario actualizo el telegramId genro un nuevo token y envio el mensaje de verificacion
     if (u.telegramId !== userOld.telegramId) {
+      console.log('entro')
       u.telegramToken = Util.createTelegramToken()
     }
     await Usuario.update(u, { where: { id } })
       .then(async () => {
+        console.log(u)
         await Usuario.findOne({
           where: { id },
           attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNotiTelegram', 'recibeNotiMail', 'telegramId', 'telegramToken']
         }).then((userUpdated) => {
           // Si el usuario actualizo el telegramId envio el mensaje de verificacion
           if (u.telegramId !== userOld.telegramId) {
+            console.log('entro2')
             Util.sendTelegramVerification(userUpdated)
           }
           // Remuevo el Telegram Token del objeto user

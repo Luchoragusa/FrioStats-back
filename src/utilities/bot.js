@@ -11,7 +11,7 @@ const sendMessage = async (id, message) => {
   }
 }
 
-const sendToken = async (id, message) => {
+const sendMsg = async (id, message) => {
   try {
     await bot.telegram.sendMessage(id, message, {
       parse_mode: 'Markdown'
@@ -28,7 +28,7 @@ bot.start((ctx) => {
   const message = `🙋‍♂️ Hola ${ctx.from.first_name} ${ctx.from.last_name}\n 
 A continuacion te indicamos la ID para que cargues en la pagina web\n
 📝 Su id es ${ctx.from.id}\n
-🌐 http://frio-stats.com/\n
+🌐 http://ljragusa.com.ar:5000\n
 🔍 Para ver como validar el ID, usar el comando /info`
   ctx.reply(message)
 })
@@ -36,7 +36,7 @@ A continuacion te indicamos la ID para que cargues en la pagina web\n
 bot.command(['info', 'Info', 'INFO'], (ctx) => {
   const message = `🔷  Para poder usar el bot, debes ingresar a la pagina web y cargar su ID\n
 🔷  Una vez cargada la ID, el bot le enviara un mensaje con un Token secreto, el cual debera ingresar en la pagina web para poder vincular su cuenta con el bot.\n \n
-🌐 http://frio-stats.com/`
+🌐 http://ljragusa.com.ar:5000/profile`
   ctx.reply(message)
 })
 
@@ -45,5 +45,5 @@ bot.launch()
 
 module.exports = {
   sendMessage,
-  sendToken
+  sendMsg
 }

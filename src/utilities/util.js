@@ -2,7 +2,7 @@ const chalk = require('chalk')
 const jwt = require('jwt-simple')
 const moment = require('moment')
 const fecha = require('fecha')
-const { sendToken } = require('./bot')
+const { sendMsg } = require('./bot')
 
 /**
  *
@@ -46,8 +46,21 @@ const sendTelegramVerification = (user) => {
   const message = `🙋‍♂️Hola ${user.nombre} \n\nPara confirmar tu cuenta de telegram, haz click en el siguiente link\n\n🌐 Haga click [aquí](${msg})`
 
   // Uso del bot
-  sendToken(user.telegramId, message)
+  sendMsg(user.telegramId, message)
 }
+
+const sendTelegramNotification = (user) => {
+  sendInfoMessage(`Notificacion enviada al telegramId [${user.telegramId}]`)
+  const msg = `http://ljragusa.com.ar:5000/index`
+
+  // Necesito la fecha en el formato DD/MM/YYYY - HH:mm
+  const fechaFormateada = fecha.format(new Date(), 'HH:mm - DD/MM/YYYY')
+  const message = `🙋‍♂️Hola ${user.nombre} \n\n❗ Se le notifica que se detectaron alertas en las maquinas asocidas a sus maquinarias\n\n🗓️ Fecha de las alertas: ${fechaFormateada}  \n\n🌐 Haga click [aquí](${msg})`
+
+  // Uso del bot
+  sendMsg(user.telegramId, message)
+}
+
 /**
  *
  * @param {*} message String
@@ -108,5 +121,6 @@ module.exports = {
   sendInfoMessage,
   sendErrorMessage,
   sendSuccessMessage,
-  catchError
+  catchError,
+  sendTelegramNotification
 }

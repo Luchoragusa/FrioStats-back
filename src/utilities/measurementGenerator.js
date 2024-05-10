@@ -4,9 +4,9 @@ const { sendErrorMessage } = require('./util')
 const factores = {
   sensorTempInterna: 1,
   sensorTempTrabajoYBulbo: 5,
-  sensorCooler: 15,
+  sensorCooler: 1500,
   sensorPuntoRocio: 5,
-  consumo: 10
+  consumo: 1000
 }
 
 /**
@@ -35,10 +35,10 @@ const generarMedicion = async (idMaquinaSucursal) => {
   const sensorTempInterna = generarNumeroRandom(ultimaMedicion.sensorTempInterna, 'sensorTempInterna')
   const sensorTempTrabajoYBulbo = generarNumeroRandom(ultimaMedicion.sensorTempTrabajoYBulbo, 'sensorTempTrabajoYBulbo')
   const sensorPuerta = Math.random() < 0.5
-  const sensorCooler = Math.round(generarNumeroRandom(ultimaMedicion.sensorCooler, 'sensorCooler')) // Integer
-  const sensorPuntoRocio = generarNumeroRandom(ultimaMedicion.sensorPuntoRocio, 'sensorPuntoRocio')
+  const sensorCooler = Math.abs(Math.round(generarNumeroRandom(ultimaMedicion.sensorCooler, 'sensorCooler'))) // Integer
+  const sensorPuntoRocio = Math.abs(generarNumeroRandom(ultimaMedicion.sensorPuntoRocio, 'sensorPuntoRocio'))
   const sensorLuz = Math.random() < 0.5
-  const consumo = Math.round(generarNumeroRandom(ultimaMedicion.consumo, 'consumo')) // Integer
+  const consumo = Math.abs(Math.round(generarNumeroRandom(ultimaMedicion.consumo, 'consumo'))) // Integer
 
   const medicion = {
     idMaquina: idMaquinaSucursal,

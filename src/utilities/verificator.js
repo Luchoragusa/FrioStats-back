@@ -1,15 +1,26 @@
 const { Notificacion, MaquinaSucursal, ImportanciaParametro, Parametro, Medicion } = require('../database/models/index.js')
 const { generarMedicion } = require('./measurementGenerator.js')
 const { sendErrorMessage, sendInfoMessage, sendSuccessMessage } = require('./util')
+const { checkNotifications } = require('./notifications')
+
+const maquinasNoti = []
 
 const revisionMaquinas = async () => {
   const maquinas = await MaquinaSucursal.findAll()
   for (const maquina of maquinas) {
     const medicion = await generarMedicion(maquina.id)
     sendInfoMessage(`Medicion nro [${medicion.id}] -> Maquina: ${maquina.id}`)
-    await verificarLimites(medicion)
+    const notificaciones = await verificarLimites(medicion)
+    if (notificaciones.length > 0) {
+      maquinasNoti.push({ 
+        idSucursal: maquina.id,
+        notificaciones
+       })
+    }
   }
   sendSuccessMessage('Revision de maquinas finalizada')
+  await checkNotifications(maquinasNoti)
+  sendSuccessMessage('Notificaciones enviadas')
 }
 
 // Verificar si las mediciones estan por debajo o encima de los límites y generar notificaciones
@@ -23,6 +34,7 @@ const verificarLimites = async (medicion) => {
     sendInfoMessage(`Notificaciones generadas para la maquina [${medicion.idMaquina}]`)
     guardarNotificacionesEnDB(notificaciones)
   }
+  return notificaciones
 }
 
 /**
