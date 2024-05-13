@@ -235,6 +235,9 @@ const getOne = async (req, res) => {
 const validateEmail = async (req, res) => {
   try {
     const token = req.params.token
+    if (!token) {
+      return res.status(400).json({ message: 'Token no proporcionado' })
+    }
     const email = jwt.decode(token, process.env.SECRET_KEY)
     // Valido que el usuario exista
     await Usuario.findOne({ where: { email } }).then(async (user) => {
@@ -244,9 +247,7 @@ const validateEmail = async (req, res) => {
       await Usuario.update({ emailConfirmado: true }, { where: { email } })
         .then((user) => {
           if (user) {
-            // Aca deberia redirigir a la vista de login
-            res.redirect('ljragusa:5000')
-            // return res.status(200).json({ message: 'Email validado', message2: 'Esto deberia llevar al login' })
+            return res.status(200)
           }
         })
     })

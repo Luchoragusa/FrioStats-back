@@ -20,7 +20,7 @@ router.patch('/restore/:id', validateToken, policy, checkParams, restore) // Res
 router.patch('/local/:id', validateToken, policy, checkParams, updateLocals) // Actualiza las sucursales asignadas a un usuario
 
 router.get('/', validateToken, getOne) // muestra los datos del usuario logueado
-router.get('/getEmployees', validateToken, policy, getEmployees) // muestra todos los empleados de la empresa
+router.get('/getEmployees', validateToken, getEmployees) // muestra todos los empleados de la empresa
 router.get('/confirmTelegram/:token', checkParams, validateTelegram) // Verifica el token de telegram
 router.get('/confirmEmail/:token', checkParams, validateEmail) // Verifica la direccion de email
 router.get('/checkEmail', validateToken, policy, checkEmail) // Es para verificar si el email ya esta registrado
