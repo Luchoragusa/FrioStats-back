@@ -110,7 +110,7 @@ const catchError = (res, error, message) => {
     sendErrorMessage(message, error)
     console.log(error.name)
     const errorName = error.code === undefined ? { name: error.name } : { name: error.name, code: error.code }
-    return res.status(500).json({ message: errorName })
+    return res.status(500).json({ error })
   }
 }
 

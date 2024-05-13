@@ -67,8 +67,8 @@ const update = async (req, res) => {
   const id = req.userId
   const u = {
     telegramId: req.body.telegramId ? req.body.telegramId : null,
-    recibeNotiTelegram: req.body.recibeNotiTelegram === 'true',
-    recibeNotiMail: req.body.recibeNotiMail === 'true'
+    recibeNotiTelegram: req.body.recibeNotiTelegram === 'True',
+    recibeNotiMail: req.body.recibeNotiMail === 'True'
   }
 
   console.log( req.body)
