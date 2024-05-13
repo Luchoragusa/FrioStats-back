@@ -21,7 +21,7 @@ exports.getOne = Model =>
       const id = req.params.id
       const elemnt = await Model.findOne({ where: { id }, attributes: { exclude: ['createdAt', 'updatedAt'] } })
       if (!elemnt) { return res.status(404).json({ msg: 'Elemento no encontrado' }) }
-      return res.status(404).json({ msg: 'No hay datos' })
+      return res.status(404).json({ elemnt })
     } catch (error) {
       catchError(res, error, '🚀 ~ file: generic.controller.js:30 ~ error:')
     }
