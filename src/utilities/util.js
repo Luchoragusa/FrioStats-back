@@ -51,7 +51,7 @@ const sendTelegramVerification = (user) => {
 
 const sendTelegramNotification = (user) => {
   sendInfoMessage(`Notificacion enviada al telegramId [${user.telegramId}]`)
-  const msg = `http://ljragusa.com.ar:5000/index`
+  const msg = `http://186.13.28.124:5000/index`
 
   // Necesito la fecha en el formato DD/MM/YYYY - HH:mm
   const fechaFormateada = fecha.format(new Date(), 'HH:mm - DD/MM/YYYY')

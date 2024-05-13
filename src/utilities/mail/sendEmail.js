@@ -51,7 +51,7 @@ const handlebarOptions = {
 
 const sendConfirmationEmail = async (user) => {
   const token = jwt.encode(user.email, process.env.SECRET_KEY)
-  const url = `http://ljragusa.com.ar:5000/confirmEmail/${token}`
+  const url = `http://186.13.28.124:5000/confirmEmail/${token}`
 
   const mailOptions = {
     from: {
@@ -64,7 +64,7 @@ const sendConfirmationEmail = async (user) => {
     context: { // Estos datos se pasan al template, se accede con {{}}, son las variables
       url,
       user: user.nombre,
-      logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png'
+      logo: 'http://186.13.28.124/FrioStats/images/logo.png'
     }
   }
   sendEmail(mailOptions)
@@ -72,7 +72,7 @@ const sendConfirmationEmail = async (user) => {
 
 const sendNotificationEmail = async (user) => {
   const token = jwt.encode(user.email, process.env.SECRET_KEY)
-  const url = `http://ljragusa.com.ar:5000/index`
+  const url = `http://186.13.28.124:5000/index`
   const fechaFormateada = fecha.format(new Date(), 'HH:mm - DD/MM/YYYY')
 
   const mailOptions = {
@@ -87,7 +87,7 @@ const sendNotificationEmail = async (user) => {
       url,
       fechaFormateada,
       user: user.nombre,
-      logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png'
+      logo: 'http://186.13.28.124/FrioStats/images/logo.png'
     }
   }
   sendEmail(mailOptions)

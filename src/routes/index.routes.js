@@ -31,4 +31,7 @@ router.use('/importanciaParametro', validateToken, importanciaParametroRouter)
 const graphicsRouter = require('./api/graphics.routes')
 router.use('/graphics', validateToken, graphicsRouter)
 
+const maquinasRouter = require('./api/maquina.routes')
+router.use('/maquina', validateToken, maquinasRouter)
+
 module.exports = router
