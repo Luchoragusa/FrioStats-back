@@ -20,7 +20,14 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notNull: { msg: 'Coordenadas requeridas' }
       }
-    }
+    },
+    icono: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: { msg: 'Icono requerido' }
+      }
+    },
   }, {
     sequelize,
     modelName: 'MaquinaSucursal',
