@@ -247,7 +247,7 @@ const validateEmail = async (req, res) => {
       await Usuario.update({ emailConfirmado: true }, { where: { email } })
         .then((user) => {
           if (user) {
-            return res.status(200)
+            return res.status(200).json({ message: 'Email validado correctamente' })
           }
         })
     })
