@@ -1,6 +1,21 @@
 const { Sucursal, UsuarioSucursal, Usuario } = require('../../database/models/index')
 const Util = require('../../utilities/util')
 
+const getSucursal = async (req, res) => {
+  try {
+    const id = req.params.id
+    const sucursal = await Sucursal.findOne({
+      where: { id },
+      attributes: { exclude: ['createdAt', 'updatedAt', 'cuilEmpresa'] }
+    })
+    if (!sucursal) return res.status(200).json({ message: 'No se encontro la sucursal en la base de datos.' })
+    res.status(200).json(sucursal)
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: sucursal.controller.js:60 ~ getSucursal ~ error:')
+  }
+}
+
+
 const getSucursalEmail = async (req, res) => {
   const email = req.params.email
   try {
@@ -39,12 +54,6 @@ const getSucursalEmail = async (req, res) => {
     Util.catchError(res, error, '🚀 ~ file: sucursal.controller.js:60 ~ getSucursalEmail ~ error:')
   }
 }
-
-// const body = {
-//   id: 1,
-//   idSucursal: 4,
-//   asignada: true
-// }
 
 const updateUsuarioSucursal = async (req, res) => {
   try {
@@ -88,6 +97,7 @@ const updateUsuarioSucursal = async (req, res) => {
 }
 
 module.exports = {
+  getSucursal,
   getSucursalEmail,
   updateUsuarioSucursal
 }

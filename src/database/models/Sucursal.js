@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    nombrePlano: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
     direccion: {
       type: DataTypes.STRING(50),
       allowNull: false,
