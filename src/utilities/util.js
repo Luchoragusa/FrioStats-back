@@ -20,15 +20,6 @@ const createToken = (u) => {
   return jwt.encode(payload, process.env.SECRET_KEY)
 }
 
-const createTelegramToken = () => {
-  const caracteres = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-  let token = ''
-  for (let i = 0; i < 6; i++) {
-    token += caracteres.charAt(Math.floor(Math.random() * caracteres.length))
-  }
-  return token
-}
-
 /**
  *
  * @param {*} user
@@ -37,13 +28,7 @@ const createTelegramToken = () => {
 const sendTelegramVerification = (user) => {
   sendInfoMessage(`Confirmacion enviada al telegramId [${user.telegramId}] con el token [${user.telegramToken}]`)
 
-  const token = jwt.encode({
-    id: user.id,
-    telegramToken: user.telegramToken
-  }, process.env.SECRET_KEY)
-  const msg = `${process.env.URL}/users/confirmTelegram/${token}`
-
-  const message = `🙋‍♂️Hola ${user.nombre} \n\nPara confirmar tu cuenta de telegram, haz click en el siguiente link\n\n🌐 Haga click [aquí](${msg})`
+  const message = `🙋‍♂️Hola ${user.nombre} \n\n✅ Su cuenta fue confirmada corretamente.`
 
   // Uso del bot
   sendMsg(user.telegramId, message)
@@ -116,7 +101,6 @@ const catchError = (res, error, message) => {
 
 module.exports = {
   createToken,
-  createTelegramToken,
   sendTelegramVerification,
   sendInfoMessage,
   sendErrorMessage,

@@ -25,7 +25,7 @@ const sendMsg = async (id, message) => {
 
 bot.start((ctx) => {
   console.log(`[Telegram] - ${ctx.from.first_name} ${ctx.from.last_name} - ${ctx.from.id}`)
-  const message = `🙋‍♂️ Hola ${ctx.from.first_name} ${ctx.from.last_name}\n 
+  const message = `🙋‍♂️ Hola ${ctx.from.first_name}\n 
 A continuacion te indicamos la ID para que cargues en la pagina web\n
 📝 Su id es ${ctx.from.id}\n
 🌐 http://ljragusa.com.ar:5000\n

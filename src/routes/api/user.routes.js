@@ -21,9 +21,9 @@ router.patch('/local/:id', validateToken, policy, checkParams, updateLocals) // 
 
 router.get('/', validateToken, getOne) // muestra los datos del usuario logueado
 router.get('/getEmployees', validateToken, getEmployees) // muestra todos los empleados de la empresa
-router.get('/confirmTelegram/:token', checkParams, validateTelegram) // Verifica el token de telegram
 router.get('/confirmEmail/:token', checkParams, validateEmail) // Verifica la direccion de email
 router.get('/checkEmail', validateToken, policy, checkEmail) // Es para verificar si el email ya esta registrado
+// router.get('/confirmTelegram/:token', checkParams, validateTelegram) // Verifica el token de telegram
 
 router.delete('/:id', validateToken, policy, checkParams, deleteOne) // Baja logica
 
