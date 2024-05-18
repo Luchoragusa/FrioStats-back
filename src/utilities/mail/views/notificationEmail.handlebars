@@ -161,6 +161,12 @@
                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                     <p style="margin: 0;">❗ Se le notifica que se detectaron alertas en las maquinas asocidas a sus maquinarias</p>
                     <p style="margin: 0;">🗓️ Fecha: {{fechaFormateada}}</p>
+                    <p style="margin: 0;">Las sucursales con alertas son:</p>
+                    <ul>
+                        {{#each sucursales}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
                 </td>
                 </tr>
                 <!-- end copy -->

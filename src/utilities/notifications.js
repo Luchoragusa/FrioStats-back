@@ -27,7 +27,7 @@ const checkNotifications = async (rmaquinasNoti) => {
                 }
             }
             // Tengo las sucursales con notificaciones en el array "sucursalesNoti"
-
+            
             // Traigo los empleados de la empresa que tenga alguno de los 2 campos "recibeNotiTelegram" y/o "recibeNotiMail" en true y que ademas esten asignados a alguna de las sucursales con notificaciones en la tabla UsuarioSucursal
             const empleados = await Usuario.findAll({
                 where: {
@@ -47,36 +47,37 @@ const checkNotifications = async (rmaquinasNoti) => {
             })
 
             // Crear un conjunto para mantener un registro de los empleados únicos
-            const empleadosNotiSet = new Set();
             const empleadosNoti = [];
 
             // Recorrer los empleados y las sucursalesNoti
             for (const empleado of empleados) {
+                const sucNoti = []
                 for (const sucursalNoti of sucursalesNoti) {
-                    // Verificar si el empleado ya está en el conjunto
-                    if (empleadosNotiSet.has(empleado.id)) {
-                        // Si ya está en el conjunto, pasar al siguiente empleado
-                        continue;
-                    }
                     for (const sucursalEmpleado of empleado.Sucursals) {
                         if (sucursalNoti.id === sucursalEmpleado.id) {
-                            empleadosNotiSet.add(empleado.id); // Agregar el empleado al conjunto
-                            empleadosNoti.push(empleado); // Agregar el empleado al array empleadosNoti
-                            break; // Salir del bucle interno
+                            // Agrego la sucursal al array sucNoti
+                            sucNoti.push(sucursalNoti)
                         }
                     }
                 }
+                // Agregar el empleado al array empleadosNoti con la propiedad adicional de sucursalesNoti
+                if (sucNoti.length > 0) {
+                    empleadosNoti.push({
+                        ...empleado,
+                        sucursalesNoti: [sucNoti]
+                    });
+                }
             }
 
-            // Tengo los empleados con notificaciones en el array "empleadosNoti", ahora lo recorro y envio las notificaciones
+            // // Tengo los empleados con notificaciones en el array "empleadosNoti", ahora lo recorro y envio las notificaciones
             for (const empleado of empleadosNoti) {
-                if (empleado.recibeNotiTelegram) {
+                if (empleado.dataValues.recibeNotiTelegram) {
                     // Enviar notificacion por telegram
-                    await sendTelegramNotification(empleado)
+                    await sendTelegramNotification(empleado.dataValues)
                 }
-                if (empleado.recibeNotiMail) {
+                if (empleado.dataValues.recibeNotiMail) {
                     // Enviar notificacion por mail
-                    await sendNotificationEmail(empleado)
+                    await sendNotificationEmail(empleado.dataValues)
                 }
             }
         }

@@ -74,6 +74,7 @@ const sendNotificationEmail = async (user) => {
   const token = jwt.encode(user.email, process.env.SECRET_KEY)
   const url = `http://ljragusa.com.ar:5000/index`
   const fechaFormateada = fecha.format(new Date(), 'HH:mm - DD/MM/YYYY')
+  const sucursalesConAlertas = user.Sucursals.map(sucursal => `📍 ${sucursal.direccion} - ${sucursal.ciudad}`)
 
   const mailOptions = {
     from: {
@@ -87,7 +88,8 @@ const sendNotificationEmail = async (user) => {
       url,
       fechaFormateada,
       user: user.nombre,
-      logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png'
+      logo: 'http://ljragusa.com.ar/FrioStats/images/logo.png',
+      sucursales: sucursalesConAlertas
     }
   }
   sendEmail(mailOptions)

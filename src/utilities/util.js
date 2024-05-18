@@ -37,10 +37,16 @@ const sendTelegramVerification = (user) => {
 const sendTelegramNotification = (user) => {
   sendInfoMessage(`Notificacion enviada al telegramId [${user.telegramId}]`)
   const msg = `http://ljragusa.com.ar:5000/index`
+  let sucursales = 'Las sucursales con alertas son:'
+  // Reocorro las sucurales	con notificaciones del empleado y armo un mensaje detallando las sucursales con alertas
+  for (const sucursal of user.Sucursals) {
+    // Recorro las notificaciones de las maquinas
+    sucursales += `\n📍 ${sucursal.direccion} - ${sucursal.ciudad}`
+  }
 
   // Necesito la fecha en el formato DD/MM/YYYY - HH:mm
   const fechaFormateada = fecha.format(new Date(), 'HH:mm - DD/MM/YYYY')
-  const message = `🙋‍♂️Hola ${user.nombre} \n\n❗ Se le notifica que se detectaron alertas en las maquinas asocidas a sus maquinarias\n\n🗓️ Fecha de las alertas: ${fechaFormateada}  \n\n🌐 Haga click [aquí](${msg})`
+  const message = `🙋‍♂️Hola ${user.nombre} \n\n❗ Se le notifica que se detectaron alertas en las maquinas asocidas a sus maquinarias \n\n ${sucursales}\n\n🗓️ Fecha de las alertas: ${fechaFormateada}  \n\n🌐 Haga click [aquí](${msg})`
 
   // Uso del bot
   sendMsg(user.telegramId, message)

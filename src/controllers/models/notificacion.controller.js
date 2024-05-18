@@ -1,5 +1,6 @@
 const { Notificacion, MaquinaSucursal, Usuario, Sucursal, UsuarioSucursal, Tipo } = require('../../database/models/index')
 const Util = require('../../utilities/util')
+const moment = require('moment')
 
 const checkNotificacion = async (req, res) => {
   try {
@@ -122,7 +123,7 @@ const getNotificaciones = async (req, res) => {
       include: [{
         model: Notificacion,
         where: { visto: false },
-        attributes: ['id', 'descripcion'],
+        attributes: ['id', 'descripcion', 'createdAt'],
         include: [{
           model: Tipo,
           attributes: ['id', 'descripcion']
@@ -136,6 +137,11 @@ const getNotificaciones = async (req, res) => {
             idMaqSuc: (index + 1),
             Notificaciones: maquina.Notificacions
           }
+          // Reseteo el array de notificaciones y en la descripcion le asigno descripcion + fecha
+          notificacionesXMaquina[index].Notificaciones.forEach((notificacion, index2) => {
+            const formattedDate = moment(notificacion.createdAt).format('HH:mm - DD/MM/YYYY');
+            notificacionesXMaquina[index].Notificaciones[index2].descripcion = `${notificacion.descripcion} || ${formattedDate}`;
+        });
         }
       })
       return res.status(200).json({ elemts: notificacionesXMaquina })
