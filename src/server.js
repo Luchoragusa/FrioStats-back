@@ -31,7 +31,7 @@ const rule = new schedule.RecurrenceRule()
 // rule.second = 0
 
 // schedule.scheduleJob(rule, function () {
-  // setTimeout(revisionMaquinas, 2500)
+  //  setTimeout(revisionMaquinas, 2500)
 // })
 
 // Settings

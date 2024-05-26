@@ -1,6 +1,7 @@
 const { Notificacion, MaquinaSucursal, Usuario, Sucursal, UsuarioSucursal, Tipo } = require('../../database/models/index')
 const Util = require('../../utilities/util')
 const moment = require('moment')
+const sequelize = require('sequelize')
 
 const checkNotificacion = async (req, res) => {
   try {
@@ -123,7 +124,7 @@ const getNotificaciones = async (req, res) => {
       include: [{
         model: Notificacion,
         where: { visto: false },
-        attributes: ['id', 'descripcion', 'createdAt'],
+        attributes: ['id', 'descripcion'],
         include: [{
           model: Tipo,
           attributes: ['id', 'descripcion']

@@ -55,6 +55,25 @@ const getSucursalEmail = async (req, res) => {
   }
 }
 
+const getSucursalToken = async (req, res) => {
+  try {
+    const id = req.userId
+    console.log(id)
+    const sucursales = await UsuarioSucursal.findAll({
+      where: { idUsuario: id },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      include: [{
+        model: Sucursal,
+        attributes: { exclude: ['createdAt', 'updatedAt', 'cuilEmpresa'] }
+      }]
+    })
+    if (!sucursales) return res.status(200).json({ message: 'No se encontraron sucursales asignadas a este usuario.' })
+    res.status(200).json(sucursales)
+  } catch (error) {
+    Util.catchError(res, error, '🚀 ~ file: sucursal.controller.js:60 ~ getSucursalToken ~ error:')
+  }
+}
+
 const updateUsuarioSucursal = async (req, res) => {
   try {
     if (!req.body.email) return res.status(400).json({ message: 'Falta el email' })
@@ -99,5 +118,6 @@ const updateUsuarioSucursal = async (req, res) => {
 module.exports = {
   getSucursal,
   getSucursalEmail,
+  getSucursalToken,
   updateUsuarioSucursal
 }
