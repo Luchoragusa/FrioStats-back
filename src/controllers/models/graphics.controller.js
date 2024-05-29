@@ -161,18 +161,14 @@ const pieChart = async (req, res) => {
         // Valido que la fecha de inicio sea menor a la fecha de fin
         if (fechaInicio > fechaFin) return res.status(400).json({ message: 'La fecha de inicio debe ser menor a la fecha de fin' })
 
-        const formattedData = [
-          {
-              tipo: 'Grave',
-              maquinas: [],
-              total: 0
-          },
-          {
-              tipo: 'Leve',
-              maquinas: [],
-              total: 0
-          }
-        ]
+        const formattedData = {
+            valueGrave: [],
+            labelsGrave: [],
+            valueLeve: [],
+            labelsLeve: [],
+            totalGrave: 0,
+            totalLeve: 0
+        }
 
         // Traigo las maquinas de la sucursal
         const maquinas = await MaquinaSucursal.findAll({
@@ -203,23 +199,25 @@ const pieChart = async (req, res) => {
               }
           })
 
-          formattedData[0].maquinas.push({
-              idMaquina: maquina.id,
-              cantNotificaciones: grave
-          })
-          formattedData[0].total += grave
+          if (grave > 0) {
+              formattedData.valueGrave.push(grave)
+              formattedData.labelsGrave.push(`Maquina ${maquina.id}`)
+              formattedData.totalGrave += grave
+          }
 
-          formattedData[1].maquinas.push({
-              idMaquina: maquina.id,
-              cantNotificaciones: leve
-          })
-          formattedData[1].total += leve
+          if (leve > 0) {
+              formattedData.valueLeve.push(leve)
+              formattedData.labelsLeve.push(`Maquina ${maquina.id}`)
+              formattedData.totalLeve += leve
+          }
         }
-      res.status(200).json(formattedData)
+        
+        res.status(200).json([formattedData])
     } catch (error) {
         Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ pieChart ~ error:')
     }
 }
+
 
 
 // Dada 2 fechas, se traen las mediciones de consumo de las maquinas de la sucursal en cuestion.
@@ -228,7 +226,7 @@ const consumptionChart = async (req, res) => {
     try {
         // Valido que esten los parametros de la ruta
         if (!req.query.idSucursal) return res.status(400).json({ message: 'Falta el Id de la sucursal' })
-          const idSucursal = req.query.idSucursal
+        const idSucursal = req.query.idSucursal
         if (!req.query.fechaInicio) return res.status(400).json({ message: 'Falta la fecha de inicio' })
         const fechaInicio =  new Date(req.query.fechaInicio)
         if (!req.query.fechaFin) return res.status(400).json({ message: 'Falta la fecha de fin' })
@@ -244,10 +242,18 @@ const consumptionChart = async (req, res) => {
             }
         })
 
-        // Recorro cada maquina, y para cada una busco las mediciones de consumo en el rango de fechas
-        const formattedData = [];
-        for (const maquina of maquinas) {
+        // Estructura de datos para la respuesta
+        const formattedData = {
+            valueConsumo: [],
+            labelsConsumo: [],
+            labelMaquina: maquinas.map(maquina => `Maquina ${maquina.id}`)
+        };
 
+        // Objeto para agrupar los consumos por fecha
+        const consumoPorFecha = {};
+
+        // Recorro cada maquina, y para cada una busco las mediciones de consumo en el rango de fechas
+        for (const maquina of maquinas) {
             const mediciones = await Medicion.findAll({
                 where: {
                     idMaquina: maquina.id,
@@ -258,34 +264,38 @@ const consumptionChart = async (req, res) => {
                 attributes: ['consumo', 'createdAt']
             });
 
-            const consumoPromedio = {};
+            // Agrupo las mediciones por fecha
             mediciones.forEach(medicion => {
                 const fecha = new Date(medicion.createdAt);
                 const fechaString = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
-                if (consumoPromedio[fechaString]) {
-                    consumoPromedio[fechaString] += medicion.consumo;
-                } else {
-                    consumoPromedio[fechaString] = medicion.consumo;
+                if (!consumoPorFecha[fechaString]) {
+                    consumoPorFecha[fechaString] = {};
                 }
-            });
-
-            // Convertir el objeto consumoPromedio en un array de pares clave-valor
-            const consumoPromedioArray = Object.keys(consumoPromedio).map(fecha => ({
-                fecha,
-                consumo: consumoPromedio[fecha]
-            }));
-
-            formattedData.push({
-                idMaquina: maquina.id,
-                consumoPromedio: consumoPromedioArray
+                if (!consumoPorFecha[fechaString][maquina.id]) {
+                    consumoPorFecha[fechaString][maquina.id] = 0;
+                }
+                consumoPorFecha[fechaString][maquina.id] += medicion.consumo;
             });
         }
-        res.status(200).json(formattedData);
+
+        // Convertir el objeto consumoPorFecha en arrays de valores y etiquetas
+        Object.keys(consumoPorFecha).forEach(fecha => {
+            formattedData.labelsConsumo.push(fecha);
+            const valoresPorMaquina = [];
+            maquinas.forEach(maquina => {
+                valoresPorMaquina.push(consumoPorFecha[fecha][maquina.id] || 0);
+            });
+            formattedData.valueConsumo.push(valoresPorMaquina);
+        });
+
+        res.status(200).json([formattedData]);
 
     } catch (error) {
         Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ consumptionChart ~ error:')
     }
 }
+
+
 
 module.exports = {
   getInfo,
