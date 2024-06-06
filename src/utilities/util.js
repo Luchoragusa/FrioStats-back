@@ -36,7 +36,7 @@ const sendTelegramVerification = (user) => {
 
 const sendTelegramNotification = (user) => {
   sendInfoMessage(`Notificacion enviada al telegramId [${user.telegramId}]`)
-  const msg = `http://ljragusa.com.ar:5000/index`
+  const msg = `http://186.13.28.124/:5000/index`
   let sucursales = 'Las sucursales con alertas son:'
   // Reocorro las sucurales	con notificaciones del empleado y armo un mensaje detallando las sucursales con alertas
   for (const sucursal of user.Sucursals) {
