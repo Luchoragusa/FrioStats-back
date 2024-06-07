@@ -278,9 +278,20 @@ const consumptionChart = async (req, res) => {
             });
         }
 
+        // Función para obtener el nombre del día en español
+        const getDayName = (date) => {
+            return date.toLocaleDateString('es-ES', { weekday: 'long' });
+        };
+
         // Convertir el objeto consumoPorFecha en arrays de valores y etiquetas
         Object.keys(consumoPorFecha).forEach(fecha => {
-            formattedData.labelsConsumo.push(fecha);
+            const [day, month, year] = fecha.split('/');
+            const date = new Date(year, month - 1, day);
+            const dayName = getDayName(date);
+            // Dia + Fecha
+            // formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${fecha}`);
+            // Dia  
+            formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)}`);
             const valoresPorMaquina = [];
             maquinas.forEach(maquina => {
                 valoresPorMaquina.push(consumoPorFecha[fecha][maquina.id] || 0);
@@ -294,6 +305,7 @@ const consumptionChart = async (req, res) => {
         Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ consumptionChart ~ error:')
     }
 }
+
 
 
 
