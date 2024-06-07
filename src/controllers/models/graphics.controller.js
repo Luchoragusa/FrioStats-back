@@ -212,11 +212,26 @@ const pieChart = async (req, res) => {
           }
         }
         
+        // Ordenar valueGrave y labelsGrave
+        const sortedGrave = formattedData.valueGrave.map((value, index) => ({ value, label: formattedData.labelsGrave[index] }))
+            .sort((a, b) => b.value - a.value);
+
+        formattedData.valueGrave = sortedGrave.map(item => item.value);
+        formattedData.labelsGrave = sortedGrave.map(item => item.label);
+
+        // Ordenar valueLeve y labelsLeve
+        const sortedLeve = formattedData.valueLeve.map((value, index) => ({ value, label: formattedData.labelsLeve[index] }))
+            .sort((a, b) => b.value - a.value);
+
+        formattedData.valueLeve = sortedLeve.map(item => item.value);
+        formattedData.labelsLeve = sortedLeve.map(item => item.label);
+
         res.status(200).json([formattedData])
     } catch (error) {
         Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ pieChart ~ error:')
     }
 }
+
 
 
 
@@ -244,7 +259,7 @@ const consumptionChart = async (req, res) => {
 
         // Estructura de datos para la respuesta
         const formattedData = {
-            valueConsumo: [],
+            valueConsumo: maquinas.map(() => []), // Crear un array vacío para cada máquina
             labelsConsumo: [],
             labelMaquina: maquinas.map(maquina => `Maquina ${maquina.id}`)
         };
@@ -269,12 +284,9 @@ const consumptionChart = async (req, res) => {
                 const fecha = new Date(medicion.createdAt);
                 const fechaString = `${fecha.getDate()}/${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
                 if (!consumoPorFecha[fechaString]) {
-                    consumoPorFecha[fechaString] = {};
+                    consumoPorFecha[fechaString] = maquinas.map(() => 0); // Crear un array con un valor 0 para cada máquina
                 }
-                if (!consumoPorFecha[fechaString][maquina.id]) {
-                    consumoPorFecha[fechaString][maquina.id] = 0;
-                }
-                consumoPorFecha[fechaString][maquina.id] += medicion.consumo;
+                consumoPorFecha[fechaString][maquina.id - 1] += medicion.consumo; // Sumar el consumo en el índice correspondiente a la máquina
             });
         }
 
@@ -288,15 +300,13 @@ const consumptionChart = async (req, res) => {
             const [day, month, year] = fecha.split('/');
             const date = new Date(year, month - 1, day);
             const dayName = getDayName(date);
-            // Dia + Fecha
-            // formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${fecha}`);
-            // Dia  
-            formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)}`);
-            const valoresPorMaquina = [];
-            maquinas.forEach(maquina => {
-                valoresPorMaquina.push(consumoPorFecha[fecha][maquina.id] || 0);
+            // Dia + fecha
+            formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${fecha}`);
+            // Dia
+            // formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)}`);
+            consumoPorFecha[fecha].forEach((consumo, index) => {
+                formattedData.valueConsumo[index].push(consumo); // Agregar el consumo al array de la máquina correspondiente
             });
-            formattedData.valueConsumo.push(valoresPorMaquina);
         });
 
         res.status(200).json([formattedData]);
