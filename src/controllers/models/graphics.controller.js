@@ -240,28 +240,29 @@ const pieChart = async (req, res) => {
 const consumptionChart = async (req, res) => {
     try {
         // Valido que esten los parametros de la ruta
-        if (!req.query.idSucursal) return res.status(400).json({ message: 'Falta el Id de la sucursal' })
-        const idSucursal = req.query.idSucursal
-        if (!req.query.fechaInicio) return res.status(400).json({ message: 'Falta la fecha de inicio' })
-        const fechaInicio =  new Date(req.query.fechaInicio)
-        if (!req.query.fechaFin) return res.status(400).json({ message: 'Falta la fecha de fin' })
-        const fechaFin =  new Date(req.query.fechaFin)
+        if (!req.query.idSucursal) return res.status(400).json({ message: 'Falta el Id de la sucursal' });
+        const idSucursal = req.query.idSucursal;
+        if (!req.query.fechaInicio) return res.status(400).json({ message: 'Falta la fecha de inicio' });
+        const fechaInicio = new Date(req.query.fechaInicio);
+        if (!req.query.fechaFin) return res.status(400).json({ message: 'Falta la fecha de fin' });
+        const fechaFin = new Date(req.query.fechaFin);
 
         // Valido que la fecha de inicio sea menor a la fecha de fin
-        if (fechaInicio > fechaFin) return res.status(400).json({ message: 'La fecha de inicio debe ser menor a la fecha de fin' })
+        if (fechaInicio > fechaFin) return res.status(400).json({ message: 'La fecha de inicio debe ser menor a la fecha de fin' });
 
         // Traigo las maquinas de la sucursal
         const maquinas = await MaquinaSucursal.findAll({
             where: {
                 idSucursal
             }
-        })
+        });
 
         // Estructura de datos para la respuesta
         const formattedData = {
             valueConsumo: maquinas.map(() => []), // Crear un array vacío para cada máquina
             labelsConsumo: [],
-            labelMaquina: maquinas.map(maquina => `Maquina ${maquina.id}`)
+            labelMaquina: maquinas.map(maquina => `Maquina ${maquina.id}`),
+            totalConsumoSucursal: [] // Array para almacenar el consumo total de la sucursal por fecha
         };
 
         // Objeto para agrupar los consumos por fecha
@@ -304,6 +305,11 @@ const consumptionChart = async (req, res) => {
             formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${fecha}`);
             // Dia
             // formattedData.labelsConsumo.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)}`);
+            
+            // Calcular el consumo total de la sucursal para la fecha actual
+            const totalConsumo = consumoPorFecha[fecha].reduce((acc, consumo) => acc + consumo, 0);
+            formattedData.totalConsumoSucursal.push(totalConsumo);
+
             consumoPorFecha[fecha].forEach((consumo, index) => {
                 formattedData.valueConsumo[index].push(consumo); // Agregar el consumo al array de la máquina correspondiente
             });
@@ -312,9 +318,10 @@ const consumptionChart = async (req, res) => {
         res.status(200).json([formattedData]);
 
     } catch (error) {
-        Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ consumptionChart ~ error:')
+        Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ consumptionChart ~ error:');
     }
 }
+
 
 
 
