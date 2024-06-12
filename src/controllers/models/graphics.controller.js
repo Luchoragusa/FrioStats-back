@@ -239,7 +239,7 @@ const pieChart = async (req, res) => {
 // Se hace un promedio del consumo de cada maquina por dia, y se devuelven los datos en un objeto
 const consumptionChart = async (req, res) => {
     try {
-        // Valido que esten los parametros de la ruta
+        // Valido que estén los parámetros de la ruta
         if (!req.query.idSucursal) return res.status(400).json({ message: 'Falta el Id de la sucursal' });
         const idSucursal = req.query.idSucursal;
         if (!req.query.fechaInicio) return res.status(400).json({ message: 'Falta la fecha de inicio' });
@@ -250,11 +250,15 @@ const consumptionChart = async (req, res) => {
         // Valido que la fecha de inicio sea menor a la fecha de fin
         if (fechaInicio > fechaFin) return res.status(400).json({ message: 'La fecha de inicio debe ser menor a la fecha de fin' });
 
-        // Traigo las maquinas de la sucursal
+        // Traigo las máquinas de la sucursal
         const maquinas = await MaquinaSucursal.findAll({
-            where: {
-                idSucursal
-            }
+            where: { idSucursal }
+        });
+
+        // Crear un mapa para asociar IDs de máquinas a índices
+        const maquinaIdToIndex = new Map();
+        maquinas.forEach((maquina, index) => {
+            maquinaIdToIndex.set(maquina.id, index);
         });
 
         // Estructura de datos para la respuesta
@@ -268,7 +272,7 @@ const consumptionChart = async (req, res) => {
         // Objeto para agrupar los consumos por fecha
         const consumoPorFecha = {};
 
-        // Recorro cada maquina, y para cada una busco las mediciones de consumo en el rango de fechas
+        // Recorro cada máquina, y para cada una busco las mediciones de consumo en el rango de fechas
         for (const maquina of maquinas) {
             const mediciones = await Medicion.findAll({
                 where: {
@@ -287,7 +291,7 @@ const consumptionChart = async (req, res) => {
                 if (!consumoPorFecha[fechaString]) {
                     consumoPorFecha[fechaString] = maquinas.map(() => 0); // Crear un array con un valor 0 para cada máquina
                 }
-                consumoPorFecha[fechaString][maquina.id - 1] += medicion.consumo; // Sumar el consumo en el índice correspondiente a la máquina
+                consumoPorFecha[fechaString][maquinaIdToIndex.get(maquina.id)] += medicion.consumo; // Sumar el consumo en el índice correspondiente a la máquina
             });
         }
 
@@ -309,7 +313,7 @@ const consumptionChart = async (req, res) => {
             // Calcular el consumo total de la sucursal para la fecha actual
             const totalConsumo = consumoPorFecha[fecha].reduce((acc, consumo) => acc + consumo, 0);
             formattedData.totalConsumoSucursal.push(totalConsumo);
-
+            
             consumoPorFecha[fecha].forEach((consumo, index) => {
                 formattedData.valueConsumo[index].push(consumo); // Agregar el consumo al array de la máquina correspondiente
             });
@@ -321,6 +325,7 @@ const consumptionChart = async (req, res) => {
         Util.catchError(res, error, '🚀 ~ file: graphics.controller.js:23 ~ consumptionChart ~ error:');
     }
 }
+
 
 
 
