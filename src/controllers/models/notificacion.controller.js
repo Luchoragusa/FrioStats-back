@@ -116,15 +116,15 @@ const getCantNoti = async (req, res) => {
 
 const getNotificaciones = async (req, res) => {
   try {
-    const idSucursal = req.params.idSucursal
-    const notificacionesXMaquina = []
+    const idSucursal = req.params.idSucursal;
+    const notificacionesXMaquina = [];
     await MaquinaSucursal.findAll({
       where: { idSucursal },
       attributes: ['id', 'idSucursal'],
       include: [{
         model: Notificacion,
         where: { visto: false },
-        attributes: ['id', 'descripcion'],
+        attributes: ['id', 'descripcion', 'createdAt'],
         include: [{
           model: Tipo,
           attributes: ['id', 'descripcion']
@@ -137,20 +137,24 @@ const getNotificaciones = async (req, res) => {
             idMaquina: maquina.id,
             idMaqSuc: (index + 1),
             Notificaciones: maquina.Notificacions
-          }
+          };
           // Reseteo el array de notificaciones y en la descripcion le asigno descripcion + fecha
           notificacionesXMaquina[index].Notificaciones.forEach((notificacion, index2) => {
             const formattedDate = moment(notificacion.createdAt).format('HH:mm - DD/MM/YYYY');
             notificacionesXMaquina[index].Notificaciones[index2].descripcion = `${notificacion.descripcion} || ${formattedDate}`;
-        });
+          });
+
+          // Ordenar las notificaciones por 'createdAt' de más reciente a más antigua
+          notificacionesXMaquina[index].Notificaciones.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
-      })
-      return res.status(200).json({ elemts: notificacionesXMaquina })
-    })
+      });
+      return res.status(200).json({ elemts: notificacionesXMaquina });
+    });
   } catch (error) {
-    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getNotificaciones ~ error:')
+    Util.catchError(res, error, '🚀 ~ file: notification.controller.js:96 ~ getNotificaciones ~ error:');
   }
-}
+};
+
 
 module.exports = {
   checkNotificacion,

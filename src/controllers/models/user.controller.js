@@ -72,14 +72,12 @@ const update = async (req, res) => {
     recibeNotiMail: req.body.recibeNotiMail === 'True'
   }
 
-  console.log( req.body)
 
   try {
     const userOld = await Usuario.findOne({ where: { id } })
 
     await Usuario.update(u, { where: { id } })
       .then(async () => {
-        console.log(u)
         await Usuario.findOne({
           where: { id },
           attributes: ['id', 'nombre', 'apellido', 'email', 'recibeNotiTelegram', 'recibeNotiMail', 'telegramId', 'telegramToken']

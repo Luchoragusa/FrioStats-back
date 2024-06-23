@@ -22,7 +22,6 @@ const updateOne = async (req, res) => {
   delete req.body.id
   delete req.body.createdAt
   delete req.body.updatedAt
-  console.log(req.body)
   try {
     const doc = await Parametro.update(req.body, {
       where: { id }
